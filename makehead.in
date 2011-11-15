@@ -1,0 +1,77 @@
+# file: makehead.in
+# (unless it is the file @configure_input@)
+
+srcdir		= @srcdir@
+top_builddir	= @SNACC_BUILDDIR@
+top_srcdir	= @SNACC_BUILDDIR@
+prefix		= @prefix@
+exec_prefix	= @exec_prefix@
+enable_tcl	= @enable_tcl@
+bindir		= $(exec_prefix)/bin
+libexecdir	= $(exec_prefix)/lib
+libdir		= $(prefix)/lib
+incdir		= $(prefix)/include
+tcldir		= $(libdir)/snacc/tcl
+# beware setting both extensions to the same value, otherwise snacc.1 and snacc.n will collide!
+man1ext		= 1
+mannext		= n
+man1dir		= $(prefix)/man/man$(man1ext)
+manndir		= $(prefix)/man/man$(mannext)
+
+SHELL		= /bin/sh
+ECHO		= echo
+@SET_MAKE@
+
+TCLSH		= @TCLSH@
+SNACC_NOVOLAT	= @SNACC_NOVOLAT@
+
+MKDEP		= @MKDEP@
+MKDEP_CCINC	= @MKDEP_CCINC@
+
+DEPENDENCIES	= dependencies
+
+LEX		= @LEX@
+LFLAGS		= @LFLAGS@
+LEXLIB		= @LEXLIB@
+YACC		= @YACC@
+
+BLDFLG          = 
+OSTYPE		= @OSTYPE@
+SHEXT		= @SHEXT@
+USETHREADS	= @HAVE_PTHREAD@
+CC	        = @CC@
+CFLAGS          = $(BLDFLG) @CFLAGS@ -fPIC -D$(OSTYPE)
+CXX		= @CXX@ 
+CXXFLAGS	= $(BLDFLG) @CXXFLAGS@  -fPIC -Wswitch -D$(OSTYPE)
+
+LDFLAGS		= @LDFLAGS@
+LIBS		= @LIBS@
+CPPFLAGS.TCL	=
+TCLLIBS		= @TCLLIBS@
+TREELIBS	= @TREELIBS@
+
+CPPFLAGS.X11	= @X_CFLAGS@
+LDFLAGS.X11	= @X_LIBS@
+LDLIBS.X11pre	= @X_PRE_LIBS@
+LDLIBS.X11extra	= @X_EXTRA_LIBS@
+
+PATCH		= @PATCH@
+AR		= @AR@
+RANLIB		= @RANLIB@
+
+INSTALL		= @INSTALL@
+INSTALL_PROGRAM	= @INSTALL_PROGRAM@
+INSTALL_DATA	= @INSTALL_DATA@
+
+LATEX		= @LATEX@
+BIBTEX		= @BIBTEX@
+DVIPS		= @DVIPS@
+DETEX		= @DETEX@
+PSPREVIEW	= @PSPREVIEW@
+PSBOOK		= @PSBOOK@
+PSNUP		= @PSNUP@
+SPELL		= @SPELL@
+
+TCL-P		= $(TOP)/tcl-p
+
+REASON		= @if [ -f $@ ]; then $(ECHO) "====== making $@ because of $? ======"; else $(ECHO) "====== making (creating) $@ ======"; fi

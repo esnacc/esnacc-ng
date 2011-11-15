@@ -1,0 +1,54 @@
+ConstraintsTest
+DEFINITIONS IMPLICIT TAGS ::=
+BEGIN
+  
+ 
+--NameString::=VisibleString (FROM("a".."z"|"A".."Z"|"-.")^SIZE(1..64))
+       
+REAL1::=REAL (3..23|55|60..68|3000) 
+  
+REAL2::=REAL (55)
+            
+INT1::=INTEGER (5..10|45|55..300|34)
+INT2::=INTEGER (-20) 
+        
+BOOL1::=BOOLEAN (1)
+
+NUMSTRING1::=NumericString (FROM("1".."4"|"6")|FROM("1235"|"539")|SIZE(1)|"888") 
+IA5STRING1::=IA5String ("ia5string1".."ia5string3"| "ia5string9"|SIZE(2)|SIZE(4..5))
+UNIVERSALSTRING1::=UniversalString(SIZE(15..89|4)|FROM("td"))(SIZE(2))
+UNIVERSALSTRING2::=UniversalString(SIZE(15)|FROM("asdf"))(FROM("fghi"))
+ 
+ConstraintTest::=SEQUENCE
+{    
+   
+	integer INTEGER (5..10),    
+
+	integer1 INTEGER (-20),
+ 
+	boolean BOOLEAN (1),
+ 
+	numericString NumericString ("1234"),
+
+	ia5String IA5String ("ia5string1".."ia5string3")
+       	 
+}
+
+TestSetOfConstraints::=SET SIZE(1) OF ConstraintTest
+
+TestSequenceOfConstraints::=SEQUENCE SIZE(0<..MAX) OF TestSetOfConstraints
+
+TestSet::=SET    
+{
+	testSequenceOfConstraints TestSequenceOfConstraints
+
+}
+
+IndefLen ::= SEQUENCE
+{
+	i1 [1] INTEGER,
+	a1 ANY
+}
+
+END
+  

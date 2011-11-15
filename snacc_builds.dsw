@@ -1,0 +1,173 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "BuildAll"=.\buildall.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name c_asn1
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name c_asn1_static
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name compiler
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name cppasn1
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name cppasn1_static
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name snacctest
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name testexcept
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name vdatestC
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name constraints_test
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "c_asn1"=".\c-lib\ebuf_lib\ebuf_lib.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "c_asn1_static"=".\c-lib\ebuf_lib_static\ebuf_lib_static.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "compiler"=.\compiler\compiler.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name c_asn1_static
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "constraints_test"=".\c++-examples\constraints_test\constraints_test.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name compiler
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name cppasn1
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "cppasn1"=".\c++-lib\cppasn1\cppasn1.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "cppasn1_static"=".\c++-lib\cppasn1_static\cppasn1_static.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "snacctest"=".\C++-EXAMPLES\snacctest.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name cppasn1
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name compiler
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "vdatestC"=".\c-examples\vdatestC\vdatestC.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name compiler
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name c_asn1
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

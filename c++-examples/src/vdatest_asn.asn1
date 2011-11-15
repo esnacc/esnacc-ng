@@ -1,0 +1,146 @@
+VdaTestModule
+DEFINITIONS EXPLICIT TAGS ::= 
+-- DEFINITIONS IMPLICIT TAGS ::=
+BEGIN
+
+TestSetSorting1 ::= SET
+{
+    null  NULL,
+    num   INTEGER,
+	oid   OBJECT IDENTIFIER,
+	octs  OCTET STRING,
+	bits  BIT STRING,
+	ps    PrintableString,
+	seq   SEQUENCE OF INTEGER,
+	set   VDATestSetOfAny
+}
+
+OctetStringSetOf ::= SET OF OCTET STRING
+
+VDATestSequence ::= SEQUENCE OF INTEGER
+
+VDATestSet ::= SET
+{ 
+   setItem1 OCTET STRING,
+   setItem2 INTEGER
+}
+
+VDATestSetOfAny ::= SET OF ANY
+
+VDATestBitString ::= BIT STRING
+
+SequenceOfDefaults ::= SEQUENCE
+{
+   defBool 
+        [0] BOOLEAN DEFAULT FALSE,
+   defBitstring     
+        [1] ClassList DEFAULT { unclassified },
+   defInteger           
+        [2] Version DEFAULT v3,
+   defEnumerated
+        [3] Enumeration DEFAULT one
+}
+
+Enumeration ::= ENUMERATED { one(1), two(2), three(3) }
+
+ClassList ::= BIT STRING 
+{
+    unmarked     (0),
+    unclassified (1),
+    restricted   (2),
+    confidential (3),
+    secret       (4),
+    topSecret    (25) 
+}
+
+Version            ::=   INTEGER { v1(0), v2(1), v3(2) }
+
+--unclassified INTEGER ::= 1
+
+DirectoryString ::= CHOICE {
+   teletexString     TeletexString (SIZE (1..MAX)),
+   printableString   PrintableString (SIZE (1..MAX)),
+   universalString   UniversalString (SIZE (1..MAX)), 
+   utf8String        UTF8String (SIZE (1..MAX)),
+   bmpString         BMPString (SIZE(1..MAX))   }
+
+testOID OBJECT IDENTIFIER ::= { 1 2 3 4 5 6 7 8 9 10 }
+
+TestAllAsnPrimativeTypes ::= SEQUENCE {
+	octsName OCTET STRING,
+	boolTestName BOOLEAN,
+    oidName OBJECT IDENTIFIER OPTIONAL,
+    bitStringName [2] IMPLICIT BIT STRING,
+	integerName INTEGER,
+	enumTestName ENUMERATED { aA(11), aB(12), aC(13) },
+	realName REAL OPTIONAL,
+	nullName NULL
+}
+
+TestSequence ::= SEQUENCE {
+	seqOfDefaults SequenceOfDefaults OPTIONAL,
+	testSet VDATestSet,
+	testSetOfAny VDATestSetOfAny,
+	directoryString DirectoryString,
+	testAllPrimatives TestAllAsnPrimativeTypes
+}
+
+
+-- THE FOLLOWING DEFINITIONS test the ANY DEFINED BY table setup/usage.
+
+testOID2 OBJECT IDENTIFIER ::= { 1 2 3 4 5 6 7 8 9 10 2 }
+
+TestDefinedByUsage ::= SEQUENCE {
+    id OBJECT IDENTIFIER,
+    anyDefBy ANY DEFINED BY id,
+	i1 INTEGER,
+	i2 INTEGER,
+	i3 INTEGER,
+	i4 INTEGER
+}
+
+TestDefinedByType ::= SEQUENCE {
+	octsName OCTET STRING,
+	boolTestName BOOLEAN
+}
+
+
+maxSIBperMsg INTEGER ::= 16
+--CompleteSIB-List ::= SEQUENCE (SIZE (1..maxSIBperMsg)) OF CompleteSIBshort
+CompleteSIB-List ::= SEQUENCE  OF CompleteSIBshort (SIZE (1..maxSIBperMsg))
+CompleteSIBshort ::= SEQUENCE {
+	a INTEGER
+    --  Assume that this sequence has some data
+
+}
+
+
+-- This definition syntax is based on SNMP OBJECT-TYPE; it is a special 
+--  SNACC construct to align the DEFINED BY id with a data type 
+--  (see SNACC docs).
+testDefinedByDesignation OBJECT-TYPE
+        SYNTAX  PrintableString
+        ACCESS  read-write
+        STATUS  mandatory
+        ::= { 1 2 3 4 5 6 7 8 9 10 2 }  --testOID2
+
+-- This section tests the ability of the esnacc compiler to allow an Integer
+--  definition to be used to specify a tag.
+AppTagList ::= INTEGER { appTagTest101(101), appTagTest102(102), appTagTest103(103) }
+appTag20    INTEGER	::=	20
+appTag21    INTEGER	::=	21
+Application-TagTest  ::=  SEQUENCE  {
+	i1Tag   [0]	                  INTEGER (0..23),
+	i2Tag	[appTag20]	          INTEGER (0..59),
+	i4Tag	[UNIVERSAL appTag21]  INTEGER (0..59),
+	i5Tag	[2]	                   INTEGER (0..59) DEFAULT 0 }
+	--RWC;DOES NOT WORK;i3Tag	[APPLICATION appTagTest103]	INTEGER,
+
+Application-TagChoice  ::=  CHOICE {
+	i1Choice    [0]	                    INTEGER (0..23),
+	i2Choice    [appTag20]              INTEGER (0..59),
+	i3Choice    [UNIVERSAL appTag21]    INTEGER (0..59),
+	--RWC;TEST TO CAUSE Choice ERROR;i2Choice2nd [20]                    INTEGER (0..59),
+	i4Choice    [2]	                    INTEGER }
+
+END

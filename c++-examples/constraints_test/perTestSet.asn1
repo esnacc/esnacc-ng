@@ -1,0 +1,81 @@
+PerTestSet
+DEFINITIONS IMPLICIT TAGS ::=
+BEGIN
+
+PerSetChoiceTest ::= SET
+{
+  a --RWC;[3]-- INTEGER,
+  bDef [1] CHOICE
+  {
+    c [2] INTEGER,
+    d [4] INTEGER
+  },
+  e CHOICE 
+  {
+    f CHOICE
+    {
+      g [5] INTEGER,
+      h [6] INTEGER
+    },
+    i CHOICE
+    {
+      j [0] INTEGER,
+      --RWC;Added for test
+      f CHOICE   
+      {
+        g [7] INTEGER,
+        h [8] INTEGER
+      }
+    } 
+  } OPTIONAL, 
+  
+	perAnyTest   [9] PerAnyTest,
+	perAnyTest2 [10] ANY
+	
+}
+
+PerSequenceChoiceTest ::= SEQUENCE
+{
+  a --RWC;[3]-- INTEGER OPTIONAL,
+  bDef [1] CHOICE
+  {
+    c [2] INTEGER,
+    d [4] INTEGER
+  },
+  
+  fTaggedInteger [2] INTEGER (0..59) DEFAULT 0,
+  eInteger INTEGER
+  
+}
+
+PerSetOfTest ::= SET OF INTEGER
+
+PerSequenceOfTest ::= SEQUENCE SIZE(10..11) OF INTEGER
+
+PerAnyTest ::= ANY
+
+
+perTestOID2 OBJECT IDENTIFIER ::= { 1 2 3 4 5 6 7 8 9 10 2 }
+
+PerTestDefinedByUsage ::= SEQUENCE {
+    id OBJECT IDENTIFIER,
+    anyDefBy ANY DEFINED BY id,
+	i1 INTEGER,
+	i2 INTEGER,
+	i3 INTEGER,
+	i4 INTEGER,
+	id5 RELATIVE-OID OPTIONAL
+}
+
+-- This definition syntax is based on SNMP OBJECT-TYPE; it is a special 
+--  SNACC construct to align the DEFINED BY id with a data type 
+--  (see SNACC docs).
+perTestDefinedByDesignation OBJECT-TYPE
+        SYNTAX  PrintableString
+        ACCESS  read-write
+        STATUS  mandatory
+        ::= { 1 2 3 4 5 6 7 8 9 10 2 }  --pertestOID2
+
+
+
+END

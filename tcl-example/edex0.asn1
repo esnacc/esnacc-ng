@@ -1,0 +1,42 @@
+-- file: edex0.asn1
+--
+-- snacced example, simple types module
+--
+-- $Header: /baseline/SNACC/tcl-example/edex0.asn1,v 1.2 2003/12/17 19:05:04 gronej Exp $
+-- $Log: edex0.asn1,v $
+-- Revision 1.2  2003/12/17 19:05:04  gronej
+-- SNACC baseline merged with PER v1_7 tag
+--
+-- Revision 1.1.2.1  2003/11/05 14:58:57  gronej
+-- working PER code merged with esnacc_1_6
+--
+-- Revision 1.1.1.1  2000/08/21 20:35:47  leonberp
+-- First CVS Version of SNACC.
+--
+-- Revision 1.1  1997/01/01 22:57:11  rj
+-- first check-in
+--
+
+EdEx-Simple DEFINITIONS ::=
+BEGIN
+
+RainbowColor ::= INTEGER
+{
+  red(0), orange(1), yellow(2), green(3), blue(4), indigo(5), violet(6)
+}
+
+DayOfTheWeek ::= ENUMERATED
+{
+  sunday(0), monday(1), tuesday(2), wednesday(3), thursday(4), friday(5), saturday(6)
+}
+
+Hand ::= BIT STRING
+{
+  thumb(0), forefinger(1), middle-finger(2), ring-finger(3), little-finger(4)
+}
+
+victory Hand ::= { forefinger, middle-finger }
+
+File ::= OCTET STRING
+
+END

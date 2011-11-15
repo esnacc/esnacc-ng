@@ -1,0 +1,49 @@
+(RCS control information is at the end of this file.)
+
+
+Table printing README - MS 93
+-----------------------------
+
+This program is good for snooping through table file to see what
+they contain. You will almost always want to use the "-a" option.
+
+The ptbl program will print a type table in 2 forms:
+
+ 1. By default tables are printed in ASN.1 value notation for the
+    TBL ASN.1 data structure (See the tbl.asn1 file in snacc/asn1specs).
+
+ 2. Using the "-a" option makes ptbl print the type in the type table in
+    ASN.1 form.  Some parts are not printed - IMPORT/EXPORT info
+    (although you could figure it out).  The ASN.1 printing code
+    (in pasn1.c) is very simple and is a good way to become familiar
+    with the TBL data structure (type tables).
+
+
+Type "make" to build ptbl.
+Type ./ptbl to see the arguments it expects.
+
+try:
+
+./ptbl -a ../demo-tbls/p-rec.tt
+
+also try:
+
+./ptbl ../demo-tbls/p-rec.tt
+
+ptbl without the -a option is only really useful for debugging.
+
+#-------------------------------------------------------------------------------
+# $Header: /baseline/SNACC/tbl-tools/ptbl/readme,v 1.2 2003/12/17 19:05:04 gronej Exp $
+# $Log: readme,v $
+# Revision 1.2  2003/12/17 19:05:04  gronej
+# SNACC baseline merged with PER v1_7 tag
+#
+# Revision 1.1.2.1  2003/11/05 14:59:00  gronej
+# working PER code merged with esnacc_1_6
+#
+# Revision 1.1.1.1  2000/08/21 20:35:48  leonberp
+# First CVS Version of SNACC.
+#
+# Revision 1.1  1997/02/15 19:26:19  rj
+# first check-in
+#

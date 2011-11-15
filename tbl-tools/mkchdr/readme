@@ -1,0 +1,34 @@
+(RCS control information is at the end of this file.)
+
+
+ mkchdr - Making C header files from a Type Table
+ ------------------------------------------------
+
+synopsis:
+  mkchdr <tbl-file> [output-file]
+
+mkchdr reads the type table from tbl-file and writes the equivalent C
+typedefs to output-file.  If no output-file is given, stdout is used.
+
+The table files are generated with the snacc -T option.
+
+Look in .../tbl-example/ to see how these header files are used.
+The table decoder/encoder does not use them---they are simply a
+mechanism to allow your program to deal with the values returned from
+the table driven decoder (or given to the encoder) in a nice fashion.
+
+#-------------------------------------------------------------------------------
+# $Header: /baseline/SNACC/tbl-tools/mkchdr/readme,v 1.2 2003/12/17 19:05:04 gronej Exp $
+# $Log: readme,v $
+# Revision 1.2  2003/12/17 19:05:04  gronej
+# SNACC baseline merged with PER v1_7 tag
+#
+# Revision 1.1.2.1  2003/11/05 14:59:00  gronej
+# working PER code merged with esnacc_1_6
+#
+# Revision 1.1.1.1  2000/08/21 20:35:48  leonberp
+# First CVS Version of SNACC.
+#
+# Revision 1.1  1997/02/15 19:08:49  rj
+# first check-in
+#

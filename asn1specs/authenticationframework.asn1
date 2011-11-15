@@ -1,0 +1,363 @@
+AuthenticationFramework -- {joint-iso-ccitt ds(5) module(1) authenticationFramework(7) 3}
+
+DEFINITIONS ::=
+
+BEGIN
+
+-- EXPORTS All --
+-- The types and values defined in this module are exported for use in the other ASN.1 modules contained 
+-- within the Directory Specifications, and for the use of other applications which will use them to access 
+-- Directory services. Other applications may use them for their own purposes, but this will not constrain
+-- extensions and modifications needed to maintain or improve the Directory service.
+
+IMPORTS
+	id-at
+		FROM UsefulDefinitions 
+	Name, Attribute
+		FROM InformationFramework
+	ub-user-password
+		FROM UpperBounds
+	UniqueIdentifier
+		FROM SelectedAttributeTypes
+	GeneralNames
+		FROM CertificateExtensions ;
+
+--basic certificate definition
+
+Certificate				::=	--snacc isPdu:"TRUE" -- SEQUENCE {
+	toBeSigned		CertificateToBeSigned,
+	algorithm		AlgorithmIdentifier,
+	signature		BIT STRING }
+
+CertificateToBeSigned		::= --snacc isPdu:"TRUE" -- SEQUENCE {
+	version					[0]	Version DEFAULT v1,
+	serialNumber			CertificateSerialNumber,
+	signature				AlgorithmIdentifier,
+	issuer					Name,
+	validity				Validity,
+	subject					Name,
+	subjectPublicKeyInfo	SubjectPublicKeyInfo,
+	issuerUniqueIdentifier	[1]	IMPLICIT UniqueIdentifier OPTIONAL,
+								-- if present, version must be v2 or v3
+	subjectUniqueIdentifier	[2]	IMPLICIT UniqueIdentifier OPTIONAL,
+								-- if present, version must be v2 or v3
+	extensions				[3]	Extensions OPTIONAL
+								-- If present, version must be v3 -- }
+
+Version			::=	INTEGER { v1(0), v2(1), v3(2) }
+
+CertificateSerialNumber	::=	[UNIVERSAL 2] IMPLICIT OCTET STRING 
+							-- originally INTEGER
+
+AlgorithmIdentifier		::=	SEQUENCE {
+	algorithm		OBJECT IDENTIFIER,
+	parameters		ANY DEFINED BY algorithm OPTIONAL }
+
+Validity			::=	SEQUENCE {
+	notBefore	Time,
+	notAfter	Time }
+
+SubjectPublicKeyInfo	::=	SEQUENCE {
+	algorithm			AlgorithmIdentifier,
+	subjectPublicKey	BIT STRING }
+
+Time  ::=  CHOICE { 
+	utcTime 		UTCTime, 
+	generalizedTime	GeneralizedTime }
+
+Extensions ::= SEQUENCE OF Extension
+
+-- For those extensions where ordering of individual extensions within the SEQUENCE is significant, the
+-- specification of those individual extensions shall include the rules for the significance of the order therein
+Extension ::= SEQUENCE {
+	extnId			OBJECT IDENTIFIER,
+	critical		BOOLEAN DEFAULT FALSE,
+	extnValue		[UNIVERSAL 4] ANY DEFINED BY extnId -- OCTET STRING --
+					-- contains a DER encoding of a value of type &ExtnType
+					-- for the extension object identified by extnId -- }
+
+-- algorithm-specific constructs: parameters, public keys, and signature values
+
+-- parameters 
+
+dssParameters OBJECT-TYPE
+	SYNTAX	Dss-Parms
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-fortezzaUpdatedSigAlgorithm}
+
+Dss-Parms	::= SEQUENCE  {
+	p	OCTET STRING,
+	q	OCTET STRING,
+	g	OCTET STRING  }
+
+keaParameters OBJECT-TYPE
+	SYNTAX	Kea-Parms
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-fortezzaKeyManagementAlgorithm}
+
+Kea-Parms	::= SEQUENCE  {
+	p	OCTET STRING,
+	q	OCTET STRING,
+	g	OCTET STRING  }
+
+keaDssParameters OBJECT-TYPE
+	SYNTAX	Kea-Dss-Parms
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-fortezzaKMandUpdSigAlgorithms}
+
+Kea-Dss-Parms	::= CHOICE  {
+		[0]	Different-Parms,
+		[1] Common-Parms  }
+
+Different-Parms	::= SEQUENCE  {
+					Kea-Parms,
+					Dss-Parms  }
+
+Common-Parms	::= SEQUENCE  {
+	p	OCTET STRING,
+	q	OCTET STRING,
+	g	OCTET STRING  }
+
+dsaParameters OBJECT-TYPE
+	SYNTAX	DSAParameters
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-dsa}
+
+DSAParameters	::= SEQUENCE  {
+	prime1	[UNIVERSAL 2] IMPLICIT OCTET STRING,	-- modulus p - originally INTEGER
+	prime2	[UNIVERSAL 2] IMPLICIT OCTET STRING,	-- modulus q - originally INTEGER
+	base	[UNIVERSAL 2] IMPLICIT OCTET STRING  }	-- base g - originally INTEGER
+
+dsaWithSHA1Parameters OBJECT-TYPE
+	SYNTAX	NULL
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-dsa-with-sha1}
+
+keaIDParameters OBJECT-TYPE
+	SYNTAX	OCTET STRING
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-keyExchangeAlgorithm}
+
+rsaParameters OBJECT-TYPE
+	SYNTAX	NULL
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {rsaEncryption}
+
+rsaWithMD2Parameters OBJECT-TYPE
+	SYNTAX	NULL
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {md2WithRSAEncryption}
+
+rsaWithMD4Parameters OBJECT-TYPE
+	SYNTAX	NULL
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {md4WithRSAEncryption}
+
+rsaWithMD5Parameters OBJECT-TYPE
+	SYNTAX	NULL
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {md5WithRSAEncryption}
+
+dhParameters OBJECT-TYPE
+	SYNTAX	DHParameter
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {dhKeyAgreement}
+
+DHParameter		::= SEQUENCE {
+	prime				[UNIVERSAL 2] IMPLICIT OCTET STRING, -- p - originally INTEGER
+	base				[UNIVERSAL 2] IMPLICIT OCTET STRING, -- g - originally INTEGER
+	privateValueLength	INTEGER OPTIONAL }
+
+-- public keys
+
+DsaPublicKey	::= --snacc isPdu:"TRUE" -- [UNIVERSAL 2] IMPLICIT OCTET STRING
+					-- originally just INTEGER
+
+RSAPublicKey	::= --snacc isPdu:"TRUE" -- SEQUENCE {
+	modulus			[UNIVERSAL 2] IMPLICIT OCTET STRING,  -- n - originally just INTEGER
+	publicExponent	[UNIVERSAL 2] IMPLICIT OCTET STRING } -- e - originally just INTEGER
+
+DHPublicKey		::= --snacc isPdu:"TRUE" -- [UNIVERSAL 2] IMPLICIT OCTET STRING
+					-- originally just INTEGER
+
+-- signature values
+
+DSASigValue		::= --snacc isPdu:"TRUE" -- SEQUENCE {
+	r	[UNIVERSAL 2] IMPLICIT OCTET STRING,	-- originally INTEGER
+	s	[UNIVERSAL 2] IMPLICIT OCTET STRING }	-- originally INTEGER
+
+-- other certificate constructs
+
+Certificates				::=	--snacc isPdu:"TRUE" -- SEQUENCE {
+	userCertificate		Certificate,
+	certificationPath	ForwardCertificationPath OPTIONAL}
+
+ForwardCertificationPath	::=	SEQUENCE OF CrossCertificates
+
+CrossCertificates		::=	SET OF Certificate
+
+CertificationPath		::=	--snacc isPdu:"TRUE" -- SEQUENCE {
+	userCertificate		Certificate,
+	theCACertificates	SEQUENCE OF CertificatePair OPTIONAL}
+
+CertificatePair			::=	--snacc isPdu:"TRUE" -- SEQUENCE {
+	forward			[0]	Certificate OPTIONAL,
+	reverse			[1]	Certificate OPTIONAL
+					-- at least one of the pair shall be present -- }
+
+-- certificate revocation list (CRL)
+
+CertificateList		::=	--snacc isPdu:"TRUE" -- SEQUENCE { 
+	toBeSigned		CertificateListToBeSigned,
+	algorithm		AlgorithmIdentifier,
+	signature		BIT STRING }
+
+CertificateListToBeSigned		::= --snacc isPdu:"TRUE" -- SEQUENCE {
+	version				Version OPTIONAL,
+						-- if present, version must be v2
+	signature			AlgorithmIdentifier,
+	issuer				Name,
+	thisUpdate			Time,
+	nextUpdate			Time OPTIONAL,
+	revokedCertificates	SEQUENCE OF SEQUENCE {
+		userCertificate		CertificateSerialNumber,
+		revocationDate		Time,
+		crlEntryExtensions	Extensions OPTIONAL } OPTIONAL,
+	crlExtensions		[0]  Extensions OPTIONAL }
+
+-- attribute certificate
+
+AttributeCertificationPath  ::= --snacc isPdu:"TRUE" -- SEQUENCE {
+	attributeCertificate	AttributeCertificate, 
+	acPath					SEQUENCE OF ACPathData OPTIONAL }
+
+ACPathData  ::=  SEQUENCE {
+	certificate				[0]  Certificate  OPTIONAL,
+	attributeCertificate	[1]  AttributeCertificate  OPTIONAL }
+
+attributeCertificateAttribute OBJECT-TYPE	-- ATTRIBUTE
+	SYNTAX	AttributeCertificate
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-at-attributeCertificate}
+
+AttributeCertificate		::= --snacc isPdu:"TRUE" -- SEQUENCE {
+	toBeSigned		AttributeCertificateInfo,
+	algorithm		AlgorithmIdentifier,
+	signature		BIT STRING }
+
+AttributeCertificateInfo ::= --snacc isPdu:"TRUE" -- SEQUENCE {
+	version				Version DEFAULT v1,
+	subject	CHOICE {
+		baseCertificateID	[0]	IssuerSerial, -- associated  with a Public Key Certificate 
+		subjectName			[1]	GeneralNames },  -- associated  with a name 
+	issuer				GeneralNames, -- CA issuing the attribute certificate
+	signature			AlgorithmIdentifier,
+	serialNumber		CertificateSerialNumber,
+	attCertValidityPeriod	AttCertValidityPeriod,
+	attributes			SEQUENCE OF Attribute,
+	issuerUniqueID		UniqueIdentifier OPTIONAL,
+	extensions			Extensions OPTIONAL }
+
+IssuerSerial  ::= SEQUENCE {
+	issuer 		GeneralNames,
+	serial		CertificateSerialNumber,
+	issuerUID	UniqueIdentifier OPTIONAL}
+
+AttCertValidityPeriod ::= SEQUENCE{
+	notBeforeTime	GeneralizedTime,
+	notAfterTime	GeneralizedTime }
+
+-- attribute types --
+
+userPasswordAttribute OBJECT-TYPE	-- ATTRIBUTE
+	SYNTAX 	OCTET STRING (SIZE (0..ub-user-password))
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-at-userPassword}
+
+userCertificateAttribute OBJECT-TYPE	-- ATTRIBUTE
+	SYNTAX	Certificate
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-at-userCertificate}
+
+cACertificate OBJECT-TYPE	-- ATTRIBUTE
+	SYNTAX	Certificate
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-at-cAcertificate}
+
+crossCertificatePair OBJECT-TYPE	-- ATTRIBUTE
+	SYNTAX	CertificatePair
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-at-crossCertificatePair}
+
+authorityRevocationList OBJECT-TYPE	-- ATTRIBUTE
+	SYNTAX	CertificateList
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-at-authorityRevocationList}
+
+certificateRevocationList OBJECT-TYPE	-- ATTRIBUTE
+	SYNTAX	CertificateList
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-at-certificateRevocationList}
+
+attributeCertificateRevocationList OBJECT-TYPE	-- ATTRIBUTE
+	SYNTAX	CertificateList
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-at-attributeCertificateRevocationList}
+
+
+-- object identifier assignments --
+
+id-at-userPassword							OBJECT IDENTIFIER	::=	{id-at 35} 
+id-at-userCertificate						OBJECT IDENTIFIER	::=	{id-at 36}
+id-at-cAcertificate							OBJECT IDENTIFIER	::=	{id-at 37}
+id-at-authorityRevocationList				OBJECT IDENTIFIER	::=	{id-at 38}
+id-at-certificateRevocationList				OBJECT IDENTIFIER	::=	{id-at 39}
+id-at-crossCertificatePair					OBJECT IDENTIFIER	::=	{id-at 40}
+id-at-attributeCertificate					OBJECT IDENTIFIER	::=	{id-at 58}
+id-at-attributeCertificateRevocationList	OBJECT IDENTIFIER	::=	{id-at 59}
+
+id-infosec		OBJECT IDENTIFIER	::= 
+	{ joint-iso-ccitt country (16) us (840) organization (1) 
+		us-government (101) dod (2) 1 }
+infosec-algorithm					OBJECT IDENTIFIER	::= { id-infosec 1 }
+id-fortezzaKeyManagementAlgorithm	OBJECT IDENTIFIER	::= { infosec-algorithm 10 }
+id-fortezzaUpdatedSigAlgorithm		OBJECT IDENTIFIER	::= { infosec-algorithm 19 }
+id-fortezzaKMandUpdSigAlgorithms	OBJECT IDENTIFIER	::= { infosec-algorithm 20 }
+id-keyExchangeAlgorithm				OBJECT IDENTIFIER	::= { infosec-algorithm 22 }
+
+x9cm		OBJECT IDENTIFIER	::= { iso member-body us (840) x9-57 (10040) }
+x9algorithm			OBJECT IDENTIFIER	::= { x9cm 4 }
+id-dsa				OBJECT IDENTIFIER	::= { x9algorithm 1 }
+id-dsa-with-sha1	OBJECT IDENTIFIER	::= { x9algorithm 3 }
+
+pkcs		OBJECT IDENTIFIER	::= { iso member-body us (840) rsadsi (113549) 1 }
+pkcs-1						OBJECT IDENTIFIER	::= { pkcs 1 }
+pkcs-3						OBJECT IDENTIFIER	::= { pkcs 3 }
+pkcs-9						OBJECT IDENTIFIER	::= { pkcs 9 }
+rsaEncryption				OBJECT IDENTIFIER	::= { pkcs-1 1 }
+md2WithRSAEncryption		OBJECT IDENTIFIER	::= { pkcs-1 2 }
+md4WithRSAEncryption		OBJECT IDENTIFIER	::= { pkcs-1 3 }
+md5WithRSAEncryption		OBJECT IDENTIFIER	::= { pkcs-1 4 }
+dhKeyAgreement				OBJECT IDENTIFIER	::= { pkcs-3 1 }
+
+
+END

@@ -1,0 +1,87 @@
+InformationFramework -- {joint-iso-ccitt ds(5) module(1) informationFramework(1) 3}
+
+DEFINITIONS ::=
+
+BEGIN
+
+-- EXPORTS All --
+-- The types and values defined in this module are exported for use in the other ASN.1 modules contained 
+-- within the Directory Specifications, and for the use of other applications which will use them to access 
+-- Directory services. Other applications may use them for their own purposes, but this will not constrain
+-- extensions and modifications needed to maintain or improve the Directory service.
+
+IMPORTS
+	id-at
+		FROM UsefulDefinitions ;
+
+
+-- attribute data types --
+
+Attribute	::=	SEQUENCE {
+	type		OBJECT IDENTIFIER,
+	values		SET SIZE (1 .. MAX) OF ANY -- DEFINED BY type -- }
+
+AttributeType	::=	OBJECT IDENTIFIER
+
+-- AttributeValue	::=	ANY
+
+AttributeTypeAndValue	::=	SEQUENCE {
+	type		OBJECT IDENTIFIER,
+	value 		ANY DEFINED BY type }
+
+-- naming data types --
+
+Name	::=	CHOICE { -- only one possibility for now --  
+	rdnSequence  RDNSequence }
+
+RDNSequence	::=	SEQUENCE OF RelativeDistinguishedName
+
+DistinguishedName	::=	--snacc isPdu:"TRUE" -- RDNSequence
+
+RelativeDistinguishedName	::=	SET SIZE (1 .. MAX) OF 
+	AttributeTypeAndDistinguishedValue
+
+--RWC;4/3/01;AttributeTypeAndDistinguishedValue	::=	SEQUENCE {
+--RWC;4/3/01;	type		OBJECT IDENTIFIER,
+--RWC;4/3/01;	value 		ANY DEFINED BY type,
+--RWC;4/3/01;	primaryDistinguished	BOOLEAN DEFAULT TRUE,
+--RWC;4/3/01;	valuesWithContext		SET SIZE (1 .. MAX) OF SEQUENCE{
+--RWC;4/3/01;		distingAttrValue		ANY - DEFINED BY type - OPTIONAL,
+--RWC;4/3/01;		contextList				SET SIZE (1 .. MAX) OF Context } OPTIONAL }
+AttributeTypeAndDistinguishedValue ::= SEQUENCE {
+   type                      OBJECT IDENTIFIER,
+   value                     ANY,
+   primaryDistinguished      BOOLEAN DEFAULT TRUE,
+   valuesWithContext         SET SIZE (1 .. MAX) OF SEQUENCE {
+   distingAttrValue          OBJECT IDENTIFIER OPTIONAL,
+   contextList               SET SIZE (1 .. MAX) OF ANY } OPTIONAL
+}
+
+Context	::= SEQUENCE {
+	contextType		OBJECT IDENTIFIER,
+	contextValues	SET SIZE (1 .. MAX) OF ANY -- DEFINED BY contextType --,
+	fallback		BOOLEAN DEFAULT FALSE }
+
+
+-- attributes --
+
+objectClassAttribute OBJECT-TYPE	-- ATTRIBUTE
+	SYNTAX	OBJECT IDENTIFIER
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-at-objectClass}
+
+aliasedEntryNameAttribute OBJECT-TYPE	-- ATTRIBUTE
+	SYNTAX	DistinguishedName
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-at-aliasedEntryName}
+
+-- object identifier assignments --
+
+-- attributes --
+
+id-at-objectClass						OBJECT IDENTIFIER	::=	{id-at 0}
+id-at-aliasedEntryName					OBJECT IDENTIFIER	::=	{id-at 1}
+
+END

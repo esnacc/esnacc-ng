@@ -1,0 +1,116 @@
+VdaTestModule
+DEFINITIONS EXPLICIT TAGS ::= 
+-- DEFINITIONS IMPLICIT TAGS ::=
+BEGIN
+
+VDATestSequence ::= --snacc isPdu:"TRUE" -- SEQUENCE OF INTEGER 
+
+VDATestSet ::= --snacc isPdu:"TRUE" -- SET OF OCTET STRING 
+
+-- VDATestSetOfAny ::= SET OF ANY
+
+VDATestBitString ::= BIT STRING
+
+SequenceOfDefaults ::= SEQUENCE
+{
+   defBool 
+        [0] BOOLEAN DEFAULT FALSE,
+   defBitstring     
+        [1] ClassList DEFAULT unclassified ,
+   defInteger           
+        [2] Version DEFAULT v3,
+   defEnumerated
+        [3] Enumeration DEFAULT one
+}
+
+Enumeration ::= ENUMERATED { one(1), two(2), three(3) }
+
+ClassList ::= BIT STRING 
+{
+    unmarked     (0),
+    unclassified (1),
+    restricted   (2),
+    confidential (3),
+    secret       (4),
+    topSecret    (5) 
+}
+
+Version            ::=   INTEGER { v1(0), v2(1), v3(2) }
+
+--unclassified INTEGER ::= 1
+
+DirectoryString ::= CHOICE {
+   teletexString     TeletexString (SIZE (1..MAX)),
+   printableString   PrintableString (SIZE (1..MAX)),
+   universalString   UniversalString (SIZE (1..MAX)), 
+      utf8String            UTF8String (SIZE (1..MAX)),
+      bmpString             BMPString (SIZE(1..MAX))   }
+
+testOID OBJECT IDENTIFIER ::= { 1 2 3 4 5 6 7 8 }
+
+TestAllAsnPrimativeTypes ::= SEQUENCE {
+	octsName OCTET STRING,
+	boolTestName BOOLEAN,
+    oidName OBJECT IDENTIFIER OPTIONAL,
+    bitStringName [2] IMPLICIT BIT STRING,
+	integerName INTEGER,
+	enumTestName ENUMERATED { aA(11), aB(12), aC(13) },
+	realName REAL OPTIONAL,
+	nullName NULL
+}
+
+TestSequence ::= SEQUENCE {
+	seqOfDefaults SequenceOfDefaults OPTIONAL,
+	testSet VDATestSet,
+--	testSetOfAny VDATestSetOfAny,
+	directoryString DirectoryString,
+	testAllPrimatives TestAllAsnPrimativeTypes
+}
+
+
+-- THE FOLLOWING DEFINITIONS test the ANY DEFINED BY table setup/usage.
+
+testOID2 OBJECT IDENTIFIER ::= { 1 2 3 4 5 6 7 8 2 }
+
+TestDefinedByUsage ::= --snacc isPdu:"TRUE" -- SEQUENCE {
+    id OBJECT IDENTIFIER,
+    anyDefBy ANY DEFINED BY id,
+	i1 INTEGER,
+	i2 INTEGER,
+	i3 INTEGER,
+	i4 INTEGER
+}
+
+TestANYUsage ::= --snacc isPdu:"TRUE" -- SEQUENCE {
+	i1 INTEGER,
+	i2 INTEGER,
+    aBlob ANY    -- RWC; TEST automatic processing of ANY as buffer.
+}
+
+TestDefinedByType ::= SEQUENCE {
+	octsName OCTET STRING,
+	boolTestName BOOLEAN
+}
+
+maxSIBperMsg INTEGER ::= 16
+--CompleteSIB-List ::= SEQUENCE (SIZE (1..maxSIBperMsg)) OF CompleteSIBshort
+CompleteSIB-List ::= SEQUENCE  OF CompleteSIBshort (SIZE (1..maxSIBperMsg))
+CompleteSIBshort ::= SEQUENCE {
+	a INTEGER
+    --  Assume that this sequence has some data
+
+}
+
+
+-- This last definition syntax is based on SNMP OBJECT-TYPE; it is a special 
+--  SNACC construct to align the DEFINED BY id with a data type 
+--  (see SNACC docs).
+testDefinedByDesignation OBJECT-TYPE
+        SYNTAX  PrintableString
+        ACCESS  read-write
+        STATUS  mandatory
+        ::= { 1 2 3 4 5 6 7 8 2 }  --testOID2
+
+
+
+END

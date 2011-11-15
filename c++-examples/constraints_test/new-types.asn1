@@ -1,0 +1,114 @@
+NewTypes
+DEFINITIONS IMPLICIT TAGS ::=
+BEGIN
+  
+
+myOid RELATIVE-OID ::= { 1 3 4 22 }
+
+TestClear ::= SEQUENCE {
+	testClearNested SET{
+		i1 INTEGER
+	}
+}
+
+
+TestRelOid ::= SEQUENCE {
+    id RELATIVE-OID, 
+	id2 OBJECT IDENTIFIER
+}
+ 
+
+TestTagging ::= SEQUENCE 
+{
+	i1 [0] INTEGER,
+	i2 [2] INTEGER OPTIONAL
+}
+
+TestSeqExtensibilityV1 ::= SEQUENCE 
+{
+	i1 [1] INTEGER,
+	i2 [2] INTEGER OPTIONAL,
+	...,
+	...
+}
+
+TestSeqExtensibilityV2 ::= SEQUENCE
+{
+	i1 [1] INTEGER,
+	i2 [2] INTEGER OPTIONAL,
+	...,
+		i3 [3] INTEGER
+	...
+
+}
+
+TestSeqExtensibilityV3 ::= SEQUENCE
+{
+	i1 [1] INTEGER,
+	i2 [2] INTEGER OPTIONAL,
+	...,
+		i3 [3] INTEGER,
+		i4 [4] INTEGER
+	...
+}
+
+
+TestSetExtensibilityV1 ::= SET 
+{
+	i1 [1] INTEGER,
+	i2 [2] INTEGER OPTIONAL,
+	...,
+	...
+}
+
+TestSetExtensibilityV2 ::= SET
+{
+	i1 [1] INTEGER,
+	i2 [2] INTEGER OPTIONAL,
+	...,
+		i3 [3] INTEGER
+	...
+
+}
+
+TestSetExtensibilityV3 ::= SET
+{
+	i1 [1] INTEGER,
+	i2 [2] INTEGER OPTIONAL,
+	...,
+		i3 [3] INTEGER,
+		i4 [4] INTEGER
+	...
+}
+
+TestChoiceExtensibilityV1 ::= CHOICE
+{
+	i1 [5] INTEGER,
+	i2 [6] INTEGER,
+	...,
+	...
+}
+
+TestChoiceExtensibilityV2 ::= CHOICE
+{
+	i1 [5] INTEGER,
+	i2 [6] INTEGER,
+	...,
+		i3 [7] INTEGER,
+		i4 [8] ANY
+	...
+}
+
+TestChoiceExtensibilityV3 ::= CHOICE
+{
+	i1 [5] INTEGER,
+	i2 [6] INTEGER,
+	...,
+		i3 [7] INTEGER,
+		i4 [8] ANY,
+		i5 [9] INTEGER
+	...
+}
+
+
+END

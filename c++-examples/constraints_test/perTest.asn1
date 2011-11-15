@@ -1,0 +1,53 @@
+PerTest
+DEFINITIONS IMPLICIT TAGS ::=
+
+BEGIN
+  
+PERInt ::= INTEGER
+
+PERIntSingleVal ::= INTEGER(4)
+
+PERIntSemi ::= INTEGER (0 .. MAX)
+
+PERIntFully ::= INTEGER (0 .. 2147483647) 
+ 
+PERBool ::= BOOLEAN
+ 
+PERReal ::= REAL 
+
+PERIA5String ::= IA5String (SIZE(3..4000)) (FROM("hello"))
+
+PERNumericString ::= NumericString (FROM("1234")) (SIZE(2)) --(SIZE(2))  (SIZE(MIN..5))
+
+PERPString ::= PrintableString (FROM("this' actually kind of works"))
+          
+PERVString ::= VisibleString (FROM("This is definitely visible."))
+ 
+PEROctet ::= OCTET STRING (SIZE(3))
+ 
+PERBit	::= BIT STRING (SIZE(3..8888))
+   
+TestEnum ::= ENUMERATED {
+	a (5),
+	b (16),
+	c (2),
+	d (0)	
+}
+
+A::= SET
+{
+	pERIntFully PERIntFully
+}
+
+ub-telephone-number		INTEGER ::= 32
+
+DestructionStatus ::= INTEGER      {zeroized		(0)
+	}
+
+PERSeqOfFull ::= SEQUENCE SIZE (15..30) OF INTEGER (0..15)         
+  
+PERSetOfSemi ::= SET SIZE (4..MAX) OF INTEGER
+
+PERSeqOfSingle ::= SEQUENCE SIZE (5) OF INTEGER
+
+END 

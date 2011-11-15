@@ -1,0 +1,361 @@
+CertificateExtensions -- {joint-iso-ccitt ds(5) module(1) certificateExtensions(26) 0}
+
+DEFINITIONS IMPLICIT TAGS ::=
+
+BEGIN
+
+-- EXPORTS ALL --
+
+IMPORTS
+	id-at, id-ce, id-mr
+		FROM UsefulDefinitions
+	Name, RelativeDistinguishedName, Attribute
+		FROM InformationFramework
+	CertificateSerialNumber, CertificateList, AlgorithmIdentifier
+		FROM AuthenticationFramework
+	DirectoryString
+		FROM SelectedAttributeTypes
+	ub-name
+		FROM UpperBounds
+	ORAddress
+		FROM ORAddressModule ;
+
+-- Unless explicitly noted otherwise, there is no significance to the ordering
+-- of components of a SEQUENCE OF construct in this specification.
+
+-- Key and policy information extensions --
+
+authorityKeyIdentifierExtension OBJECT-TYPE	-- EXTENSION
+	SYNTAX	AuthorityKeyIdentifier
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-ce-authorityKeyIdentifier}
+
+AuthorityKeyIdentifier ::= SEQUENCE {
+	keyIdentifier				[0] KeyIdentifier OPTIONAL,
+	authorityCertIssuer			[1] GeneralNames OPTIONAL,
+	authorityCertSerialNumber	[2] CertificateSerialNumber OPTIONAL }
+		( WITH COMPONENTS {..., authorityCertIssuer PRESENT, 
+			authorityCertSerialNumber PRESENT} |
+		WITH COMPONENTS {..., authorityCertIssuer ABSENT,
+					authorityCertSerialNumber ABSENT} )
+
+KeyIdentifier ::= OCTET STRING
+
+subjectKeyIdentifierExtension OBJECT-TYPE	-- EXTENSION
+	SYNTAX	SubjectKeyIdentifier
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-ce-subjectKeyIdentifier}
+
+SubjectKeyIdentifier ::= KeyIdentifier
+
+keyUsageExtension OBJECT-TYPE	-- EXTENSION
+	SYNTAX	KeyUsage
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-ce-keyUsage}
+
+KeyUsage ::= BIT STRING {
+	digitalSignature	(0),
+	nonRepudiation		(1),
+	keyEncipherment 	(2),
+	dataEncipherment	(3),
+	keyAgreement 		(4),
+	keyCertSign 		(5),
+	cRLSign 			(6),
+	encipherOnly		(7),
+	decipherOnly		(8) }
+
+extKeyUsageExtension OBJECT-TYPE	-- EXTENSION
+	SYNTAX	SEQUENCE SIZE (1..MAX) OF KeyPurposeId
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-ce-extKeyUsage}
+
+KeyPurposeId ::= OBJECT IDENTIFIER
+
+privateKeyUsagePeriodExtension OBJECT-TYPE	-- EXTENSION
+	SYNTAX	PrivateKeyUsagePeriod
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-ce-privateKeyUsagePeriod}
+
+PrivateKeyUsagePeriod ::= SEQUENCE {
+	notBefore	[0]	GeneralizedTime OPTIONAL,
+	notAfter	[1]	GeneralizedTime OPTIONAL }
+	( WITH COMPONENTS 	{..., notBefore PRESENT} |
+	WITH COMPONENTS 	{..., notAfter PRESENT} )
+
+certificatePoliciesExtension OBJECT-TYPE	-- EXTENSION
+	SYNTAX	CertificatePoliciesSyntax
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-ce-certificatePolicies}
+
+CertificatePoliciesSyntax ::= SEQUENCE SIZE (1..MAX) OF PolicyInformation
+
+PolicyInformation ::= SEQUENCE {
+	policyIdentifier   CertPolicyId,
+	policyQualifiers   SEQUENCE SIZE (1..MAX) OF 
+		PolicyQualifierInfo OPTIONAL }
+
+CertPolicyId ::= OBJECT IDENTIFIER
+
+PolicyQualifierInfo ::= SEQUENCE {
+	policyQualifierId	OBJECT IDENTIFIER,
+	qualifier			ANY DEFINED BY policyQualifierId OPTIONAL }
+
+policyMappingsExtension OBJECT-TYPE	-- EXTENSION
+	SYNTAX	PolicyMappingsSyntax
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-ce-policyMappings}
+
+PolicyMappingsSyntax ::= SEQUENCE SIZE (1..MAX) OF SEQUENCE {
+	issuerDomainPolicy	CertPolicyId,
+	subjectDomainPolicy	CertPolicyId }
+
+supportedAlgorithms OBJECT-TYPE	-- ATTRIBUTE
+  	SYNTAX SupportedAlgorithm
+	ACCESS	read-write
+	STATUS	mandatory
+  	::= {id-at-supportedAlgorithms}
+
+SupportedAlgorithm ::= SEQUENCE {
+  	algorithmIdentifier				AlgorithmIdentifier,
+	intendedUsage				[0] KeyUsage OPTIONAL,
+	intendedCertificatePolicies	[1] CertificatePoliciesSyntax OPTIONAL }
+
+-- Certificate subject and certificate issuer attributes extensions --
+
+subjectAltName OBJECT-TYPE	-- EXTENSION
+	SYNTAX	GeneralNames
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-ce-subjectAltName}
+
+GeneralNames ::= SEQUENCE SIZE (1..MAX) OF GeneralName
+
+GeneralName ::= CHOICE {
+	otherName					[0]	Other-Name,
+	rfc822Name					[1]	IA5String,
+	dNSName						[2]	IA5String,
+	x400Address					[3]	ORAddress,
+	directoryName				[4]	Name,
+	ediPartyName				[5]	EDIPartyName,
+	uniformResourceIdentifier	[6]	IA5String,
+	iPAddress					[7]	OCTET STRING,
+	registeredID				[8]	OBJECT IDENTIFIER }
+
+Other-Name	::= SEQUENCE {
+	id		OBJECT IDENTIFIER,
+	type	ANY DEFINED BY id }
+
+EDIPartyName ::= SEQUENCE {
+	nameAssigner		[0]	DirectoryString (SIZE (1..ub-name)) OPTIONAL,
+	partyName			[1]	DirectoryString (SIZE (1..ub-name)) }
+
+issuerAltName OBJECT-TYPE	-- EXTENSION
+	SYNTAX	GeneralNames
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-ce-issuerAltName}
+
+subjectDirectoryAttributes OBJECT-TYPE	-- EXTENSION
+	SYNTAX	AttributesSyntax
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-ce-subjectDirectoryAttributes}
+
+AttributesSyntax ::= SEQUENCE SIZE (1..MAX) OF Attribute
+
+
+-- Certification path constraints extensions --
+
+basicConstraints OBJECT-TYPE	-- EXTENSION
+	SYNTAX	BasicConstraintsSyntax
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-ce-basicConstraints}
+
+BasicConstraintsSyntax ::= SEQUENCE {
+	cA					BOOLEAN DEFAULT FALSE,
+	pathLenConstraint 	INTEGER (0..MAX) OPTIONAL }
+
+nameConstraints OBJECT-TYPE	-- EXTENSION
+	SYNTAX	NameConstraintsSyntax
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-ce-nameConstraints}
+
+NameConstraintsSyntax ::= SEQUENCE {
+	permittedSubtrees	[0]	GeneralSubtrees OPTIONAL,
+	excludedSubtrees	[1]	GeneralSubtrees OPTIONAL }
+
+GeneralSubtrees ::= SEQUENCE SIZE (1..MAX) OF GeneralSubtree
+
+GeneralSubtree ::= SEQUENCE {
+	base			GeneralName,
+	minimum		[0]	BaseDistance DEFAULT 0,
+	maximum		[1]	BaseDistance OPTIONAL }
+
+BaseDistance ::= INTEGER (0..MAX)
+
+policyConstraints OBJECT-TYPE	-- EXTENSION
+	SYNTAX	PolicyConstraintsSyntax
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-ce-policyConstraints}
+
+PolicyConstraintsSyntax ::= SEQUENCE {
+	requireExplicitPolicy	[0] SkipCerts OPTIONAL,
+	inhibitPolicyMapping	[1] SkipCerts OPTIONAL }
+
+SkipCerts ::= INTEGER (0..MAX) 
+
+CertPolicySet ::= SEQUENCE SIZE(1..MAX) OF CertPolicyId
+
+-- Basic CRL extensions --
+
+cRLNumber OBJECT-TYPE	-- EXTENSION
+	SYNTAX	CRLNumber
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-ce-cRLNumber}
+
+CRLNumber ::= [UNIVERSAL 2] IMPLICIT OCTET STRING -- originally INTEGER (0..MAX)
+
+reasonCode OBJECT-TYPE	-- EXTENSION
+	SYNTAX	CRLReason
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-ce-reasonCode}
+
+CRLReason ::= ENUMERATED {
+	unspecified 			(0),
+	keyCompromise 			(1), 
+	cACompromise 			(2), 
+	affiliationChanged 		(3), 
+	superseded 				(4),
+	cessationOfOperation 	(5),
+	certificateHold 		(6),
+	removeFromCRL 			(8) }
+
+instructionCode OBJECT-TYPE	-- EXTENSION
+	SYNTAX	HoldInstruction
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-ce-instructionCode}
+
+HoldInstruction ::= OBJECT IDENTIFIER
+
+invalidityDate OBJECT-TYPE	-- EXTENSION
+	SYNTAX	GeneralizedTime
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-ce-invalidityDate}
+
+
+-- CRL distribution points and delta-CRL extensions --
+
+cRLDistributionPoints OBJECT-TYPE	-- EXTENSION
+	SYNTAX	CRLDistPointsSyntax
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-ce-cRLDistributionPoints}
+
+CRLDistPointsSyntax ::= SEQUENCE SIZE (1..MAX) OF DistributionPoint 
+
+DistributionPoint ::= SEQUENCE {
+	distributionPoint	[0]	DistributionPointName OPTIONAL,
+	reasons				[1]	ReasonFlags OPTIONAL,
+	cRLIssuer			[2]	GeneralNames OPTIONAL }
+
+DistributionPointName ::= CHOICE {
+	fullName				[0]	GeneralNames,
+	nameRelativeToCRLIssuer	[1]	RelativeDistinguishedName }
+
+ReasonFlags ::= BIT STRING {
+	unused 					(0),
+	keyCompromise 			(1), 
+	caCompromise			(2), 
+	affiliationChanged		(3), 
+	superseded				(4),
+	cessationOfOperation	(5),
+	certificateHold 		(6) }
+
+issuingDistributionPoint OBJECT-TYPE	-- EXTENSION
+	SYNTAX	IssuingDistPointSyntax
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-ce-issuingDistributionPoint}
+
+IssuingDistPointSyntax ::= SEQUENCE {
+	distributionPoint		[0] DistributionPointName OPTIONAL,
+	onlyContainsUserCerts	[1] BOOLEAN DEFAULT FALSE,
+	onlyContainsCACerts		[2] BOOLEAN DEFAULT FALSE,
+	onlySomeReasons			[3] ReasonFlags OPTIONAL,
+	indirectCRL				[4] BOOLEAN DEFAULT FALSE }
+
+certificateIssuer OBJECT-TYPE	-- EXTENSION
+	SYNTAX	GeneralNames  
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-ce-certificateIssuer}
+
+deltaCRLIndicator OBJECT-TYPE	-- EXTENSION ::= {
+	SYNTAX	BaseCRLNumber
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-ce-deltaCRLIndicator}
+
+BaseCRLNumber ::= CRLNumber
+
+deltaRevocationList OBJECT-TYPE	-- ATTRIBUTE
+	SYNTAX	CertificateList
+	ACCESS	read-write
+	STATUS	mandatory
+	::= {id-at-deltaRevocationList}
+
+
+-- Object identifier assignments --
+
+id-at-supportedAlgorithms			OBJECT IDENTIFIER	::=	{id-at 52}
+id-at-deltaRevocationList			OBJECT IDENTIFIER	::=	{id-at 53}
+id-ce-subjectDirectoryAttributes	OBJECT IDENTIFIER	::=	{id-ce 9}
+id-ce-subjectKeyIdentifier			OBJECT IDENTIFIER	::=	{id-ce 14}
+id-ce-keyUsage						OBJECT IDENTIFIER	::=	{id-ce 15}
+id-ce-privateKeyUsagePeriod			OBJECT IDENTIFIER	::=	{id-ce 16}
+id-ce-subjectAltName				OBJECT IDENTIFIER	::=	{id-ce 17}
+id-ce-issuerAltName					OBJECT IDENTIFIER	::=	{id-ce 18}
+id-ce-basicConstraints				OBJECT IDENTIFIER	::=	{id-ce 19}
+id-ce-cRLNumber						OBJECT IDENTIFIER	::=	{id-ce 20}
+id-ce-reasonCode					OBJECT IDENTIFIER	::=	{id-ce 21}
+id-ce-instructionCode				OBJECT IDENTIFIER	::=	{id-ce 23}
+id-ce-invalidityDate				OBJECT IDENTIFIER	::=	{id-ce 24}
+id-ce-deltaCRLIndicator				OBJECT IDENTIFIER	::=	{id-ce 27}
+id-ce-issuingDistributionPoint		OBJECT IDENTIFIER	::=	{id-ce 28}
+id-ce-certificateIssuer				OBJECT IDENTIFIER	::=	{id-ce 29}
+id-ce-nameConstraints				OBJECT IDENTIFIER	::=	{id-ce 30}
+id-ce-cRLDistributionPoints			OBJECT IDENTIFIER	::=	{id-ce 31}
+id-ce-certificatePolicies			OBJECT IDENTIFIER	::=	{id-ce 32}
+id-ce-policyMappings				OBJECT IDENTIFIER	::=	{id-ce 33}
+-- deprecated						OBJECT IDENTIFIER	::=	{id-ce 34}
+id-ce-authorityKeyIdentifier		OBJECT IDENTIFIER	::=	{id-ce 35}
+id-ce-policyConstraints				OBJECT IDENTIFIER	::=	{id-ce 36}
+id-ce-extKeyUsage					OBJECT IDENTIFIER	::=	{id-ce 37}
+id-mr-certificateExactMatch			OBJECT IDENTIFIER	::=	{id-mr 34}
+id-mr-certificateMatch				OBJECT IDENTIFIER	::=	{id-mr 35}
+id-mr-certificatePairExactMatch		OBJECT IDENTIFIER	::=	{id-mr 36}
+id-mr-certificatePairMatch			OBJECT IDENTIFIER	::=	{id-mr 37}
+id-mr-certificateListExactMatch		OBJECT IDENTIFIER	::=	{id-mr 38}
+id-mr-certificateListMatch			OBJECT IDENTIFIER	::=	{id-mr 39}
+id-mr-algorithmIdentifierMatch		OBJECT IDENTIFIER	::=	{id-mr 40}
+
+-- The following OBJECT IDENTIFIERS are not used by this specification:
+-- {id-ce 2}, {id-ce 3}, {id-ce 4}, {id-ce 5}, {id-ce 6}, {id-ce 7},
+-- {id-ce 8}, {id-ce 10}, {id-ce 11}, {id-ce 12}, {id-ce 13}, 
+-- {id-ce 22}, {id-ce 25}, {id-ce 26}
+
+END

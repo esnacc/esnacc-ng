@@ -1,0 +1,58 @@
+PrivateKeyInfoSyntax -- from PKCS #8 and PKCS #1
+
+DEFINITIONS ::=
+
+BEGIN
+
+EXPORTS
+	EncryptedPrivateKeyInfo, PrivateKeyInfo ;
+
+IMPORTS
+	Attribute
+		FROM InformationFramework
+	AlgorithmIdentifier
+		FROM AuthenticationFramework ;
+
+
+EncryptedPrivateKeyInfo		::= --snacc isPdu:"TRUE" -- SEQUENCE {
+	encryptionAlgorithm		EncryptionAlgorithmIdentifier,
+	encryptedData			EncryptedData }
+
+EncryptionAlgorithmIdentifier		::= AlgorithmIdentifier
+
+EncryptedData		::= OCTET STRING -- the encrypted PrivateKeyInfo
+
+
+PrivateKeyInfo		::= --snacc isPdu:"TRUE" -- SEQUENCE {
+	version					Version,
+	privateKeyAlgorithm		PrivateKeyAlgorithmIdentifier,
+	privateKey				PrivateKey,
+	attributes			[0]	IMPLICIT Attributes OPTIONAL }
+
+Version		::= INTEGER
+
+PrivateKeyAlgorithmIdentifier	::= AlgorithmIdentifier
+
+PrivateKey		::= OCTET STRING -- for RSA, the BER encoding of RSAPrivateKey
+
+Attributes		::= SET OF Attribute
+
+
+RSAPrivateKey		::= --snacc isPdu:"TRUE" -- SEQUENCE {
+	version				Version,
+	modulus				[UNIVERSAL 2] IMPLICIT OCTET STRING,	-- n
+	publicExponent		[UNIVERSAL 2] IMPLICIT OCTET STRING,	-- e
+	privateExponent		[UNIVERSAL 2] IMPLICIT OCTET STRING,	-- d
+	prime1				[UNIVERSAL 2] IMPLICIT OCTET STRING,	-- p
+	prime2				[UNIVERSAL 2] IMPLICIT OCTET STRING,	-- q
+	exponent1			[UNIVERSAL 2] IMPLICIT OCTET STRING,	-- d mod (p-1)
+	exponent2			[UNIVERSAL 2] IMPLICIT OCTET STRING,	-- d mod (q-1)
+	coefficient			[UNIVERSAL 2] IMPLICIT OCTET STRING	}
+						-- (inverse of q) mod p
+
+-- The above OCTET STRINGs in the RSAPrivateKey were originally INTEGERs
+
+-- Version is 0 for v1.5 of PKCS #1
+
+
+END

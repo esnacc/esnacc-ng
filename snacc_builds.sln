@@ -1,0 +1,98 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BuildAll", "buildall.vcproj", "{B3415358-AD98-4045-87AB-B3BD98EF4EDA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E60B2028-CAF1-4578-B9D6-79ECC2499306} = {E60B2028-CAF1-4578-B9D6-79ECC2499306}
+		{2221F441-F256-4B8F-A09A-0EB376A2FF1F} = {2221F441-F256-4B8F-A09A-0EB376A2FF1F}
+		{BEC52593-F883-4AD1-AF79-B553EC2B3835} = {BEC52593-F883-4AD1-AF79-B553EC2B3835}
+		{6DC659A4-9D61-4CA2-804A-ED8B3ED17C8D} = {6DC659A4-9D61-4CA2-804A-ED8B3ED17C8D}
+		{A0E1ABC7-158C-4AA7-A6DD-7343F66C2DFD} = {A0E1ABC7-158C-4AA7-A6DD-7343F66C2DFD}
+		{3600E3FA-B957-4BC6-A18F-791844C3F95E} = {3600E3FA-B957-4BC6-A18F-791844C3F95E}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "c_asn1", "c-lib\ebuf_lib\ebuf_lib.vcproj", "{3600E3FA-B957-4BC6-A18F-791844C3F95E}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "c_asn1_static", "c-lib\ebuf_lib_static\ebuf_lib_static.vcproj", "{E60B2028-CAF1-4578-B9D6-79ECC2499306}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "compiler", "compiler\compiler.vcproj", "{BEC52593-F883-4AD1-AF79-B553EC2B3835}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E60B2028-CAF1-4578-B9D6-79ECC2499306} = {E60B2028-CAF1-4578-B9D6-79ECC2499306}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cppasn1", "c++-lib\cppasn1\cppasn1.vcproj", "{2221F441-F256-4B8F-A09A-0EB376A2FF1F}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cppasn1_static", "c++-lib\cppasn1_static\cppasn1_static.vcproj", "{6DC659A4-9D61-4CA2-804A-ED8B3ED17C8D}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "snacctest", "C++-EXAMPLES\snacctest.vcproj", "{A0E1ABC7-158C-4AA7-A6DD-7343F66C2DFD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2221F441-F256-4B8F-A09A-0EB376A2FF1F} = {2221F441-F256-4B8F-A09A-0EB376A2FF1F}
+		{BEC52593-F883-4AD1-AF79-B553EC2B3835} = {BEC52593-F883-4AD1-AF79-B553EC2B3835}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vdatestC", "c-examples\vdatestC\vdatestC.vcproj", "{934F8FA8-AB00-4B74-95A6-C7E012714B89}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BEC52593-F883-4AD1-AF79-B553EC2B3835} = {BEC52593-F883-4AD1-AF79-B553EC2B3835}
+		{3600E3FA-B957-4BC6-A18F-791844C3F95E} = {3600E3FA-B957-4BC6-A18F-791844C3F95E}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "constraints_test", "c++-examples\constraints_test\constraints_test.vcproj", "{FF56DBCD-6A86-4BF8-8439-A5F938234C19}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2221F441-F256-4B8F-A09A-0EB376A2FF1F} = {2221F441-F256-4B8F-A09A-0EB376A2FF1F}
+		{BEC52593-F883-4AD1-AF79-B553EC2B3835} = {BEC52593-F883-4AD1-AF79-B553EC2B3835}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{B3415358-AD98-4045-87AB-B3BD98EF4EDA}.Debug.ActiveCfg = Debug|Win32
+		{B3415358-AD98-4045-87AB-B3BD98EF4EDA}.Debug.Build.0 = Debug|Win32
+		{B3415358-AD98-4045-87AB-B3BD98EF4EDA}.Release.ActiveCfg = Release|Win32
+		{B3415358-AD98-4045-87AB-B3BD98EF4EDA}.Release.Build.0 = Release|Win32
+		{3600E3FA-B957-4BC6-A18F-791844C3F95E}.Debug.ActiveCfg = Debug|Win32
+		{3600E3FA-B957-4BC6-A18F-791844C3F95E}.Debug.Build.0 = Debug|Win32
+		{3600E3FA-B957-4BC6-A18F-791844C3F95E}.Release.ActiveCfg = Release|Win32
+		{3600E3FA-B957-4BC6-A18F-791844C3F95E}.Release.Build.0 = Release|Win32
+		{E60B2028-CAF1-4578-B9D6-79ECC2499306}.Debug.ActiveCfg = Debug|Win32
+		{E60B2028-CAF1-4578-B9D6-79ECC2499306}.Debug.Build.0 = Debug|Win32
+		{E60B2028-CAF1-4578-B9D6-79ECC2499306}.Release.ActiveCfg = Release|Win32
+		{E60B2028-CAF1-4578-B9D6-79ECC2499306}.Release.Build.0 = Release|Win32
+		{BEC52593-F883-4AD1-AF79-B553EC2B3835}.Debug.ActiveCfg = Debug|Win32
+		{BEC52593-F883-4AD1-AF79-B553EC2B3835}.Debug.Build.0 = Debug|Win32
+		{BEC52593-F883-4AD1-AF79-B553EC2B3835}.Release.ActiveCfg = Release|Win32
+		{BEC52593-F883-4AD1-AF79-B553EC2B3835}.Release.Build.0 = Release|Win32
+		{2221F441-F256-4B8F-A09A-0EB376A2FF1F}.Debug.ActiveCfg = Debug|Win32
+		{2221F441-F256-4B8F-A09A-0EB376A2FF1F}.Debug.Build.0 = Debug|Win32
+		{2221F441-F256-4B8F-A09A-0EB376A2FF1F}.Release.ActiveCfg = Release|Win32
+		{2221F441-F256-4B8F-A09A-0EB376A2FF1F}.Release.Build.0 = Release|Win32
+		{6DC659A4-9D61-4CA2-804A-ED8B3ED17C8D}.Debug.ActiveCfg = Debug|Win32
+		{6DC659A4-9D61-4CA2-804A-ED8B3ED17C8D}.Debug.Build.0 = Debug|Win32
+		{6DC659A4-9D61-4CA2-804A-ED8B3ED17C8D}.Release.ActiveCfg = Release|Win32
+		{6DC659A4-9D61-4CA2-804A-ED8B3ED17C8D}.Release.Build.0 = Release|Win32
+		{A0E1ABC7-158C-4AA7-A6DD-7343F66C2DFD}.Debug.ActiveCfg = Debug|Win32
+		{A0E1ABC7-158C-4AA7-A6DD-7343F66C2DFD}.Debug.Build.0 = Debug|Win32
+		{A0E1ABC7-158C-4AA7-A6DD-7343F66C2DFD}.Release.ActiveCfg = Release|Win32
+		{A0E1ABC7-158C-4AA7-A6DD-7343F66C2DFD}.Release.Build.0 = Release|Win32
+		{934F8FA8-AB00-4B74-95A6-C7E012714B89}.Debug.ActiveCfg = Debug|Win32
+		{934F8FA8-AB00-4B74-95A6-C7E012714B89}.Debug.Build.0 = Debug|Win32
+		{934F8FA8-AB00-4B74-95A6-C7E012714B89}.Release.ActiveCfg = Release|Win32
+		{934F8FA8-AB00-4B74-95A6-C7E012714B89}.Release.Build.0 = Release|Win32
+		{FF56DBCD-6A86-4BF8-8439-A5F938234C19}.Debug.ActiveCfg = Debug|Win32
+		{FF56DBCD-6A86-4BF8-8439-A5F938234C19}.Debug.Build.0 = Debug|Win32
+		{FF56DBCD-6A86-4BF8-8439-A5F938234C19}.Release.ActiveCfg = Release|Win32
+		{FF56DBCD-6A86-4BF8-8439-A5F938234C19}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

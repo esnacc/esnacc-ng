@@ -1,0 +1,58 @@
+VdaTestModule2
+-- DEFINITIONS EXPLICIT TAGS ::= 
+DEFINITIONS IMPLICIT TAGS ::=
+BEGIN
+
+	--snacc namespace: "VDATestModule2Namespace"
+
+-- THE FOLLOWING DEFINITIONS test the ANY DEFINED BY table setup/usage.
+--  This specific file tests the SNACC run-time and compiler's ability to
+--  handle 2 sets of ANY DEFINED BY table loads (test of new feature).
+
+testOID2-2 OBJECT IDENTIFIER ::= { 1 2 3 4 5 6 7 8 9 10 4 }
+
+TestDefinedByUsage-2 ::= SEQUENCE {
+    id OBJECT IDENTIFIER,
+    anyDefBy ANY DEFINED BY id
+}
+
+TestDefinedByType-2 ::= SEQUENCE {
+	octsName OCTET STRING,
+	boolTestName BOOLEAN
+}
+
+AlgorithmIdentifier		::=	SEQUENCE {
+	algorithm		OBJECT IDENTIFIER,
+	parameters		ANY OPTIONAL }
+
+--PSpecifiedEmptyIdentifier ::= AlgorithmIdentifier 
+--pSpecifiedEmptyIdentifier AlgorithmIdentifier  ::=  { id-pSpecified(2),
+PSpecifiedEmptyIdentifier ::= AlgorithmIdentifier  --{ id-pSpecified(2),
+         --OCTET STRING (SIZE (0)) }
+
+nullOctetString OCTET STRING (SIZE(0)) ::= {}
+--pSpecifiedEmptyIdentifier2 AlgorithmIdentifier ::= { id-pSpecified,
+        --nullOctetString }
+
+-- This last definition syntax is based on SNMP OBJECT-TYPE; it is a special 
+--  SNACC construct to align the DEFINED BY id with a data type 
+--  (see SNACC docs).
+testDefinedByDesignation2 OBJECT-TYPE
+        SYNTAX  PrintableString
+        ACCESS  read-write
+        STATUS  mandatory
+        ::= { 1 2 3 4 5 6 7 8 9 10 4 }  --testOID2-2
+
+
+   ContentInfo ::= SEQUENCE {
+     contentType ContentType,
+     content [0] EXPLICIT ANY } --RWC;DEFINED BY contentType }
+
+   ContentType ::= OBJECT IDENTIFIER
+
+--
+-- STRICTLY for testing; the PrintXML(...) produces bad "<", ">" chars on this
+-- definition.
+AAA ::=  SEQUENCE OF AlgorithmIdentifier
+
+END

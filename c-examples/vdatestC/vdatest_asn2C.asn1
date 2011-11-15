@@ -1,0 +1,33 @@
+VdaTestModule2
+-- DEFINITIONS EXPLICIT TAGS ::= 
+DEFINITIONS IMPLICIT TAGS ::=
+BEGIN
+
+-- THE FOLLOWING DEFINITIONS test the ANY DEFINED BY table setup/usage.
+--  This specific file tests the SNACC run-time and compiler's ability to
+--  handle 2 sets of ANY DEFINED BY table loads (test of new feature).
+
+testOID2-2 OBJECT IDENTIFIER ::= { 3 4 5 6 7 8 9 10 4 }
+
+TestDefinedByUsage-2 ::= --snacc isPdu:"TRUE" -- SEQUENCE {
+    id OBJECT IDENTIFIER,
+    anyDefBy ANY DEFINED BY id
+}
+
+TestDefinedByType-2 ::= --snacc isPdu:"TRUE" -- SEQUENCE {
+	octsName OCTET STRING,
+	boolTestName BOOLEAN
+}
+
+-- This last definition syntax is based on SNMP OBJECT-TYPE; it is a special 
+--  SNACC construct to align the DEFINED BY id with a data type 
+--  (see SNACC docs).
+testDefinedByDesignation2 OBJECT-TYPE
+        SYNTAX  PrintableString
+        ACCESS  read-write
+        STATUS  mandatory
+        ::= { 3 4 5 6 7 8 9 10 4 }  --testOID2-2
+
+
+
+END

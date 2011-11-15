@@ -1,0 +1,938 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.10"
+	Name="c_asn1"
+	SccProjectName="ebuf_lib"
+	SccLocalPath="..\..">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory=".\../../../SMPDist/lib"
+			IntermediateDirectory=".\Debug"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..,..\inc"
+				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;USE_GEN_BUF"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				PrecompiledHeaderFile=".\Debug/ebuf_lib.pch"
+				AssemblerListingLocation=".\Debug/"
+				ObjectFile=".\Debug/"
+				ProgramDataBaseFileName=".\Debug/"
+				BrowseInformation="1"
+				WarningLevel="4"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="1"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Copying $(TargetPath)  to system32 directory..."
+				CommandLine="copy &quot;$(TargetPath)&quot; %WINDIR%\system32
+"
+				Outputs="$(WINDIR)\system32\$(TargetName).dll"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="odbc32.lib odbccp32.lib"
+				OutputFile="../../../SMPDist/lib/casn1_d.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				ModuleDefinitionFile=".\snaccc.def"
+				GenerateDebugInformation="TRUE"
+				ImportLibrary=".\../../../SMPDist/lib/casn1_d.lib"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\../../../SMPDist/lib/ebuf_lib.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory=".\../../../SMPDist/lib"
+			IntermediateDirectory=".\Release"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="..\..,..\inc"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;USE_EXP_BUF"
+				RuntimeLibrary="2"
+				PrecompiledHeaderFile=".\Release/ebuf_lib.pch"
+				AssemblerListingLocation=".\Release/"
+				ObjectFile=".\Release/"
+				ProgramDataBaseFileName=".\Release/"
+				WarningLevel="4"
+				SuppressStartupBanner="TRUE"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Copying $(TargetPath) to system32 directory..."
+				CommandLine="copy &quot;$(TargetPath)&quot; %WINDIR%\system32
+"
+				Outputs="$(WINDIR)\system32\$(TargetName).dll"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="odbc32.lib odbccp32.lib"
+				OutputFile="../../../SMPDist/lib/casn1.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				ModuleDefinitionFile=".\snaccc.def"
+				ImportLibrary=".\../../../SMPDist/lib/casn1.lib"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\../../../SMPDist/lib/ebuf_lib.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
+			<File
+				RelativePath="..\src\asn-any.c">
+			</File>
+			<File
+				RelativePath="..\src\asn-bits.c">
+			</File>
+			<File
+				RelativePath="..\src\asn-BMPString.c">
+			</File>
+			<File
+				RelativePath="..\src\asn-bool.c">
+			</File>
+			<File
+				RelativePath="..\src\asn-der.c">
+			</File>
+			<File
+				RelativePath="..\src\asn-enum.c">
+			</File>
+			<File
+				RelativePath="..\src\asn-IA5String.c">
+			</File>
+			<File
+				RelativePath="..\src\asn-int.c">
+			</File>
+			<File
+				RelativePath="..\src\asn-len.c">
+			</File>
+			<File
+				RelativePath="..\src\asn-list.c">
+			</File>
+			<File
+				RelativePath="..\src\asn-null.c">
+			</File>
+			<File
+				RelativePath="..\src\asn-NumericString.c">
+			</File>
+			<File
+				RelativePath="..\src\asn-octs.c">
+			</File>
+			<File
+				RelativePath="..\src\asn-oid.c">
+			</File>
+			<File
+				RelativePath="..\src\asn-PrintableStr.c">
+			</File>
+			<File
+				RelativePath="..\src\asn-real.c">
+			</File>
+			<File
+				RelativePath="..\src\asn-relative-oid.c">
+			</File>
+			<File
+				RelativePath="..\src\asn-tag.c">
+			</File>
+			<File
+				RelativePath="..\src\asn-TeletexString.c">
+			</File>
+			<File
+				RelativePath="..\src\asn-UniversalString.c">
+			</File>
+			<File
+				RelativePath="..\src\asn-useful.c">
+			</File>
+			<File
+				RelativePath="..\src\asn-UTF8String.c">
+			</File>
+			<File
+				RelativePath="..\src\asn-VisibleString.c">
+			</File>
+			<File
+				RelativePath="..\src\ASN1init.c">
+			</File>
+			<File
+				RelativePath="..\src\exp-buf.c">
+			</File>
+			<File
+				RelativePath="..\src\hash.c">
+			</File>
+			<File
+				RelativePath="..\src\mem.c">
+			</File>
+			<File
+				RelativePath="..\src\nibble-alloc.c">
+			</File>
+			<File
+				RelativePath="..\src\print.c">
+			</File>
+			<File
+				RelativePath="..\src\str-stk.c">
+			</File>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl">
+			<File
+				RelativePath="..\inc\asn-any.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\asn-bits.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\asn-BMPString.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\asn-bool.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\asn-config.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\asn-der.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\asn-enum.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\asn-IA5String.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\asn-incl.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\asn-int.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\asn-len.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\asn-list.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\asn-null.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\asn-NumericString.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\asn-octs.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\asn-oid.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\asn-PrintableStr.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\asn-real.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\asn-tag.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\asn-TeletexString.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\asn-UniversalString.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\asn-useful.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\asn-UTF8String.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\config_win32.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\exp-buf.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\gen-buf.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\hash.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\mem.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\min-buf.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\nibble-alloc.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\policy.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\print.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\sbuf.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\snacc.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\snaccCder.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\inc\str-stk.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy $(InputPath) &quot;../../../SMPDist/include/esnacc/c&quot;
+"
+						Outputs="../../../SMPDist/include/esnacc/c/$(InputName).h"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+		</Filter>
+		<File
+			RelativePath=".\snaccc.def">
+		</File>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>
