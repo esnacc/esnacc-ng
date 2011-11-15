@@ -894,9 +894,9 @@ AsnBits & AsnBits::SetEqual(const char *stringForm)
    char *pend = NULL;
    char *pbegin = NULL;
    
-   pend = strstr(stringForm, "'B");
+   pend = (char *)strstr(stringForm, "'B");
 
-   pbegin = strstr(stringForm,"'");
+   pbegin = (char *)strstr(stringForm,"'");
    pbegin++;
 
    if (pend == NULL || pbegin == NULL)

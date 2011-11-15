@@ -790,11 +790,8 @@ void AsnReal::BDecContent (const AsnBuf &b, AsnTag /* tagId */, AsnLen elmtLen, 
     int i;
     unsigned int expLen;
     double mantissa;
-    unsigned short base;
-    long int exponent = 0;
-    double tmpBase;
-    double tmpExp;
-
+    unsigned int baseF;
+    int exponent = 0;
 
     if (elmtLen == 0)
     {
@@ -856,34 +853,25 @@ void AsnReal::BDecContent (const AsnBuf &b, AsnTag /* tagId */, AsnLen elmtLen, 
 
             unsigned char cValue;
             mantissa = 0.0;
-            double m2;
             for (i = 1 + expLen; i < (int)elmtLen; i++)
             {
-                cValue = b.GetByte();
-                /*mantissa +=  cValue;
-                mantissa *= ((1<<8);  */
-                m2 = ((double)cValue) / pow((1<<8), (i - expLen));
-                mantissa += m2;
-                            // RWC; moved to reflect encoding ops.*/
-            }
+	      cValue = b.GetByte();
 
-            /* adjust N by scaling factor */
-            //RWC;NOT SURE WHAT THIS MEANS, ALWAYS 0;mantissa *= (1<<((firstOctet & REAL_FACTOR_MASK) >> 2));
-            // MUST shift left as many bytes as loaded above in "for" loop.
-            // mantissa /= ((elmtLen-expLen) * (1<<8));
-
+	      mantissa = ldexp(mantissa, 8) + cValue;
+	    }
+	    
             switch (firstOctet & REAL_BASE_MASK)
             {
                 case REAL_BASE_2:
-                    base = 2;
+		    baseF = 1;
                     break;
 
                 case REAL_BASE_8:
-                    base = 8;
+		    baseF = 3;
                     break;
 
                 case REAL_BASE_16:
-                    base = 16;
+		    baseF = 4;
                     break;
 
                 default:
@@ -892,10 +880,10 @@ void AsnReal::BDecContent (const AsnBuf &b, AsnTag /* tagId */, AsnLen elmtLen, 
 
             }
 
-            tmpBase = base;
-            tmpExp = exponent;
-
-            value =  mantissa * pow ((double)base, (double)exponent);
+	    unsigned int scaleF = ((firstOctet & REAL_FACTOR_MASK) >> 2);
+ 
+	    value = mantissa * pow(2, baseF * exponent);
+	    value *= scaleF;
 
             if (firstOctet & REAL_SIGN)
                 value = -value;

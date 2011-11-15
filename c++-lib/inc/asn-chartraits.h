@@ -2,7 +2,7 @@
 #define _asn_chartraits_h 1
 
 #include <cstring> 	// For memmove, memset, memchr
-#include <bits/fpos.h> 		// For streampos
+#include <ios>
 
 namespace std 
 {

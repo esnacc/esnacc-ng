@@ -610,6 +610,10 @@ void sortSet(std::list<SNACC::AsnBuf> &bufList)
 
 // Sort by encoding included tag, length, and data
 //
+namespace std
+{
+
+template<>
 bool std::greater<SNACC::AsnBuf>::operator()(const SNACC::AsnBuf &x,
                                              const SNACC::AsnBuf &y) const
 {
@@ -622,7 +626,7 @@ bool std::greater<SNACC::AsnBuf>::operator()(const SNACC::AsnBuf &x,
    
    return (xTag > yTag);
 }
-
+}
 
 bool AsnBuf::operator == (const AsnBuf &b) const
 {

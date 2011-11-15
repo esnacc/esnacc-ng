@@ -21,7 +21,7 @@ class AsnList : public std::list<T>, public SNACC::AsnType, public SNACC::PERGen
 {
 public:
 	// Appends newly inserted element to list and returns its iterator
-        typename std::list<T>::iterator append(const T& x = T())			{ return insert(end(), x); }
+        typename std::list<T>::iterator append(const T& x = T())			{ return insert(this->end(), x); }
 
 	// encode and decode routines
 	virtual SNACC::AsnLen PEnc(SNACC::AsnBufBits& b) const;
@@ -47,7 +47,7 @@ public:
 //	virtual SNACC::SizeConstraint* SizeConstraints()		{ return NULL; }
 	
 	virtual void Allocate(long size)						{}
-	virtual void Clear()									{ clear(); }
+	virtual void Clear()									{ this->clear(); }
 	virtual SNACC::AsnLen Interpret(SNACC::AsnBufBits& b, long offset) const;
 	virtual void Deterpret(SNACC::AsnBufBits& b, SNACC::AsnLen& bitsDecoded,
 		long offset);
@@ -72,14 +72,14 @@ SNACC::AsnLen AsnList<T>::Interpret(SNACC::AsnBufBits& b, long offset) const
 {
 	FUNC("AsnList<T>::Interpret()");
 
-	typename AsnList<T>::const_iterator i = begin();
-	while ((i != end()) && (offset > 0))
+	typename AsnList<T>::const_iterator i = this->begin();
+	while ((i != this->end()) && (offset > 0))
 	{
 		++i;
 		--offset;
 	}
 
-	if (i != end())
+	if (i != this->end())
 		return i->PEnc(b);
 	else
 		throw SNACC_EXCEPT("Null element found in List");
@@ -97,19 +97,19 @@ SNACC::AsnLen AsnList<T>::PEnc(SNACC::AsnBufBits& b) const
 		SNACC::AsnLen sum = 0;
 		if (SizeConstraints()->upperBoundExists == 0)
 		{
-			if (size() != (unsigned int) SizeConstraints()->lowerBound)
+			if (this->size() != (unsigned int) SizeConstraints()->lowerBound)
 			{
 				throw EXCEPT("Number of elements in AsnList does not match singlevalue constraint",
 					ENCODE_ERROR);
 			}
 
-			for (typename AsnList<T>::const_iterator i = begin(); i != end(); ++i)
+			for (typename AsnList<T>::const_iterator i = this->begin(); i != this->end(); ++i)
 				sum += i->PEnc(b);
         }
 		else if (SizeConstraints()->upperBoundExists == 1)
 		{
-			if ((size() < SizeConstraints()->lowerBound) ||
-				(size() > SizeConstraints()->upperBound))
+			if ((this->size() < SizeConstraints()->lowerBound) ||
+				(this->size() > SizeConstraints()->upperBound))
 			{
 				throw EXCEPT("Number of elements in AsnList is not within the size constraint",
 					ENCODE_ERROR);
@@ -128,7 +128,7 @@ SNACC::AsnLen AsnList<T>::PEnc(SNACC::AsnBufBits& b) const
 
 			long minBytesNeeded = minBitsNeeded / 8;
 			minBitsNeeded %= 8;
-			long numExtra = size() - SizeConstraints()->lowerBound;
+			long numExtra = this->size() - SizeConstraints()->lowerBound;
 			if (minBytesNeeded > 0)
 			{
 				pStr[0] = (unsigned char)(numExtra >> minBitsNeeded);
@@ -143,20 +143,20 @@ SNACC::AsnLen AsnList<T>::PEnc(SNACC::AsnBufBits& b) const
 		}
 		else
 		{
-			if (size() < SizeConstraints()->lowerBound)
+			if (this->size() < SizeConstraints()->lowerBound)
 			{
 				throw EXCEPT("Number of elements in AsnList is below the minimum size constraint",
 					ENCODE_ERROR);
 			}
 			
-			SNACC::AsnInt listLen(size() - SizeConstraints()->lowerBound);
+			SNACC::AsnInt listLen(this->size() - SizeConstraints()->lowerBound);
 			sum += b.OctetAlignWrite();
 			listLen.PEnc(b);
 			sum += b.OctetAlignWrite();
         }
 
 		// Encode the elements
-		for (typename AsnList<T>::const_iterator i = begin(); i != end(); ++i)
+		for (typename AsnList<T>::const_iterator i = this->begin(); i != this->end(); ++i)
 			sum += i->PEnc(b);
 
 		return sum;
@@ -168,7 +168,7 @@ template <class T>
 void AsnList<T>::PDec(SNACC::AsnBufBits& b, SNACC::AsnLen& bitsDecoded)
 {
 	// Remove existing elements
-	clear();
+	this->clear();
 
 	if (!SizeConstraints())
 	{
@@ -241,10 +241,10 @@ template <class T>
 char* AsnList<T>::checkSOfSingleVal(long m_SingleVal) const
 {
 	char* pError = NULL;
-	if (size() != m_SingleVal)
+	if (this->size() != m_SingleVal)
 	{
 		char cTmperr[200];
-		sprintf(cTmperr, "_______\nList--SingleValue Constraints:\n_______\nError: --Invalid Number of Elements in List--\nNumber of Elements: %d must match the Constraint Single Value: %d \n", size(), m_SingleVal);
+		sprintf(cTmperr, "_______\nList--SingleValue Constraints:\n_______\nError: --Invalid Number of Elements in List--\nNumber of Elements: %d must match the Constraint Single Value: %d \n", this->size(), m_SingleVal);
 		pError = strdup(cTmperr);
 	}
 
@@ -257,17 +257,17 @@ char* AsnList<T>::checkSOfVRange(long m_Lower, long m_Upper) const
 {
 	char* pError = NULL;
 
-	if (size() < m_Lower)
+	if (this->size() < m_Lower)
 	{
 		char cTmperr[200]; 
-		sprintf(cTmperr, "_______\nList--Valuerange Constraints:\n_______\nError: --Not Enough Elements In List--\nNumber of Elements: %d is below the Lower Limit: %d \n", size(), m_Lower);
+		sprintf(cTmperr, "_______\nList--Valuerange Constraints:\n_______\nError: --Not Enough Elements In List--\nNumber of Elements: %d is below the Lower Limit: %d \n", this->size(), m_Lower);
 		pError = strdup(cTmperr); 
 	}
 
-	if (size() > m_Upper)
+	if (this->size() > m_Upper)
 	{
 		char cTmperr[200]; 
-		sprintf(cTmperr, "_______\nList--Valuerange Constraints:\n_______\nError: --Too Many Elements In List--\nNumber of Elements: %d is above the Upper Limit: %d \n", size(), m_Upper);
+		sprintf(cTmperr, "_______\nList--Valuerange Constraints:\n_______\nError: --Too Many Elements In List--\nNumber of Elements: %d is above the Upper Limit: %d \n", this->size(), m_Upper);
 		pError = strdup(cTmperr);
 	}
 
@@ -277,7 +277,7 @@ char* AsnList<T>::checkSOfVRange(long m_Lower, long m_Upper) const
 template <class T>
 int AsnList<T>::checkConstraints(SNACC::ConstraintFailList* pConstraintFails) const
 {
-	for (typename AsnList<T>::const_iterator i = begin(); i != end(); ++i)
+	for (typename AsnList<T>::const_iterator i = this->begin(); i != this->end(); ++i)
 		i->checkConstraints(pConstraintFails);
 	return 0;
 }
@@ -286,7 +286,7 @@ template <class T>
 SNACC::AsnLen AsnList<T>::BEncContent(SNACC::AsnBuf& b) const
 {
 	SNACC::AsnLen sum = 0;
-	for (typename AsnList<T>::const_reverse_iterator i = rbegin(); i != rend(); ++i)
+	for (typename AsnList<T>::const_reverse_iterator i = this->rbegin(); i != this->rend(); ++i)
 		sum += i->BEnc(b);
 	return sum;
 }
@@ -321,13 +321,13 @@ void AsnList<T>::Print(std::ostream& os, unsigned short indent) const
 	os << "OF ";
 	++indent;
 
-	if (empty())
+	if (this->empty())
 		os << "is EMPTY\n"; 
 	else
 	{
-		os << front().typeName() << " \n";
+		os << this->front().typeName() << " \n";
 
-		for (typename AsnList<T>::const_iterator i = begin(); i != end(); ++i)
+		for (typename AsnList<T>::const_iterator i = this->begin(); i != this->end(); ++i)
 		{
 			SNACC::Indent(os, indent);
 			i->Print(os, indent);
@@ -340,12 +340,12 @@ void AsnList<T>::Print(std::ostream& os, unsigned short indent) const
 template <class T>
 void AsnList<T>::PrintXML(std::ostream& os, const char* lpszTitle) const
 {
-	if (empty())
+	if (this->empty())
 		os << "-- Void --\n";
 	else
 	{
 		//os << "<" << first->elmt->typeName() << ">" << endl;
-		for (typename AsnList<T>::const_iterator i = begin(); i != end(); ++i)
+		for (typename AsnList<T>::const_iterator i = this->begin(); i != this->end(); ++i)
 			i->PrintXML(os, lpszTitle);
 		//os << "</" << first->elmt->typeName() << ">" << endl;
 	} 
@@ -380,7 +380,7 @@ public:
 template <class T>
 SNACC::AsnLen AsnSeqOf<T>::BEnc(SNACC::AsnBuf& b) const
 {
-	SNACC::AsnLen l = BEncContent(b);
+	SNACC::AsnLen l = this->BEncContent(b);
 	l += SNACC::BEncDefLen(b, l);
 	l += BEncTag1(b, SNACC::UNIV, SNACC::CONS, SNACC::SEQ_TAG_CODE);
 	return l;
@@ -390,32 +390,32 @@ template <class T>
 void AsnSeqOf<T>::BDec(const SNACC::AsnBuf& b, SNACC::AsnLen& bytesDecoded)
 {
 	// Clear the existing contents
-	clear();
+	this->clear();
 
 	SNACC::AsnTag tagId = SNACC::BDecTag(b, bytesDecoded);
 	if (tagId != MAKE_TAG_ID (SNACC::UNIV, SNACC::CONS, SNACC::SEQ_TAG_CODE))
 	{
-		throw SNACC::InvalidTagException(typeName(), tagId,
+		throw SNACC::InvalidTagException(this->typeName(), tagId,
 			__FILE__, __LINE__, "AsnSeqOf<T>:BDec()");
 	}
 	SNACC::AsnLen elmtLen;
 	elmtLen = SNACC::BDecLen(b, bytesDecoded);
-	BDecContent(b, tagId, elmtLen, bytesDecoded);
+	this->BDecContent(b, tagId, elmtLen, bytesDecoded);
 }
 
 template <class T>
 void AsnSeqOf<T>::Print(std::ostream& os, unsigned short indent) const
 {
-	os << "{ -- " << typeName() << " SEQUENCE OF ";
+	os << "{ -- " << this->typeName() << " SEQUENCE OF ";
 	++indent;
 
-	if (empty())
+	if (this->empty())
 		os << "is EMPTY\n";
 	else
 	{
-		os << front().typeName() << " \n";
+		os << this->front().typeName() << " \n";
 
-		for (typename AsnSeqOf<T>::const_iterator i = begin(); i != end(); ++i)
+		for (typename AsnSeqOf<T>::const_iterator i = this->begin(); i != this->end(); ++i)
 		{
 			SNACC::Indent(os, indent);
 			i->Print(os, indent);
@@ -431,10 +431,10 @@ void AsnSeqOf<T>::PrintXML(std::ostream& os, const char* lpszTitle) const
 	if (lpszTitle)
 	{
 		os << "<" << lpszTitle;
-		os << " typeName=\"" << typeName() << "\"";
+		os << " typeName=\"" << this->typeName() << "\"";
 	}
 	else
-		os << "<" << typeName();
+		os << "<" << this->typeName();
 
 	os << " type=\"SEQUENCE_OF\">\n";
 	AsnList<T>::PrintXML(os, lpszTitle);
@@ -442,7 +442,7 @@ void AsnSeqOf<T>::PrintXML(std::ostream& os, const char* lpszTitle) const
 	if (lpszTitle)
 		os << "</" << lpszTitle << ">";
 	else
-		os << "</" << typeName() << ">";
+		os << "</" << this->typeName() << ">";
 }
 
 
@@ -490,7 +490,7 @@ SNACC::AsnLen AsnSetOf<T>::BEncContent(SNACC::AsnBuf& b) const
 
 	// Encode each component of the SET OF into the AsnBuf list;
 	std::list<SNACC::AsnBuf> bufList;
-	for (typename AsnSetOf<T>::const_iterator i = begin(); i != end(); ++i)
+	for (typename AsnSetOf<T>::const_iterator i = this->begin(); i != this->end(); ++i)
 	{
 		SNACC::AsnBuf& bufRef = *bufList.insert(bufList.end(),
 			SNACC::AsnBuf());
@@ -512,18 +512,18 @@ template <class T>
 void AsnSetOf<T>::BDec(const SNACC::AsnBuf& b, SNACC::AsnLen& bytesDecoded)
 {
 	// Clear the existing elements
-	clear();
+	this->clear();
 
 	SNACC::AsnTag tagId = SNACC::BDecTag(b, bytesDecoded);
 	if (tagId != MAKE_TAG_ID (SNACC::UNIV, SNACC::CONS, SNACC::SET_TAG_CODE))
 	{
-		throw SNACC::InvalidTagException(typeName(), tagId,
+		throw SNACC::InvalidTagException(this->typeName(), tagId,
 			__FILE__,__LINE__,"AsnSetOf<T>::BDec()");
 	}
 
 	SNACC::AsnLen elmtLen;
 	elmtLen = SNACC::BDecLen(b, bytesDecoded);
-	BDecContent(b, tagId, elmtLen, bytesDecoded);
+	this->BDecContent(b, tagId, elmtLen, bytesDecoded);
 }
 
 //
@@ -532,25 +532,25 @@ template <class T>
 void AsnSetOf<T>::PDec(SNACC::AsnBufBits& b, SNACC::AsnLen& bitsDecoded)
 {
  	// Clear the existing elements
-	clear();
+	this->clear();
 
 	SNACC::AsnInt intSetOfLength;
 	intSetOfLength.PDec(b, bitsDecoded);
 	for (int i = 0; i < intSetOfLength; i++)
-		append()->PDec(b, bitsDecoded);
+		this->append()->PDec(b, bitsDecoded);
 }
 
 template <class T>
 SNACC::AsnLen AsnSetOf<T>::PEnc(SNACC::AsnBufBits& b) const
 {
-	SNACC::AsnInt intSetOfLength(size());
+	SNACC::AsnInt intSetOfLength(this->size());
 	intSetOfLength.PEnc(b);
 
 	SNACC::AsnLen totalLen = 0;
 	std::list<SNACC::AsnBufBits> bufList;
 
 	// Encode each component of the SET OF into the AsnBuf list
-	for (typename AsnSetOf<T>::const_iterator i = begin(); i != end(); ++i)
+	for (typename AsnSetOf<T>::const_iterator i = this->begin(); i != this->end(); ++i)
 	{
 		SNACC::AsnBufBits& bufRef =
 			*bufList.insert(bufList.end(), SNACC::AsnBufBits(b.IsAligned()));
@@ -569,16 +569,16 @@ SNACC::AsnLen AsnSetOf<T>::PEnc(SNACC::AsnBufBits& b) const
 template <class T>
 void AsnSetOf<T>::Print(std::ostream& os, unsigned short indent) const
 {
-	os << "{ -- " << typeName() << " SET OF ";
+	os << "{ -- " << this->typeName() << " SET OF ";
 	++indent;
 
-	if (empty())
+	if (this->empty())
 		os << "is EMPTY\n";
 	else
 	{
-		os << front().typeName() << " \n";
+		os << this->front().typeName() << " \n";
 
-		for (typename AsnSetOf<T>::const_iterator i = begin(); i != end(); ++i)
+		for (typename AsnSetOf<T>::const_iterator i = this->begin(); i != this->end(); ++i)
 		{
 			SNACC::Indent(os, indent);
 			i->Print(os, indent);
@@ -594,10 +594,10 @@ void AsnSetOf<T>::PrintXML(std::ostream& os, const char* lpszTitle) const
 	if (lpszTitle)
 	{
 		os << "<" << lpszTitle;
-		os << " typeName=\"" << typeName() << "\"";
+		os << " typeName=\"" << this->typeName() << "\"";
 	}
 	else
-		os << "<" << typeName();
+		os << "<" << this->typeName();
 
 	os << " type=\"SET_OF\">";
 	AsnList<T>::PrintXML(os);
@@ -605,7 +605,7 @@ void AsnSetOf<T>::PrintXML(std::ostream& os, const char* lpszTitle) const
 	if (lpszTitle)
 		os << "</" << lpszTitle << ">";
 	else
-		os << "</" << typeName() << ">";
+		os << "</" << this->typeName() << ">";
 }
 
 /*

@@ -112,7 +112,7 @@
 _BEGIN_SNACC_NAMESPACE
 
 /*returns the number of bytes in the encoded length passed in*/
-long SNACC::BytesInLen(AsnLen len)
+long BytesInLen(AsnLen len)
 {
     if (len < 128)
     {

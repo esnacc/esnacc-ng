@@ -1,0 +1,5 @@
+*.o
+*~
+*.Tpo
+*.so
+config.h

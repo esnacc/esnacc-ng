@@ -1,6 +1,8 @@
 #include "asn-buf.h"
 #include "snaccexcept.h"
 
+#include <string.h>
+
 using namespace SNACC;
 
 AsnFileSeg::AsnFileSeg(const char *pFilename)

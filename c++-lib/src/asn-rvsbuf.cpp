@@ -1,5 +1,7 @@
 #include "asn-buf.h"
 
+#include <string.h>
+
 using namespace SNACC;
 
 AsnRvsBuf::AsnRvsBuf(char *preFilled, size_t segSize)

@@ -3,6 +3,8 @@
 //
 #include "snaccexcept.h"
 
+#include <string.h>
+#include <stdio.h>
 
 namespace SNACC 
 {
@@ -113,7 +115,7 @@ void SnaccException::getCallStack(std::ostream &os) const
 #ifdef WIN32
       if ((ptr=strrchr(stack[i].file, '\\')) == NULL)
 #else
-      if ((ptr=strrchr(stack[i].file, '/')) == NULL)
+	if ((ptr=(char *)strrchr(stack[i].file, '/')) == NULL)
 #endif
          ptr = (char *)stack[i].file;
       else
