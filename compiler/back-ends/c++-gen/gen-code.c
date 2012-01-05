@@ -3216,8 +3216,11 @@ PrintCxxSetDefCode (FILE *src, FILE *hdr, ModuleList *mods, Module *m,
         tmpTypeId = GetBuiltinType (e->type);
 
         if(e->type->cxxTypeRefInfo->isPtr){
-          fprintf (src, "  if(%s)\n", e->type->cxxTypeRefInfo->fieldName);
-	      fprintf (src, "    delete %s;\n", e->type->cxxTypeRefInfo->fieldName);
+            /**
+             * C++ > 1998 allows deletion of null pointer. 
+             * This means i hate old c++
+             */
+	      fprintf (src, "  delete %s;\n", e->type->cxxTypeRefInfo->fieldName);
   	      fprintf (src, "  %s = NULL;\n", e->type->cxxTypeRefInfo->fieldName);
         }
         else if(!e->type->cxxTypeRefInfo->isPtr && 
