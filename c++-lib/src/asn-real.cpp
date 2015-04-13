@@ -778,6 +778,17 @@ AsnLen AsnReal::BEncContent (AsnBuf &b) const
 #endif
 #endif
 
+static double domainExp(double i, int j)
+{
+    double exp = 1.0;
+
+    while(j--)
+    {
+        exp *= 2.0;
+    }
+
+    return i * exp;
+}
 
 // Decode a REAL value's content from the given buffer.
 // places the result in this object.
@@ -855,39 +866,41 @@ void AsnReal::BDecContent (const AsnBuf &b, AsnTag /* tagId */, AsnLen elmtLen, 
             mantissa = 0.0;
             for (i = 1 + expLen; i < (int)elmtLen; i++)
             {
-	      cValue = b.GetByte();
-
-	      mantissa = ldexp(mantissa, 8) + cValue;
-	    }
+                cValue = b.GetByte();
+                
+                mantissa = domainExp(mantissa, 8) + cValue;
+            }
 	    
             switch (firstOctet & REAL_BASE_MASK)
             {
-                case REAL_BASE_2:
-		    baseF = 1;
-                    break;
-
-                case REAL_BASE_8:
-		    baseF = 3;
-                    break;
-
-                case REAL_BASE_16:
-		    baseF = 4;
-                    break;
-
-                default:
-                    throw EXCEPT("unsupported base for a binary real number.", DECODE_ERROR);
-                   break;
-
+            case REAL_BASE_2:
+                baseF = 1;
+                break;
+                
+            case REAL_BASE_8:
+                baseF = 3;
+                break;
+                
+            case REAL_BASE_16:
+                baseF = 4;
+                break;
+                
+            default:
+                throw EXCEPT("unsupported base for a binary real number.", DECODE_ERROR);
+                break;
+                
             }
 
-	    unsigned int scaleF = ((firstOctet & REAL_FACTOR_MASK) >> 2);
- 
-	    value = mantissa * pow(2, baseF * exponent);
-	    value *= scaleF;
+            unsigned int scaleF = 1<<((firstOctet & REAL_FACTOR_MASK) >> 2);
 
+            //std::cout << "( " << pow(2,baseF) << "," << mantissa << "," << exponent << ") * " << double(scaleF) << " * " << ((firstOctet & REAL_SIGN) ? "-1.0" : "1.0") << std::endl;
+
+            value = mantissa * pow(double(2.0), double(baseF) * double(exponent));
+            value *= scaleF;
+            
             if (firstOctet & REAL_SIGN)
                 value = -value;
-
+            
             bytesDecoded += elmtLen;
         }
         else /* decimal version */
