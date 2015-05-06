@@ -4520,7 +4520,10 @@ void PrintCxxSetTypeByCode(NamedType *defByNamedType, CxxTRI *cxxtri, FILE *src)
         NamedType *nt;
         Type      *t = GetType(defByNamedType->type);
 
-        fprintf(src, "  switch (%s.choiceId)\n", defByNamedType->type->cxxTypeRefInfo->fieldName);
+        if (defByNamedType->type->cxxTypeRefInfo->isPtr)
+            fprintf(src, "  switch (%s->choiceId)\n", defByNamedType->type->cxxTypeRefInfo->fieldName);
+        else
+            fprintf(src, "  switch (%s.choiceId)\n", defByNamedType->type->cxxTypeRefInfo->fieldName);
         fprintf(src, "  {\n");
 
         FOR_EACH_LIST_ELMT(nt, t->basicType->a.choice)
@@ -4535,7 +4538,10 @@ void PrintCxxSetTypeByCode(NamedType *defByNamedType, CxxTRI *cxxtri, FILE *src)
               else
                  fprintf (src, ".");
 
-              fprintf(src, "SetTypeByInt(*%s->%s);\n", defByNamedType->type->cxxTypeRefInfo->fieldName, nt->fieldName);
+              if (defByNamedType->type->cxxTypeRefInfo->isPtr)
+                  fprintf(src, "SetTypeByInt(*%s->%s);\n", defByNamedType->type->cxxTypeRefInfo->fieldName, nt->fieldName);
+              else
+                  fprintf(src, "SetTypeByInt(*%s.%s);\n", defByNamedType->type->cxxTypeRefInfo->fieldName, nt->fieldName);
            }
            else
            {
@@ -4545,7 +4551,10 @@ void PrintCxxSetTypeByCode(NamedType *defByNamedType, CxxTRI *cxxtri, FILE *src)
               else
                  fprintf (src, ".");
 
-              fprintf(src, "SetTypeByOid(*%s->%s);\n", defByNamedType->type->cxxTypeRefInfo->fieldName, nt->fieldName);
+              if (defByNamedType->type->cxxTypeRefInfo->isPtr)
+                  fprintf(src, "SetTypeByOid(*%s->%s);\n", defByNamedType->type->cxxTypeRefInfo->fieldName, nt->fieldName);
+              else
+                  fprintf(src, "SetTypeByOid(*%s.%s);\n", defByNamedType->type->cxxTypeRefInfo->fieldName, nt->fieldName);
            }
            fprintf(src, "      break;\n");
 
