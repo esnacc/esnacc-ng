@@ -567,7 +567,7 @@ int PrintCxxMultiConstraintOrHandler PARAMS((hdr, src, definedName, e, i),
 			fprintf(src, "%s::operator =(const %s &that)\n", className, className);
 			fprintf(src, "{\n");
 			fprintf(src, "	m_len = that.m_len;\n");
-			fprintf(src, "	delete m_bytes;\n");
+			fprintf(src, "	delete[] m_bytes;\n");
 			fprintf(src, "	m_bytes = new unsigned char[m_len];\n");
 			fprintf(src, "	memcpy(m_bytes, that.m_bytes, m_len);\n");			
 			fprintf(src, "	return *this;\n}\n\n");
