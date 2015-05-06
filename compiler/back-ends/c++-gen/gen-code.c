@@ -4520,7 +4520,7 @@ void PrintCxxSetTypeByCode(NamedType *defByNamedType, CxxTRI *cxxtri, FILE *src)
         NamedType *nt;
         Type      *t = GetType(defByNamedType->type);
 
-        fprintf(src, "  switch (%s->choiceId)\n", defByNamedType->type->cxxTypeRefInfo->fieldName);
+        fprintf(src, "  switch (%s.choiceId)\n", defByNamedType->type->cxxTypeRefInfo->fieldName);
         fprintf(src, "  {\n");
 
         FOR_EACH_LIST_ELMT(nt, t->basicType->a.choice)
