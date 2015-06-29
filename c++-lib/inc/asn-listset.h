@@ -11,7 +11,11 @@
 #ifdef _MSC_VER
 	#pragma warning(disable: 4786)		// Disable symbols truncated warning
 #endif
-
+#ifdef WIN32
+#include <winsock2.h>
+#include <windows.h>
+#include <stdlib.h>
+#endif
 
 /////////////////////////////////
 // Abstract AsnList template  //
@@ -21,7 +25,7 @@ class AsnList : public std::list<T>, public SNACC::AsnType, public SNACC::PERGen
 {
 public:
 	// Appends newly inserted element to list and returns its iterator
-        typename std::list<T>::iterator append(const T& x = T())			{ return insert(this->end(), x); }
+        typename std::list<T>::iterator append(const T& x = T())			{ return this->insert(this->end(), x); }
 
 	// encode and decode routines
 	virtual SNACC::AsnLen PEnc(SNACC::AsnBufBits& b) const;

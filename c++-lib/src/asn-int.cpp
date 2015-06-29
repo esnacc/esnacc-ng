@@ -312,14 +312,19 @@
 #include "asn-incl.h"
 
 #ifdef WIN32
+#if defined(_MSC_VER)
 #pragma warning(disable: 4100 4710 4251 4018)
 #pragma warning(push,3)
+#endif
 #include <vector>
+#if defined(_MSC_VER)
 #pragma warning(pop)
+#endif
 #else
 #include <vector>
 #endif
 
+#include <stdlib.h>
 
 _BEGIN_SNACC_NAMESPACE
 

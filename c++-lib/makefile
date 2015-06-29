@@ -4,7 +4,7 @@ DEPENDENCIES	=
 
 TOP		= ..
 
-CPPFLAGS	+= -I$(TOP) -Iinc $(bufFLAGS) $(compilerFLAGS)
+CPPFLAGS	+= -I$(TOP) -Iinc $(bufFLAGS) $(compilerFLAGS) -DSNACCDLL_EXPORTS
 
 ifeq ($(USETHREADS), no)
 CPPFLAGS += -DNO_THREADS

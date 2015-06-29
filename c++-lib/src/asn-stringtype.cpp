@@ -26,6 +26,8 @@ const wchar_t basic_string<wchar_t>::_Rep::_S_terminal = wchar_t();
 #pragma warning(disable: 4127)	// Disable conditional expression is constant
 #endif
 
+#include <stdlib.h>
+
 using namespace SNACC;
 
 

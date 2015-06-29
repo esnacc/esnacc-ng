@@ -189,7 +189,9 @@
 #define NOT_NULL( ptr)		((ptr) != NULL)
 
 #ifdef WIN32
+#if defined(_MSC_VER)
 #pragma  warning( disable : 4127 4611 4710 4800 )  // IGNORE constant conditional expression.
+#endif
 #endif
 
 #endif /* conditional include */

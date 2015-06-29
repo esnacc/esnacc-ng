@@ -12,9 +12,14 @@
 #include "asn-buf.h"
 
 #ifdef WIN32
+#if defined(_MSC_VER)
 	#pragma warning(push,3)
+#endif
 	#include <string>
+    #include <string.h>
+#if defined(_MSC_VER)
 	#pragma warning(pop)
+#endif
 #else // WIN32
 	#include <iostream>
 	#include <string>

@@ -218,8 +218,8 @@
 
 _BEGIN_SNACC_NAMESPACE
 
-Table *AsnAny::oidHashTbl = NULL;
-Table *AsnAny::intHashTbl = NULL;
+SNACCDLL_API Table *AsnAny::oidHashTbl = NULL;
+SNACCDLL_API Table *AsnAny::intHashTbl = NULL;
 long SM_DetermineLengthBuf(AsnBuf &SNACCinputBuf, AsnLen elmtLen0, 
                            int bFirstTimeFlag=false);
 long SM_DetermineLengthBuf(AsnBuf &SNACCinputBuf);

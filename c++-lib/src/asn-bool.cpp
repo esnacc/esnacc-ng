@@ -18,6 +18,8 @@
 
 #include "asn-incl.h"
 
+#include <stdlib.h>
+
 _BEGIN_SNACC_NAMESPACE
 
 AsnLen AsnBool::PEnc (AsnBufBits &b) const

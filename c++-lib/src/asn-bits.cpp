@@ -19,6 +19,8 @@
 /*#include <string>*/
 #include "asn-incl.h"
 
+#include <stdlib.h>
+
 _BEGIN_SNACC_NAMESPACE
 
 char SNACCDLL_API numToHexCharTblG[16] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};

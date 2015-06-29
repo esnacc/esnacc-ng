@@ -15,14 +15,18 @@
 //
 
 #include "asn-incl.h"
-#ifdef _MSC_VER
-	#pragma warning(push, 3)
-	#include <vector>
-	#pragma warning(pop)
-#else
-	#include <vector>
+
+#if defined(_MSC_VER)
+#pragma warning(push, 3)
 #endif
 
+#include <vector>
+
+#if defined(_MSC_VER)
+#pragma warning(pop)
+#endif
+
+#include <stdlib.h>
 
 _BEGIN_SNACC_NAMESPACE
 

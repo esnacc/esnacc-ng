@@ -4,10 +4,14 @@
 #define _SNACCEXCEPT_H_
 
 #ifdef WIN32
+#if defined(_MSC_VER)
 #pragma warning(disable: 4514)
 #pragma warning(push,3)
+#endif
 #include <iostream>
+#if defined(_MSC_VER)
 #pragma warning(pop)
+#endif
 #else
 #include <iostream>
 #endif

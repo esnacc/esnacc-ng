@@ -139,6 +139,8 @@
 #include "asn-incl.h"
 #include "math.h"
 
+#include <stdlib.h>
+
 _BEGIN_SNACC_NAMESPACE
 
 #ifndef IEEE_REAL_LIB

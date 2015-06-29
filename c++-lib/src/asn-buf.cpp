@@ -389,7 +389,6 @@ void AsnBuf::GrabAny(AsnBuf &anyBuf, AsnLen &bytesDecoded) const
 {
     FUNC("AsnBuf::GrabAny");
 
-   AsnTag tagId;
    AsnLen len;
    AsnLen tmpLen = bytesDecoded;
    AsnBufLoc readLoc = GetReadLoc();
@@ -397,9 +396,10 @@ void AsnBuf::GrabAny(AsnBuf &anyBuf, AsnLen &bytesDecoded) const
    
    // Decode tag of the ANY.  This will be encoded into AnyBuf after the length
    //
-   // TBD: perform some simple check to make sure it's a valid tag.
+   // @todo: decode the tag using an ASN.1 TagId structure, and check
+   // validity
    //
-   tagId = BDecTag(*this, bytesDecoded);
+   (void)BDecTag(*this, bytesDecoded);
    
    // Decode length of the ANY.  This will be encoded into anyBuf after the data.
    len = BDecLen(*this, bytesDecoded);

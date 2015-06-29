@@ -1,5 +1,6 @@
 #include "asn-incl.h"
 #include <math.h>
+#include <stdlib.h>
 
 using namespace SNACC;
 
@@ -188,7 +189,6 @@ void AsnBufBits::AppendTo(AsnBufBits &bufBitsOut)
 {
 	FUNC("AsnBufBits::AppendTo()");
 
-	bool done = false;
 	unsigned char ch, *p_ch;
 	AsnBufBits tmpBuf(*this);
 	VDAstreambuf *pVDAbufref = (VDAstreambuf *)this->m_pbuf;
@@ -222,7 +222,7 @@ void AsnBufBits::AppendTo(AsnBufBits &bufBitsOut)
 	}		 // END try
 	catch (...)
 	{		
-		done = true;
+        // @todo: really handle this properly.
 	}
 	
 	

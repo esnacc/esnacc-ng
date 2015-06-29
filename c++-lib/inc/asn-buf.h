@@ -2,9 +2,11 @@
 #define _ASN_BUF_H 1
 
 
-#ifdef WIN32
+#if defined(WIN32)
+#if defined(_MSC_VER)
 #pragma warning(disable: 4100 4702 4710 4514 4786 4251 4018 4146 4284)
 #pragma warning(push,3)
+#endif
 
 #include <ostream>
 #include <streambuf>
@@ -13,7 +15,9 @@
 #include <fstream>
 #include <sstream>
 //#include <strstream>
+#if defined(_MSC_VER)
 #pragma warning(pop)
+#endif
 
 #else // WIN32
 

@@ -1,6 +1,8 @@
 /*#include <string>*/
 #include "asn-incl.h"
 
+#include <stdlib.h>
+
 _BEGIN_SNACC_NAMESPACE
 
 // Copy Constructor
