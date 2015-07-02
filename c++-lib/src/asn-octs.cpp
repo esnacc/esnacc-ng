@@ -197,6 +197,7 @@ AsnLen AsnOcts::EncodeWithSizeConstraint(AsnBufBits &b)const
 
 	if(size < iSCLowerBound || size > iSCUpperBound)
 	{
+        delete [] pStr;
 		throw EXCEPT("AsnOcts size not withing restricted bounds", RESTRICTED_TYPE_ERROR);
 	}
 	
@@ -233,7 +234,7 @@ AsnLen AsnOcts::EncodeWithSizeConstraint(AsnBufBits &b)const
 		len += b.PutBits((unsigned char*)c_ustr(), (length() * 8) );
 	}
 
-    free(pStr);
+    delete [] pStr;
 
 	return len;
 }
@@ -275,14 +276,14 @@ void AsnOcts::DecodeWithSizeConstraint(AsnBufBits &b, AsnLen &bitsDecoded)
 
 		if(minBytesNeeded > 0)
 		{
-            free(pStr);
+            delete [] pStr;
 			pStr = b.GetBits(8);
             bitsDecoded += 8;
 			decodeSize <<= 8;
 			decodeSize |= (long)pStr[0];
 		}
 
-        free(pStr);
+        delete [] pStr;
 		pStr = b.GetBits(minBitsNeeded);
         bitsDecoded += minBitsNeeded;
 		if(minBitsNeeded > 0)
@@ -297,6 +298,7 @@ void AsnOcts::DecodeWithSizeConstraint(AsnBufBits &b, AsnLen &bitsDecoded)
 
 	if(decodeSize > iSCUpperBound)
 	{
+        delete [] pStr;
 		throw EXCEPT("String size not withing restricted bounds", RESTRICTED_TYPE_ERROR);
 	}
 
@@ -312,10 +314,10 @@ void AsnOcts::DecodeWithSizeConstraint(AsnBufBits &b, AsnLen &bitsDecoded)
         seg = b.GetBits(decodeSize * 8);
 		m_str.append((const char*)seg, decodeSize);
         bitsDecoded += (decodeSize * 8);
-        free(seg);
+        delete [] seg;
 	}
 
-    free(pStr);
+    delete [] pStr;
 }
 
 long AsnOcts::FindSizeConstraintBounds(int &iSCLowerBound, int &iSCUpperBound)const
@@ -469,7 +471,7 @@ void AsnOcts::DecodeGeneral(AsnBufBits &b, AsnLen &bitsDecoded)
 
 		bitsDecoded += b.OctetAlignRead();
         
-        free(seg);
+        delete [] seg;
 	    seg = (unsigned char*)b.GetBits(8);
         bitsDecoded += 8;
 		
@@ -481,17 +483,17 @@ void AsnOcts::DecodeGeneral(AsnBufBits &b, AsnLen &bitsDecoded)
 		seg[0] &= 0x3F;
 		templen = (unsigned long)seg[0];
 		templen <<= 8;
-        free(seg);
+        delete [] seg;
 		seg = (unsigned char*)b.GetBits(8);
         bitsDecoded += 8;
 		templen |= (unsigned long)seg[0];
 		
 		bitsDecoded += b.OctetAlignRead();
 
-        free(seg);
+        delete [] seg;
         seg = b.GetBits(templen * 8);
 		m_str.append((const char*)seg, templen);
-        free(seg);
+        delete [] seg;
         bitsDecoded += (templen * 8);
 	}
 	else if((seg[0] & 0x80) == 0x00)
@@ -501,10 +503,10 @@ void AsnOcts::DecodeGeneral(AsnBufBits &b, AsnLen &bitsDecoded)
 		
 		bitsDecoded += b.OctetAlignRead();
 
-        free(seg);
+        delete [] seg;
         seg = b.GetBits(templen * 8);
 		m_str.append((const char*)seg, templen);
-        free(seg);
+        delete [] seg;
         bitsDecoded += (templen * 8);
 	}
 }
@@ -708,10 +710,9 @@ void ConsStringDeck::Fill(const AsnBuf &b, AsnLen elmtLen, AsnLen &bytesDecoded)
         if( curr != refList.begin() )
         {
             int iTmpCount = curr->count;
-            refList.erase(curr);
-            curr = refList.end();
-            --curr;
-            curr->count += iTmpCount;
+            curr = refList.erase(curr);
+            if( curr != refList.end() )
+                curr->count += iTmpCount;
         }
         else
         {

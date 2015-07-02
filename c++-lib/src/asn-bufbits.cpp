@@ -216,7 +216,7 @@ void AsnBufBits::AppendTo(AsnBufBits &bufBitsOut)
 			if (p_ch)
 			{
 				bufBitsOut.PutBits(&ch, iLeft);
-				free(p_ch);
+                delete [] p_ch;
 			}  // END IF p_ch
 		}	 // END IF iLeft
 	}		 // END try

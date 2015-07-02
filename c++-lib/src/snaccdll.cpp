@@ -10,9 +10,9 @@
 
 #include "snaccdll.h"
 
-extern "C" SNACCDLL_API BOOL WINAPI DllMain( HANDLE hModule, 
+extern "C" SNACCDLL_API BOOL WINAPI DllMain( HANDLE , 
                                                DWORD  ul_reason_for_call, 
-                                               LPVOID lpReserved
+                                               LPVOID
                                               )
 {
     switch (ul_reason_for_call)
@@ -23,8 +23,6 @@ extern "C" SNACCDLL_API BOOL WINAPI DllMain( HANDLE hModule,
 		case DLL_PROCESS_DETACH:
 			break;
     }
-    lpReserved;   // referenced to avoid compiler warning.
-    hModule;
     return TRUE;
 }
 

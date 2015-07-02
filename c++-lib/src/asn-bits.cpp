@@ -148,17 +148,19 @@ bool AsnBits::BitsEquiv (const AsnBits &ab) const
 
 void AsnBits::SetSize(size_t newsize)
 {
-    unsigned char *tmpBits;
-    tmpBits = new unsigned char[ (newsize + 7) / 8 ];
-    if(bitLen < newsize)
-    {   
-        strncpy((char*)tmpBits, (const char*)bits, length());
-        delete [] bits;
-        bits = new unsigned char[ (newsize + 7) / 8 ];
-        strncpy((char*)bits, (const char*)tmpBits, ((newsize + 7) / 8) );
-    }
 
-    free(tmpBits);
+    if(bitLen < newsize)
+    {
+        size_t newLength = (newsize + 7) / 8;
+        unsigned char *tmpBits = new unsigned char[ newLength ];
+        memset(tmpBits, 0, newLength);
+        memcpy((char*)tmpBits, (const char*)bits, std::min(length(), newLength));
+        delete [] bits;
+        bits = new unsigned char[ newLength ];
+        memcpy((char*)bits, (const char*)tmpBits, newLength);
+        delete [] tmpBits;
+    }
+    
     bitLen = newsize;
 }
 
@@ -503,7 +505,7 @@ void AsnBits::Allocate(long size)
 	bitLen = size;
 	bits = new unsigned char[((bitLen / 8) + 1)];
 	memcpy(bits, temp, length());
-    free(temp);
+    delete [] temp;
 }
 
 void AsnBits::DecodeGeneral(AsnBufBits &b, AsnLen &bitsDecoded)
@@ -529,13 +531,15 @@ void AsnBits::DecodeGeneral(AsnBufBits &b, AsnLen &bitsDecoded)
 		
 		Allocate(templen);
 
-		memcpy(&bits[offset / 8], b.GetBits(templen), ((templen + 7) / 8));
+        delete [] seg;
+        seg = b.GetBits(templen);
+		memcpy(&bits[offset / 8], seg, ((templen + 7) / 8));
 		bitsDecoded += templen;
 
 		bitsDecoded += b.OctetAlignRead();
 
 		offset += templen;
-        free(seg);
+        delete [] seg;
 		seg = (unsigned char*)b.GetBits(8);
 		bitsDecoded += 8;
 	}
@@ -545,7 +549,7 @@ void AsnBits::DecodeGeneral(AsnBufBits &b, AsnLen &bitsDecoded)
 		seg[0] &= 0x3F;
 		templen = (unsigned long)seg[0];
 		templen <<= 8;
-        free(seg);
+        delete [] seg;
 		seg = (unsigned char*)b.GetBits(8);
         bitsDecoded += 8;
 		templen |= (unsigned long)seg[0];
@@ -554,11 +558,12 @@ void AsnBits::DecodeGeneral(AsnBufBits &b, AsnLen &bitsDecoded)
 
 		Allocate(templen);
 
-		memcpy(&bits[offset / 8], b.GetBits(templen), ((templen + 7) / 8));
+        delete [] seg;
+        seg = b.GetBits(templen);
+		memcpy(&bits[offset / 8], seg, ((templen + 7) / 8));
         bitsDecoded += templen;
 
 		offset += templen;
-				
 	}
 	else if((seg[0] & 0x80) == 0x00)
 	{
@@ -569,7 +574,7 @@ void AsnBits::DecodeGeneral(AsnBufBits &b, AsnLen &bitsDecoded)
 
 		Allocate(templen);
 		
-        free(seg);
+        delete [] seg;
         seg = b.GetBits(templen);
 		memcpy(&bits[offset / 8], seg, ((templen + 7) / 8));
 		bitsDecoded += templen;
@@ -577,7 +582,7 @@ void AsnBits::DecodeGeneral(AsnBufBits &b, AsnLen &bitsDecoded)
 		offset += templen;
 	}
 
-    free(seg);
+    delete [] seg;
 }
 
 long AsnBits::FindSizeConstraintBounds(int &iSCLowerBound, int &iSCUpperBound)const
@@ -687,7 +692,7 @@ AsnLen AsnBits::EncodeWithSizeConstraint (AsnBufBits &b)const
 		len += b.PutBits((unsigned char*)bits, bitLen);
 	}
 
-    free(pStr);
+    delete [] pStr;
 	return len;
 }
 
@@ -728,14 +733,13 @@ void AsnBits::DecodeWithSizeConstraint(AsnBufBits &b, AsnLen &bitsDecoded)
 
 		if(minBytesNeeded > 0)
 		{
-            free(pStr);
 			pStr = b.GetBits(8);
             bitsDecoded += 8;
 			decodeSize <<= 8;
 			decodeSize |= (long)pStr[0];
 		}
 
-        free(pStr);
+        delete [] pStr;
 		pStr = b.GetBits(minBitsNeeded);
         bitsDecoded += minBitsNeeded;
 
@@ -751,6 +755,7 @@ void AsnBits::DecodeWithSizeConstraint(AsnBufBits &b, AsnLen &bitsDecoded)
 
 	if(decodeSize > iSCUpperBound)
 	{
+        delete [] pStr;
 		throw EXCEPT("String size not withing restricted bounds", RESTRICTED_TYPE_ERROR);
 	}
 
@@ -765,8 +770,9 @@ void AsnBits::DecodeWithSizeConstraint(AsnBufBits &b, AsnLen &bitsDecoded)
     seg = b.GetBits(decodeSize);
 	memcpy(bits, seg, ((decodeSize + 7) / 8));
     bitsDecoded += decodeSize;
-    free(seg);
-    free(pStr);
+    delete [] seg;
+    delete [] pStr;
+    
 }
 
 AsnLen AsnBits::PEnc (AsnBufBits &b) const

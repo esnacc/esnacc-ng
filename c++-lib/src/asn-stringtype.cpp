@@ -177,6 +177,7 @@ AsnLen AsnString::EncodeWithSizeConstraint(AsnBufBits &b)const
 
 	if(size < iSCLowerBound || size > iSCUpperBound)
 	{
+        delete [] pStr;
 		throw EXCEPT("String size not withing restricted bounds", RESTRICTED_TYPE_ERROR);
 	}
 	
@@ -214,7 +215,7 @@ AsnLen AsnString::EncodeWithSizeConstraint(AsnBufBits &b)const
 		count++;
 	}
 
-    free(pStr);
+    delete [] pStr;
 	return len;
 }
 
@@ -257,14 +258,14 @@ void AsnString::DecodeWithSizeConstraint(AsnBufBits &b, AsnLen &bitsDecoded)
 
 		if(minBytesNeeded > 0)
 		{
-            free(pStr);
+            delete [] pStr;
 			pStr = b.GetBits(8);
             bitsDecoded += 8;
 			decodeSize <<= 8;
 			decodeSize |= (long)pStr[0];
 		}
 
-        free(pStr);
+        delete [] pStr;
 		pStr = b.GetBits(minBitsNeeded);
         bitsDecoded += minBitsNeeded;
 
@@ -280,6 +281,7 @@ void AsnString::DecodeWithSizeConstraint(AsnBufBits &b, AsnLen &bitsDecoded)
 
 	if(decodeSize > iSCUpperBound)
 	{
+        delete [] pStr;
 		throw EXCEPT("String size not withing restricted bounds", RESTRICTED_TYPE_ERROR);
 	}
 
@@ -295,7 +297,7 @@ void AsnString::DecodeWithSizeConstraint(AsnBufBits &b, AsnLen &bitsDecoded)
 		count++;
 	}
 
-    free(pStr);
+    delete [] pStr;
 }
 
 
@@ -391,7 +393,7 @@ void AsnString::Deterpret(AsnBufBits &b, AsnLen &bitsDecoded, long offset)
 	}
 
 	putChar((char*)seg);
-    free(seg);
+    delete [] seg;
 }
 
 void AsnString::PDec(AsnBufBits &b, AsnLen &bitsDecoded)

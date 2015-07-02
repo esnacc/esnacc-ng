@@ -61,7 +61,7 @@ void AsnBool::PDec(AsnBufBits &b, AsnLen &bitsDecoded)
 
 	bitsDecoded += 1;
 
-    free(cBool);
+    delete [] cBool;
 }
 
 

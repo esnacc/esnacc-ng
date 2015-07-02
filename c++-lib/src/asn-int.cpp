@@ -960,8 +960,9 @@ void AsnInt::Allocate(long size)
 
 	m_len = size;
 	m_bytes = new unsigned char[m_len];
-	memcpy(m_bytes, temp, m_len);
-    free(temp);
+    if( m_len )
+        memcpy(m_bytes, temp, m_len);
+    delete [] temp;
 }
 
 void AsnInt::PDec(AsnBufBits &b, AsnLen &bitsDecoded)
@@ -1054,7 +1055,7 @@ void AsnInt::PDecSemiConstrained (AsnBufBits &b, long lowerBound, AsnLen &bitsDe
 				INTEGER_ERROR);
 	}
 
-    free(seg);
+    delete [] seg;
 	seg = (unsigned char*)b.GetBits(m_len * 8);
 	bitsDecoded += (m_len * 8);
 
@@ -1066,7 +1067,7 @@ void AsnInt::PDecSemiConstrained (AsnBufBits &b, long lowerBound, AsnLen &bitsDe
 
 	Set(l_intval);
 	
-    free(seg);
+    delete [] seg;
 }
 
 void AsnInt::PDecFullyConstrained (AsnBufBits &b, long lowerBound, long upperBound, AsnLen &bitsDecoded)
@@ -1100,7 +1101,6 @@ void AsnInt::PDecFullyConstrained (AsnBufBits &b, long lowerBound, long upperBou
 		{
 			if(range <= 255)
 			{
-                free(seg);
 				seg = b.GetBits(minBitsNeeded);
 				bitsDecoded += minBitsNeeded;
 
@@ -1110,7 +1110,6 @@ void AsnInt::PDecFullyConstrained (AsnBufBits &b, long lowerBound, long upperBou
 			else if(range == 256)
 			{
 				bitsDecoded += b.OctetAlignRead();
-                free(seg);
                 seg = b.GetBits(8);
                 bitsDecoded += 8;
 
@@ -1119,7 +1118,6 @@ void AsnInt::PDecFullyConstrained (AsnBufBits &b, long lowerBound, long upperBou
 			else if(range > 256 && range < 65536)
 			{
 				bitsDecoded += b.OctetAlignRead();
-                free(seg);
 				seg = b.GetBits(16);
                 bitsDecoded += 16;
 				l_intval = (long)seg[0];
@@ -1137,7 +1135,6 @@ void AsnInt::PDecFullyConstrained (AsnBufBits &b, long lowerBound, long upperBou
 				
 				minBitsNeeded -= 1;
 
-                free(seg);
 				seg = b.GetBits(minBitsNeeded);
                 bitsDecoded += minBitsNeeded;
 				
@@ -1145,10 +1142,10 @@ void AsnInt::PDecFullyConstrained (AsnBufBits &b, long lowerBound, long upperBou
 				numBytes = (long)seg[0];
 				numBytes += 1;
 
+                delete [] seg;
 				if(numBytes > 4)
 					throw EXCEPT("integer is too big for decoded", INTEGER_ERROR);
-
-                free(seg);
+                
 				seg = b.GetBits(numBytes * 8);
                 bitsDecoded += (numBytes * 8);
 
@@ -1166,10 +1163,9 @@ void AsnInt::PDecFullyConstrained (AsnBufBits &b, long lowerBound, long upperBou
 		}
 		else
 		{
-            free(seg);
 			seg = b.GetBits(minBitsNeeded);
 			bitsDecoded += minBitsNeeded;
-
+            
 			numBytes = minBitsNeeded / 8;
 			
 			oddBits = (minBitsNeeded % 8);
@@ -1218,7 +1214,7 @@ void AsnInt::PDecFullyConstrained (AsnBufBits &b, long lowerBound, long upperBou
 	l_intval += lowerBound;
 	Set(l_intval);
 
-    free(seg);
+    delete [] seg;
 }
 
 
@@ -1244,7 +1240,7 @@ void AsnInt::Deterpret(AsnBufBits &b, AsnLen &bitsDecoded, long offset)
     bitsDecoded += 8;
 	
 	putByte(offset, seg[0]);
-    free(seg);
+    delete [] seg;
 }
 
 

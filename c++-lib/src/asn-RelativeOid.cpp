@@ -313,8 +313,8 @@ void AsnRelativeOid::BDec(const AsnBuf& b, AsnLen& bytesDecoded)
 
 	// Decode the tag
 	AsnTag tagId = BDecTag(b, bytesDecoded);
-	if (m_isRelative && (tagId != MAKE_TAG_ID(UNIV, PRIM, RELATIVE_OID_TAG_CODE)) ||
-		!m_isRelative && (tagId != MAKE_TAG_ID(UNIV, PRIM, OID_TAG_CODE)))
+	if ((m_isRelative && (tagId != MAKE_TAG_ID(UNIV, PRIM, RELATIVE_OID_TAG_CODE))) ||
+		(!m_isRelative && (tagId != MAKE_TAG_ID(UNIV, PRIM, OID_TAG_CODE))))
 	{
 		throw InvalidTagException(typeName(), tagId, STACK_ENTRY);
 	}
@@ -366,7 +366,7 @@ void AsnRelativeOid::PDec (AsnBufBits &b, AsnLen &bitsDecoded)
 	unsigned char* seg = b.GetBits(8);
 	bitsDecoded += 8;
 	unsigned long lseg = (unsigned long)seg[0];
-	free(seg);
+    delete [] seg;
 	
 	if (lseg > 0)
 	{
@@ -376,7 +376,7 @@ void AsnRelativeOid::PDec (AsnBufBits &b, AsnLen &bitsDecoded)
 		bitsDecoded += lseg * 8;
 
 		Set((const char*)seg, lseg);
-		free(seg);
+        delete [] seg;
 	}
 }
 
@@ -481,8 +481,10 @@ int AsnRelativeOid::TclSetVal (Tcl_Interp *interp, const char *valstr)
   unsigned long* pLongArray = new unsigned long[arc.c];
   for (int i=0; i<arc.c; i++)
     if (Tcl_GetInt (interp, arc.v[i], pLongArray[i]) != TCL_OK)
-      return TCL_ERROR;
-
+    {
+        delete [] pLongArray;
+        return TCL_ERROR;
+    }
   Set(pLongArray, arc.c);
   delete[] pLongArray;
   return TCL_OK;

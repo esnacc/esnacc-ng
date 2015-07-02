@@ -956,7 +956,7 @@ void AsnReal::PDec (AsnBufBits &b, AsnLen &bitsDecoded)
 	
 	bitsDecoded += b.OctetAlignRead();
 
-    free(seg);
+    delete [] seg;
 	seg = b.GetBits(lseg * 8);
 
 	tempBuf.PutSegRvs((char*)seg, lseg);
@@ -965,7 +965,7 @@ void AsnReal::PDec (AsnBufBits &b, AsnLen &bitsDecoded)
 	BDecContent (tempBuf, MAKE_TAG_ID (UNIV, PRIM, REAL_TAG_CODE), lseg, bytesDecoded);
 
 	bitsDecoded += (bytesDecoded * 8);
-    free(seg);
+    delete [] seg;
 }
 
 

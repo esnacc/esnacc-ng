@@ -208,6 +208,7 @@ void AsnList<T>::PDec(SNACC::AsnBufBits& b, SNACC::AsnLen& bitsDecoded)
 			bitsDecoded += 8;
 			decodeSize <<= 8;
 			decodeSize |= (long)pStr[0];
+            delete [] pStr;
 		}
 
 		pStr = b.GetBits(minBitsNeeded);
@@ -226,7 +227,7 @@ void AsnList<T>::PDec(SNACC::AsnBufBits& b, SNACC::AsnLen& bitsDecoded)
 		for (int i = 0; i < decodeSize; i++)
 			append()->PDec(b, bitsDecoded);
 
-        free(pStr);
+        delete [] pStr;
 	}
 	else
 	{
