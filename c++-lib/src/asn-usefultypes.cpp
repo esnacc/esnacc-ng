@@ -143,7 +143,7 @@ void EXTERNALChoice::BDecContent (const AsnBuf & b, AsnTag tag, AsnLen elmtLen0,
       } // end switch
 } // EXTERNALChoice::BDecContent
 
-AsnLen EXTERNALChoice::PEnc (AsnBufBits &b) const
+AsnLen EXTERNALChoice::PEnc (AsnBufBits &) const
 {
 	AsnLen len=0;
 
@@ -437,7 +437,7 @@ void EXTERNAL::BDecContent (const AsnBuf & b, AsnTag /*tag0*/, AsnLen elmtLen0, 
       return;
 } // EXTERNAL::BDecContent
 
-AsnLen EXTERNAL::PEnc (AsnBufBits &b) const
+AsnLen EXTERNAL::PEnc (AsnBufBits &) const
 {
 	AsnLen len=0;
 

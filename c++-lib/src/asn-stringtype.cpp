@@ -138,8 +138,7 @@ long AsnString::FindSizeConstraintBounds(int &iSCLowerBound, int &iSCUpperBound)
 			iSCUpperBound = sizeConstraints[count].upperBound;
 		}
 
-		if( (unsigned)iSCLowerBound > sizeConstraints[count].lowerBound &&
-			sizeConstraints[count].lowerBound >= 0)
+		if( (unsigned)iSCLowerBound > sizeConstraints[count].lowerBound )
 		{
 			iSCLowerBound = sizeConstraints[count].lowerBound;
 		}
@@ -353,7 +352,7 @@ AsnString& AsnString::operator=(const char* str)
 	return *this;
 }
 
-void AsnString::Deterpret(AsnBufBits &b, AsnLen &bitsDecoded, long offset)
+void AsnString::Deterpret(AsnBufBits &b, AsnLen &bitsDecoded, long)
 {
 	AsnLen len;
 	int B = numBits();
@@ -702,10 +701,6 @@ void WideAsnString::getAsUTF8(std::string& utf8String) const
 	std::string::size_type x = 0;
 	for (const_iterator i = begin(); i != end(); ++i)
 	{
-		// Return an error if the wide character is invalid
-		if (*i < 0)
-			throw EXCEPT("Invalid wide character", RESTRICTED_TYPE_ERROR);
-		
 		// Determine the number of characters required to encode this
 		// wide character
 		unsigned int j;
@@ -741,7 +736,7 @@ void WideAsnString::getAsUTF8(std::string& utf8String) const
 
 } // end of WideAsnString::getAsUTF8()
 
-void WideAsnString::Deterpret(AsnBufBits &b, AsnLen &bitsDecoded, long offset)
+void WideAsnString::Deterpret(AsnBufBits &b, AsnLen &bitsDecoded, long)
 {
 	wchar_t* seg = (wchar_t*)b.GetBits(sizeof(wchar_t));
     bitsDecoded += (sizeof(wchar_t));
@@ -1413,7 +1408,7 @@ void UniversalString::BDecContent(const AsnBuf &b, AsnTag tagId, AsnLen elmtLen,
 		for (unsigned int iByte = 4; iByte > 0; --iByte)
 		{
 			// Check that the wchar_t won't overflow
-			if ((wcharSize - iByte) < 0)
+			if (int(int(wcharSize) - int(iByte)) < 0)
 			{
 				if (*iEnc++ != 0)
 				{

@@ -339,8 +339,7 @@ long AsnOcts::FindSizeConstraintBounds(int &iSCLowerBound, int &iSCUpperBound)co
 			iSCUpperBound = sizeConstraints[count].upperBound;
 		}
 
-		if( (unsigned)iSCLowerBound > sizeConstraints[count].lowerBound &&
-			sizeConstraints[count].lowerBound >= 0)
+		if( (unsigned)iSCLowerBound > sizeConstraints[count].lowerBound )
 		{
 			iSCLowerBound = sizeConstraints[count].lowerBound;
 		}

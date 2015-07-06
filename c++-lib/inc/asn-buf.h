@@ -276,9 +276,9 @@ protected:
    virtual int_type        underflow();
    virtual int_type        uflow();
 
-   virtual int_type        overflow(int c = EOF) { return EOF; }
+   virtual int_type        overflow(int = EOF) { return EOF; }
    virtual std::streamsize xsgetn(char *s, std::streamsize n);
-   virtual std::streamsize xsputn(const char *s, std::streamsize n) { return overflow(); }
+   virtual std::streamsize xsputn(const char *, std::streamsize ) { return overflow(); }
    virtual pos_type        seekoff(off_type off, std::ios_base::seekdir way,
                                    std::ios_base::openmode which = std::ios_base::in | std::ios_base::out);
    virtual pos_type        seekpos(pos_type sp,
@@ -351,7 +351,7 @@ public:
 	  second = FILE_TYPE;
    }
 
-   Card(const Card &o)
+ Card(const Card &o) : std::pair<std::streambuf *, AsnBufType>(o)
    {  m_cDataR = 0x00;
 	  m_cDataW = 0x00;
 	  m_iBitPosW = 0;

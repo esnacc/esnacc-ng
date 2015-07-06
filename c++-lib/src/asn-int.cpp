@@ -429,7 +429,7 @@ AsnLen  AsnInt::BEncContent (AsnBuf &b) const
    return m_len;
 }
 
-void AsnInt::BDecContent (const AsnBuf &b, AsnTag tagId, AsnLen elmtLen, AsnLen &bytesDecoded)
+void AsnInt::BDecContent (const AsnBuf &b, AsnTag, AsnLen elmtLen, AsnLen &bytesDecoded)
 {
    FUNC("AsnInt::BDecContent()");
 

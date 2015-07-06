@@ -320,8 +320,8 @@ public:
 	virtual void   BDec(const AsnBuf &b, AsnLen &bytesDecoded) = 0;
 	virtual AsnLen BEnc(AsnBuf &b) const = 0;
 
-	virtual void   PDec(AsnBufBits &b, AsnLen &bitsDecoded)		{}
-	virtual AsnLen PEnc(AsnBufBits &b) const					{ return 0; }
+	virtual void   PDec(AsnBufBits &, AsnLen &)		{}
+	virtual AsnLen PEnc(AsnBufBits &) const					{ return 0; }
 
 	bool BEncPdu(AsnBuf &b, AsnLen &bytesEncoded) const;
 	bool BDecPdu(const AsnBuf &b, AsnLen &bytesDecoded);
@@ -949,9 +949,9 @@ public:
 class SNACCDLL_API AsnString : public std::string, public AsnType, protected PERGeneral
 {
 public:
-	AsnString(const char* str = NULL)				{ operator=(str); }
-	AsnString(const std::string& str)				{ operator=(str); }
-    AsnString(const AsnString& aStr)                { operator=(aStr.c_str()); }     
+	AsnString(const char* str = NULL)				 { operator=(str); }
+	AsnString(const std::string& str)				 { operator=(str); }
+    AsnString(const AsnString& aStr) : std::string() { operator=(aStr.c_str()); }     
 
 	AsnString& operator=(const char* str);
 	AsnString& operator=(const std::string& str)	{ assign(str); return *this; }
@@ -1005,7 +1005,7 @@ protected:
 	virtual AsnLen	Interpret(AsnBufBits &b, long offset)const;  
 	virtual	long	lEncLen()const{return length();}
 	virtual void	Deterpret(AsnBufBits &b, AsnLen &bitsDecoded, long offset);
-	virtual void	Allocate(long size){/*std::string automatically allocates mem*/};
+	virtual void	Allocate(long){/*std::string automatically allocates mem*/};
 		
 private:
 	void BDecConsString(const AsnBuf &b, AsnLen elmtLen, AsnLen &bytesDecoded);
@@ -1228,7 +1228,7 @@ protected:
 	virtual		AsnLen Interpret(AsnBufBits &b, long offset)const;
 
 	virtual void	Deterpret(AsnBufBits &b, AsnLen &bitsDecoded, long offset);
-	virtual void	Allocate(long size){/*std::string automatically allocates mem*/};
+	virtual void	Allocate(long){/*std::string automatically allocates mem*/};
 
 	AsnLen CombineConsString(const AsnBuf &b, AsnLen elmtLen, std::string& encStr);
 };
@@ -1387,13 +1387,13 @@ public:
 
 	int checkConstraints(ConstraintFailList* ) const	{ return 0; }
 
-	void   BDec(const AsnBuf& b, AsnLen& bytesDecoded)	{/* Implemented in generated code */}
-	void   PDec(AsnBufBits& b, AsnLen& bitsDecoded)		{/* Implemented in generated code */}
+	void   BDec(const AsnBuf&, AsnLen&) {/* Implemented in generated code */}
+	void   PDec(AsnBufBits&, AsnLen&)   {/* Implemented in generated code */}
 	AsnLen BEnc(AsnBuf& b) const;
 	AsnLen PEnc(AsnBufBits& b) const;
 
 	void   Print (std::ostream& os, unsigned short indent = 0) const;
-    void   PrintXML (std::ostream &os, const char *lpszTitle=NULL) const {} 
+    void   PrintXML (std::ostream &, const char * = NULL) const {} 
 };
 
 

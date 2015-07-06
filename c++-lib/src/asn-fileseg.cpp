@@ -45,7 +45,7 @@ AsnFileSeg::AsnFileSeg(AsnFileSeg *afs, unsigned long segLen)
 // assign offset and segSize from o and copy filename, and construct new 
 // std::filebuf from that filename
 //
-AsnFileSeg::AsnFileSeg(const AsnFileSeg &o)
+AsnFileSeg::AsnFileSeg(const AsnFileSeg &o) : std::basic_streambuf<char>()
 {
    FUNC("AsnFileSeg::CopyConstructor()");
 
