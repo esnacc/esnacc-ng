@@ -659,7 +659,7 @@ void WideAsnString::set(const char* str)
 		// Throw an exception if the size of the wchar_t doesn't support the
 		// size of this UTF-8 character
 		//
-      if ( abs((j * 6) - gUTF8Masks[j].bits) > (wcharSize*8))
+      if ( (unsigned long)(abs((j * 6) - gUTF8Masks[j].bits)) > (wcharSize*8))
 		{
 			throw EXCEPT("UTF-8 character too large for wchar_t",
 				RESTRICTED_TYPE_ERROR);
