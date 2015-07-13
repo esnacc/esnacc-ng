@@ -1208,7 +1208,7 @@ bool IA5String::check() const
 	for (const_iterator i = begin(); i != end(); ++i)
 	{
 		// Check that character is less than 128
-		if ( ((unsigned)*i < 0) || ((unsigned)*i > 127) )
+		if ( ((unsigned)*i > 127) )
 			return false;
 	}
 

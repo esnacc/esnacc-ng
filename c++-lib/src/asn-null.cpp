@@ -120,9 +120,9 @@ AsnLen AsnNull::PEnc (AsnBufBits &) const
 	return len;
 }
 
-void AsnNull::PDec (AsnBufBits &, AsnLen &bitsDecoded)
+void AsnNull::PDec (AsnBufBits &, AsnLen &)
 {
-	bitsDecoded = bitsDecoded;
+
 }
 
 AsnLen AsnNull::BEnc (AsnBuf &b) const
