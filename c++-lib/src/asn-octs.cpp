@@ -464,12 +464,14 @@ void AsnOcts::DecodeGeneral(AsnBufBits &b, AsnLen &bitsDecoded)
 		templen *= l_16k;
 	
 		b.OctetAlignRead();
-
-		m_str.append((const char*)b.GetBits(templen * 8), templen);
+        
+        const char *pseg = (const char *)b.GetBits(templen * 8);
+        
+		m_str.append(pseg, templen);
         bitsDecoded += (templen * 8);
 
 		bitsDecoded += b.OctetAlignRead();
-        
+        delete [] pseg;
         delete [] seg;
 	    seg = (unsigned char*)b.GetBits(8);
         bitsDecoded += 8;
@@ -614,7 +616,7 @@ void ConsStringDeck::Fill(const AsnBuf &b, AsnLen elmtLen, AsnLen &bytesDecoded)
     
     while ( !done )
     {
-        for (; (curr->count < curr->length) || (curr->length == INDEFINITE_LEN);)
+        for (; (curr != refList.end()) && (curr->count < curr->length) || (curr->length == INDEFINITE_LEN);)
         {
             tagId1 = BDecTag (b, curr->count);
 
@@ -712,6 +714,8 @@ void ConsStringDeck::Fill(const AsnBuf &b, AsnLen elmtLen, AsnLen &bytesDecoded)
             curr = refList.erase(curr);
             if( curr != refList.end() )
                 curr->count += iTmpCount;
+            else
+                done = true;
         }
         else
         {

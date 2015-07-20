@@ -115,14 +115,12 @@ void AsnNull::BDecContent (const AsnBuf &/*b*/, AsnTag /*tagId*/, AsnLen elmtLen
 
 AsnLen AsnNull::PEnc (AsnBufBits &) const
 {
-	AsnLen len = 0;
-
-	return len;
+    return AsnLen(0);
 }
 
-void AsnNull::PDec (AsnBufBits &, AsnLen &bitsDecoded)
+void AsnNull::PDec (AsnBufBits &, AsnLen &)
 {
-	bitsDecoded = bitsDecoded;
+
 }
 
 AsnLen AsnNull::BEnc (AsnBuf &b) const

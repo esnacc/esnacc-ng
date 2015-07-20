@@ -732,6 +732,7 @@ void AsnBits::DecodeWithSizeConstraint(AsnBufBits &b, AsnLen &bitsDecoded)
 
 		if(minBytesNeeded > 0)
 		{
+            delete [] pStr;
 			pStr = b.GetBits(8);
             bitsDecoded += 8;
 			decodeSize <<= 8;
@@ -904,13 +905,14 @@ AsnBits & AsnBits::SetEqual(const char *stringForm)
    pend = (char *)strstr(stringForm, "'B");
 
    pbegin = (char *)strstr(stringForm,"'");
-   pbegin++;
 
    if (pend == NULL || pbegin == NULL)
    {
       throw ParameterException("Invalid string form for BIT STRING", 
          STACK_ENTRY);
    }
+
+   pbegin++;
 
    // Set length
    Set(pend - pbegin);

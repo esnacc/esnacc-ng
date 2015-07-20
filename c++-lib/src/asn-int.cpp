@@ -1,4 +1,4 @@
-// file: .../c++-lib/src/asn-int.C - methods for AsnInt (ASN.1 INTEGER) class
+// File: .../c++-lib/src/asn-int.C - methods for AsnInt (ASN.1 INTEGER) class
 //
 // MS 92/06/16
 // Copyright (C) 1992 Michael Sample and the University of British Columbia
@@ -1104,7 +1104,7 @@ void AsnInt::PDecFullyConstrained (AsnBufBits &b, long lowerBound, long upperBou
 				seg = b.GetBits(minBitsNeeded);
 				bitsDecoded += minBitsNeeded;
 
-                seg[0] >>= 8 - minBitsNeeded;
+                seg[0] >>= (8 - minBitsNeeded);
 				l_intval = (long)seg[0];
 			}
 			else if(range == 256)
@@ -1346,7 +1346,7 @@ AsnLen AsnInt::PEncSemiConstrained (AsnBufBits &b, long lowerBound)const
 
 	if((tempInt.m_len) > 1 && (tempInt.m_bytes[0]) == 0x00)
 	{
-		memcpy(tempInt.m_bytes, tempInt.m_bytes + 1, tempInt.m_len - 1);
+		memmove(tempInt.m_bytes, tempInt.m_bytes + 1, tempInt.m_len - 1);
 		tempInt.m_len--;
 	}
 
@@ -1395,7 +1395,7 @@ AsnLen AsnInt::PEncFullyConstrained(AsnBufBits &b, long lowerBound, long upperBo
 
 	if((tempInt.m_len) > 1 && (tempInt.m_bytes[0]) == 0x00)
 	{
-		memcpy(tempInt.m_bytes, tempInt.m_bytes + 1, tempInt.m_len - 1);
+		memmove(tempInt.m_bytes, tempInt.m_bytes + 1, tempInt.m_len - 1);
 		tempInt.m_len--;
 	}
 
@@ -1462,7 +1462,7 @@ AsnLen AsnInt::PEncFullyConstrained(AsnBufBits &b, long lowerBound, long upperBo
 
 				if((tempInt2.m_len) > 1 && (tempInt2.m_bytes[0]) == 0x00)
 				{
-					memcpy(tempInt2.m_bytes, tempInt2.m_bytes + 1, tempInt2.m_len - 1);
+					memmove(tempInt2.m_bytes, tempInt2.m_bytes + 1, tempInt2.m_len - 1);
 					tempInt2.m_len--;
 				}
 

@@ -189,19 +189,19 @@ void AsnBufBits::AppendTo(AsnBufBits &bufBitsOut)
 {
 	FUNC("AsnBufBits::AppendTo()");
 
-	unsigned char ch, *p_ch;
-	AsnBufBits tmpBuf(*this);
-	VDAstreambuf *pVDAbufref = (VDAstreambuf *)this->m_pbuf;
-	char* pg=pVDAbufref->Vgptr();
-	char* peg=pVDAbufref->Vegptr();
-	char* peb=pVDAbufref->Veback();
-	int iThisCount=this->length();
-	int iLeft;
-	
 	// Check that buffer is valid
 	if (m_pbuf == NULL)
 		throw BufferException("NULL internal m_pbuf pointer", STACK_ENTRY);
-	
+    
+	unsigned char ch = 0, *p_ch;
+	AsnBufBits tmpBuf(*this);
+	VDAstreambuf *pVDAbufref = (VDAstreambuf *)m_pbuf;
+	char* pg=pVDAbufref->Vgptr();
+	char* peg=pVDAbufref->Vegptr();
+	char* peb=pVDAbufref->Veback();
+	int iThisCount=length();
+	int iLeft;
+		
 	try
 	{
 		for (int ii=0; ii < iThisCount/8; ii++)

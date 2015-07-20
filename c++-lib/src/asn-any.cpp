@@ -397,8 +397,8 @@ AsnLen AsnAny::PEnc(AsnBufBits &b) const
        {
           tmpAnyLoadOcts.Set(ptr, lLength); // BYTE count here.
           lLength = tmpAnyLoadOcts.PEnc(b);  // BIT count returned.
-          delete[] ptr;
        }    // END IF any data in ANY.
+       delete[] ptr;
    }        // IF value/anyBuf
    else
       throw EXCEPT("Unknown any with no value", ENCODE_ERROR);
@@ -474,17 +474,6 @@ AsnAny::BEnc (AsnBuf &b) const
 		b.insert(*anyBuf);
 		return anyBuf->length();
 
-#ifdef OLD
-      std::string data;
-      
-		// PIERCE: make this more efficient
-      //
-      anyBuf->ResetMode();
-      anyBuf->GetSeg(data);
-      anyBuf->ResetMode();
-      b.PutSegRvs(data.data(), data.length());
-      return anyBuf->length();
-#endif
    }
    else
       throw EXCEPT("Unknown any with no value", ENCODE_ERROR);
