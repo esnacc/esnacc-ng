@@ -659,7 +659,7 @@ void WideAsnString::set(const char* str)
 		// Throw an exception if the size of the wchar_t doesn't support the
 		// size of this UTF-8 character
 		//
-      if ( abs((j * 6) - gUTF8Masks[j].bits) > (wcharSize*8))
+      if ( (unsigned long)(abs((j * 6) - gUTF8Masks[j].bits)) > (wcharSize*8))
 		{
 			throw EXCEPT("UTF-8 character too large for wchar_t",
 				RESTRICTED_TYPE_ERROR);
@@ -1208,7 +1208,7 @@ bool IA5String::check() const
 	for (const_iterator i = begin(); i != end(); ++i)
 	{
 		// Check that character is less than 128
-		if ( ((unsigned)*i < 0) || ((unsigned)*i > 127) )
+		if ( ((unsigned)*i > 127) )
 			return false;
 	}
 

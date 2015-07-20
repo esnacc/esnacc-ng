@@ -383,7 +383,7 @@ void EXTERNAL::BDecContent (const AsnBuf & b, AsnTag /*tag0*/, AsnLen elmtLen0, 
    AsnLen elmtLen1;
    tag1 = BDecTag (b, seqBytesDecoded);
 
-   if ((tag1 == MAKE_TAG_ID (UNIV, PRIM, OID_TAG_CODE)))
+   if (tag1 == MAKE_TAG_ID (UNIV, PRIM, OID_TAG_CODE))
    {
       elmtLen1 = BDecLen (b, seqBytesDecoded);
       direct_reference = new AsnOid;
@@ -391,7 +391,7 @@ void EXTERNAL::BDecContent (const AsnBuf & b, AsnTag /*tag0*/, AsnLen elmtLen0, 
       tag1 = BDecTag (b, seqBytesDecoded);
    }
 
-   if ((tag1 == MAKE_TAG_ID (UNIV, PRIM, INTEGER_TAG_CODE)))
+   if (tag1 == MAKE_TAG_ID (UNIV, PRIM, INTEGER_TAG_CODE))
    {
       elmtLen1 = BDecLen (b, seqBytesDecoded);
       indirect_reference = new AsnInt;
