@@ -617,7 +617,7 @@ template<>
 bool std::greater<SNACC::AsnBuf>::operator()(const SNACC::AsnBuf &x,
                                              const SNACC::AsnBuf &y) const
 {
-   AsnLen len;
+   AsnLen len(0);
    AsnTag xTag = (BDecTag(x, len) & 0xDFFFFFFF);
    AsnTag yTag = (BDecTag(y, len) & 0xDFFFFFFF);
 

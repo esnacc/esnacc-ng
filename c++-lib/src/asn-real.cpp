@@ -859,7 +859,7 @@ void AsnReal::BDecContent (const AsnBuf &b, AsnTag /* tagId */, AsnLen elmtLen, 
                         exponent = (-1 <<8) | firstExpOctet;
                     else
                         exponent = firstExpOctet;
-                    for (;i > 0; firstExpOctet--)
+                    for (;i > 0; firstExpOctet--, i--)
                         exponent = (exponent << 8) | b.GetByte();
                     break;
             }

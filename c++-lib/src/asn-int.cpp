@@ -1466,7 +1466,7 @@ AsnLen AsnInt::PEncFullyConstrained(AsnBufBits &b, long lowerBound, long upperBo
 					tempInt2.m_len--;
 				}
 
-				if((unsigned)minBitsNeeded > (tempInt.m_len * 8))
+				if((unsigned)minBitsNeeded > (tempInt2.m_len * 8))
 				{
 					len += b.PutBits(pChar, minBitsNeeded - (tempInt2.m_len * 8)); 
 					minBitsNeeded -= (minBitsNeeded - (tempInt2.m_len * 8));

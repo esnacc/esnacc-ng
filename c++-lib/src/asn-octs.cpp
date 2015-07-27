@@ -708,7 +708,7 @@ void ConsStringDeck::Fill(const AsnBuf &b, AsnLen elmtLen, AsnLen &bytesDecoded)
             }
         } /* end of for */
 
-        if( curr != refList.begin() )
+        if( curr != refList.begin() && curr != refList.end() )
         {
             int iTmpCount = curr->count;
             curr = refList.erase(curr);

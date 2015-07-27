@@ -22,4 +22,3 @@ addons:
 script: 
    - ./configure 
    - make
-   - ./scan_script.sh
