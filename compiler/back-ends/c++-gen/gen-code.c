@@ -405,7 +405,7 @@ PrintDerivedConstructors PARAMS ((f, r, td),
             /* include overloading of = op. MS 12/92 */
 			
             fprintf (f, "        %s		&operator = (const %s &o)	{ if (this != &o ) AsnOcts::operator=(o); return *this; }\n", derivedClassName, derivedClassName);
-			fprintf (f, "        %s		&operator = (const char *str)	{ if (this != &o ) AsnOcts::operator=(str); return *this; }\n", derivedClassName);
+			fprintf (f, "        %s		&operator = (const char *str)	{ AsnOcts::operator=(str); return *this; }\n", derivedClassName);
             break;
 
         case BASICTYPE_BITSTRING:
