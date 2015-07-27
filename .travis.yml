@@ -12,3 +12,19 @@ script:
    - ./configure --enable-snoop
    - make
    - sudo make install
+
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "DX/LghN2HYIlvYZdiaGFjqmi8mBsRsTGb1uQrQO/YgJv+0+MoN4PAiIppQxJib9tislBKY9vDHrhMWVhu8sVVpQ2ZEg6cBjV7Eq8ZIPzDmR986n0YnE0f6nw4WOuCxD1Epsr4mvnlqGAfBrQkWPx1dwa5jfVIDCtp5NylRjjkYNdYj27yzGdGWVywRFzoWvRafPbWNWFDosNcNf0osyXJyDRfh6l5e/eofwwVSJEPXlf/Hifrax4GB1HvxjgUJ4EPYlJww7H7HQCk944JmGZhbvqEATLKhwIHQnRMNbop3NAq99iHlQUX4RKcu95Kts0JrlKXIsbmFx7Dnr+bjKJ7ynZg2J61yZ8IhlOaMDweVGmyo4NZoqRUMGVTSfXsW8O4RhIZDCHhvAanPXxT1lqg4czGtKo0R6VpcWF2WJJw/vg38yVRm69w+oSFAqrfJ/H0frY3viuqN7sPuhBTOpVVzTYWSo/CQWr3TU/P7u3Bx0UzAPvvp2Fub00p0niKfEFpdXKj7PymLnSX5R60ndTv88ZLnT+1Tl3y+QpQEkvKnZ0XGn7K4CKDPk8VL7PrX/d3RX6aUqR1V/PwbbhkWUkaetW6VHZDsCeyXyZtA4iz3i6a8euRurTK2H/CGUVUJrrkE0DZmKV+HnqCAVd7wdlNLkMzH8IJutYcQNRz1RoKJQ="
+
+addons:
+  coverity_scan:
+    project:
+      name: "orgcandman/esnacc-ng"
+      description: "ASN.1 compiler to C/C++"
+    notification_email: aaron@bytheb.org
+    build_command_prepend: "./configure"
+    build_command:   "make"
+    branch_pattern: coverity_scan
