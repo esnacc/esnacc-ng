@@ -1,5 +1,7 @@
 language: c
 
+sudo: true
+
 compiler:
    - gcc
 
