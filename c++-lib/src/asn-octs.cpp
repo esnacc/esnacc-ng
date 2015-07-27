@@ -616,7 +616,7 @@ void ConsStringDeck::Fill(const AsnBuf &b, AsnLen elmtLen, AsnLen &bytesDecoded)
     
     while ( !done )
     {
-        for (; (curr != refList.end()) && (curr->count < curr->length) || (curr->length == INDEFINITE_LEN);)
+        for (; (curr != refList.end()) && ((curr->count < curr->length) || (curr->length == INDEFINITE_LEN));)
         {
             tagId1 = BDecTag (b, curr->count);
 
