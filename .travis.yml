@@ -21,4 +21,5 @@ addons:
 
 script: 
    - ./configure 
+   - touch compiler/core/parse-asn1.c
    - make
