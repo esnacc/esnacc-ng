@@ -32,7 +32,7 @@
 #include "asn-incl.h"
 #include "asn1module.h"
 #include "exports.h"
-#include "parse-asn1.h"  /* defines the returned token values */
+#include "y.tab.h"  /* defines the returned token values */
 #include "lex-stuff.h"
 
 unsigned long int myLineNoG = 0;
