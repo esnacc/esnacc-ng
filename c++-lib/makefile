@@ -30,7 +30,7 @@ endif
 #-------------------------------------------------------------------------------
 DEPEND = $(wildcard ./inc/*.h)
 
-all: $(TARGET2) $(TARGET)
+all: $(TARGET) $(TARGET2)
 
 $(TARGET): $(OFILES)
 	@echo *** Creating archive library ***
@@ -38,7 +38,7 @@ $(TARGET): $(OFILES)
 
 $(TARGET2): $(OFILES)
 	@echo *** Creating shared object library ***
-	$(CXX) $(LFLAGS) -o $@ $(OFILES) $(SNACCLIBS)
+	$(CXX) $(LDFLAGS) -shared -Wl,-soname,$@ -o $@ $(OFILES) $(SNACCLIBS)
 
 $(OFILES): $(DEPEND)
 

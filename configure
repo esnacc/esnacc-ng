@@ -3459,7 +3459,8 @@ echo "${ECHO_T}SETTING Load flag to -G" >&6
 
 case "$LEX" in
   lex)
-    LFLAGS="-Nc10000"
+    LFLAGS=""
+    CFLAGS="$CFLAGS -DYYTEXT_POINTER "
   ;;
 esac
 
