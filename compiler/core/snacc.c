@@ -1120,10 +1120,20 @@ GenCCode PARAMS ((allMods, longJmpVal, genTypes, genValues, genEncoders, genDeco
 				 PrintCCode (cSrcFilePtr, cHdrFilePtr, allMods, currMod, 
 						&cRulesG, longJmpVal, genTypes,  genValues, 
 						genEncoders, genDecoders, genPrinters, genFree);
-				fclose (cHdrFilePtr);
-				fclose (cSrcFilePtr);
 			}
 		}
+        if (cSrcFilePtr)
+        {
+            fclose (cSrcFilePtr);
+            cSrcFilePtr = NULL;
+        }
+
+        if (cHdrFilePtr)
+        {
+            fclose (cHdrFilePtr);
+            cHdrFilePtr = NULL;
+        }
+
     }
 	return 0;
 }  /* GenCCode */
