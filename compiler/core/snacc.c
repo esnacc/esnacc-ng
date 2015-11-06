@@ -1505,7 +1505,7 @@ short Add2SrcList(SRC_FILE **FileList, const char *InputFile, short ImportFlag)
             /* Alloc 2 extra bytes below - 1 for null byte, and 1 for the /
                which needs to be inserted in the middle */
             fullPath = (char *)calloc(strlen(InputFile)+strlen(fileName)+2,
-                                      sizeof char);
+                                      sizeof(char));
             
 			/* Build the full path to the file */
             
