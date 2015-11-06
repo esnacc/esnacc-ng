@@ -1442,7 +1442,7 @@ PrintRosOperationMacroType PARAMS ((f, head, t, bt, op),
 
         INDENT (f, indentG);
 
-        if (op->arguments->fieldName != NULL)
+        if (op->arguments && op->arguments->fieldName)
             fprintf (f, "%s ", op->arguments->fieldName);
 
         PrintType (f, head, op->result->type);
