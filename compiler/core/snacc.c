@@ -1474,7 +1474,7 @@ short Add2SrcList(SRC_FILE **FileList, const char *InputFile, short ImportFlag)
 
     GFSI_HANDLE gfsi_handle = NULL;
 	char *fileName = NULL;
-	char fullPath[1024];
+	char *fullPath;
 	SRC_FILE *tmpList;
 	SRC_FILE *prev;
 	short err = -1;
@@ -1492,7 +1492,13 @@ short Add2SrcList(SRC_FILE **FileList, const char *InputFile, short ImportFlag)
 		fileName = GFSI_GetFirstFile(&gfsi_handle, InputFile, gAsnExt);
 		while (fileName != NULL)
 		{
+            /* Alloc 2 extra bytes below - 1 for null byte, and 1 for the /
+               which needs to be inserted in the middle */
+            fullPath = (char *)calloc(strlen(InputFile)+strlen(fileName)+2,
+                                      sizeof char);
+            
 			/* Build the full path to the file */
+            
 			sprintf(fullPath, "%s/%s", InputFile, fileName);
 
 			/* Check if this file is already present */
@@ -1520,6 +1526,8 @@ short Add2SrcList(SRC_FILE **FileList, const char *InputFile, short ImportFlag)
 			fileName = GFSI_GetNextFile(&gfsi_handle, gAsnExt);
 
 			err = 0;
+            free(fullPath);
+            fullPath = 0;
 		}
 		
 		GFSI_Close(&gfsi_handle);
