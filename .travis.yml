@@ -7,17 +7,17 @@ env:
   global:
    # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
    #   via the "travis encrypt" command using the project repo's public key
-   - secure: "DX/LghN2HYIlvYZdiaGFjqmi8mBsRsTGb1uQrQO/YgJv+0+MoN4PAiIppQxJib9tislBKY9vDHrhMWVhu8sVVpQ2ZEg6cBjV7Eq8ZIPzDmR986n0YnE0f6nw4WOuCxD1Epsr4mvnlqGAfBrQkWPx1dwa5jfVIDCtp5NylRjjkYNdYj27yzGdGWVywRFzoWvRafPbWNWFDosNcNf0osyXJyDRfh6l5e/eofwwVSJEPXlf/Hifrax4GB1HvxjgUJ4EPYlJww7H7HQCk944JmGZhbvqEATLKhwIHQnRMNbop3NAq99iHlQUX4RKcu95Kts0JrlKXIsbmFx7Dnr+bjKJ7ynZg2J61yZ8IhlOaMDweVGmyo4NZoqRUMGVTSfXsW8O4RhIZDCHhvAanPXxT1lqg4czGtKo0R6VpcWF2WJJw/vg38yVRm69w+oSFAqrfJ/H0frY3viuqN7sPuhBTOpVVzTYWSo/CQWr3TU/P7u3Bx0UzAPvvp2Fub00p0niKfEFpdXKj7PymLnSX5R60ndTv88ZLnT+1Tl3y+QpQEkvKnZ0XGn7K4CKDPk8VL7PrX/d3RX6aUqR1V/PwbbhkWUkaetW6VHZDsCeyXyZtA4iz3i6a8euRurTK2H/CGUVUJrrkE0DZmKV+HnqCAVd7wdlNLkMzH8IJutYcQNRz1RoKJQ="
+   - secure: "GcsLxtnsY96G7Fnrd0q4hTHRn8SBKz/rZskrI/YwwuIsUT1WiCHU2sqklaq7eD+mbVndpN53dwRtrtRKK+U4rhFZN5Nwdpha6RDEppDJXS0IwXbBRVNzX6DQ/iMWjwj/oyKYshUIq6wsJUYcG67/9iMYX1J3BrVII6o1MHm4xPpVfkcOy4XmQrBD1IBaQY+TrcExnV86giJfLhJjeD/MvQ8MYGY4S1ET9y1uRfCj9r06d64aOVRsGYqyqgRB+qTS9bjC4t0C/xkCk90LXSLkGqQ95MoHGK4byD5uExWb6+Px4RW/Rad0gjbBOwlszLxTqdF23eeLpyhNFaWBlpVMKOyKpWl8m31/t1HPO74ytXCXNVhx2FRodHMZg3Bj1zOuJs8PSARiu038T53qUHeGDQLGY0Ph8T2JdvPAgNpV+y7lK5Owk/G6nUabnDLwsHHuNWTk2mk6dr2reoZOdQF+dvzS2RaHGATwThd3HIZ1rLZo0ZQg7olbf4WB8QZorjtTA4xCF3MLAGJl6iSrhCY6pmdPsnYldaOpGcoo+29sBdjZHvSBPg8iBmgzowKSRennUNy4WqIj0JSW8/6lk/WnZLLb0Mf50LGYEhdJPkjks2UPlvSkZwTfHLtcHB5RxEyxi5msKi33EG6osgf68CCj6enx1kFQ1TtxjrqIvllLtwM="
 
 addons:
   coverity_scan:
     project:
       name: "orgcandman/esnacc-ng"
       description: "ASN.1 compiler to C/C++"
-    notification_email: aaron@bytheb.org
+    notification_email: aconole@bytheb.org
     build_command_prepend: "./configure"
     build_command:   "make"
-    branch_pattern: coverity_scan
+    branch_pattern: master
 
 script: 
    - ./configure 

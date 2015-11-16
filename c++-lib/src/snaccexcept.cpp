@@ -91,7 +91,7 @@ SnaccException & SnaccException::operator=(const SnaccException &o)
 void SnaccException::push(const char *file, long line_number, 
                           const char *function) throw()
 {
-   if (stackPos < STACK_DEPTH)
+   if (stackPos < STACK_DEPTH - 1)
    {
       stackPos++;
       stack[stackPos].file = file;

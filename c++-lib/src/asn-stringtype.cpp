@@ -742,6 +742,7 @@ void WideAsnString::Deterpret(AsnBufBits &b, AsnLen &bitsDecoded, long)
     bitsDecoded += (sizeof(wchar_t));
 	
 	putWideChar(seg);
+    delete [] seg;
 }
 
 char* WideAsnString::getAsUTF8() const
@@ -959,10 +960,12 @@ int WideAsnString::checkConstraints (ConstraintFailList* pConstraintFails)const
 			}
 			else
 			{
-                if(sizeConstraints[count].lowerBound != (strlen(getAsUTF8()) ) )
+                char *utf8str = getAsUTF8();
+                if(sizeConstraints[count].lowerBound != (strlen(utf8str)))
                 {
                     tmpptr = ConstraintErrorStringList[ WIDE_STRING_SIZE_SINGLE_VALUE ];
                 }
+                free( utf8str );
 			}
 
 			if(tmpptr)
