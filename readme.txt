@@ -4,25 +4,15 @@ Welcome to eSNACC (Enhanced SNACC) maintained by DigitalNet.  This distribution 
 
 Building eSNACC
 ---------------
-The build process has changed considerably from the previous release.  Now all you have to do to build on a clean distribution is:
+First, run the './boot.sh' script, to generate the appropriate configure
+scripts.
 
- * make
+Next, run './configure' passing in the appropriate options.
 
-    or
+Finally, run 'make' to build.
 
- * make debug
-
-From the top of the source tree. 
-
-If you want to clean the source tree of all objects and libraries:
-
- * make clean
-
-If you are going to reuse the same source tree on another platform make sure you
-remove all platform specific files by doing:
-
- * make distclean
-
+'make install' will put the binaries and library data in the appropriate
+places.
 
 Note: release and debug versions use the same library names.  If you want to be a
       debug version you must make sure you are working with a clean source tree.  

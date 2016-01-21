@@ -15,10 +15,11 @@ addons:
       name: "orgcandman/esnacc-ng"
       description: "ASN.1 compiler to C/C++"
     notification_email: aconole@bytheb.org
-    build_command_prepend: "./configure"
+    build_command_prepend: "./boot.sh && ./configure"
     build_command:   "make"
     branch_pattern: master
 
-script: 
+script:
+   - ./boot.sh
    - ./configure 
    - make
