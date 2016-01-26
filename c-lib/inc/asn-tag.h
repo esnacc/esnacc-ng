@@ -88,20 +88,8 @@
 extern "C" {
 #endif
 
-#if SIZEOF_INT == 4
-#  define UL		unsigned int
-#else
-#  if SIZEOF_LONG == 4
-#    define UL		unsigned long
-#  else
-#    if SIZEOF_SHORT == 4
-#      define UL	unsigned short
-#    endif
-#  endif
-#endif
-#ifndef UL
-  #error "can't find integer type which is 4 bytes in size"
-#endif
+#include <stdint.h>
+typedef uint32_t UL;
 typedef UL	AsnTag;
 
 /* Tag Id's byte length */

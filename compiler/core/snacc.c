@@ -262,6 +262,7 @@ void Usage PARAMS ((prgName, fp),
 
     fprintf (fp, "Copyright (C) 1993 Michael Sample and UBC\n");
     fprintf (fp, "Copyright (C) 1994, 1995 by Robert Joop and GMD FOKUS\n\n");
+    fprintf (fp, "Copyright (C) 2011-2016 by Aaron Conole\n\n");
 
     fprintf (fp, "This program is free software; you can redistribute it and/or modify\n");
     fprintf (fp, "it under the terms of the GNU General Public License as published by\n");

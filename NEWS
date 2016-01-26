@@ -1,0 +1,6 @@
+1.80
+----
+
+* Restarting full eSnacc support with eSnacc NG
+* Converted to modern automake
+* All c++ libraries have been renamed to cxx
