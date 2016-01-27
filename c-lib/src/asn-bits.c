@@ -102,7 +102,6 @@ BEncAsnBitsContent PARAMS ((b, bits),
 	if (i == bits->bitLen/8 + 1)
 	{
 		bits->bitLen = 1;
-		unusedBits = 7;
 	}
 
     /* Work out number of unused bits */
