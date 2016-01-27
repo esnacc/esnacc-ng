@@ -294,15 +294,13 @@ ENV_TYPE env)
 	char *loc = 0;
 
 
-	if (b == 0)
+	if (!b)
 	{
-		ExpBufSetWriteError(*b, TRUE);
 		return -1;
 	}
 
 	// Put the ExpBuf into a GenBuf so we can use BDecTag & BDecLen
 	PutExpBufInGenBuf (*b, &gb);
-
 
 	loc = (*b)->curr;  // Get the buffer pointer
 
