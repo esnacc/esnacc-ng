@@ -82,6 +82,7 @@ check_DATA =
 check_SCRIPTS =
 pkgconfig_DATA =
 FLAKE8_PYFILES =
+check_PROGRAMS =
 
 scriptsdir = $(pkgdatadir)/scripts
 completiondir = $(sysconfdir)/bash_completion.d
@@ -93,6 +94,13 @@ pkgconfigdir = $(libdir)/pkgconfig
 # http://article.gmane.org/gmane.comp.sysutils.automake.general/10891
 noinst_HEADERS += $(EXTRA_DIST)
 
+.asn1.c:
+	compiler/esnacc -c $< 
+
+.asn1.cpp:
+	compiler/esnacc -C $<
+
 include c-lib/automake.mk
 include cxx-lib/automake.mk
 include compiler/automake.mk
+include c-examples/automake.mk
