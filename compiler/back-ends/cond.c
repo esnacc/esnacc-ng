@@ -32,6 +32,7 @@
  */
 
 #include <string.h>
+#include "mem.h"
 #include "asn-incl.h"
 
 
@@ -40,10 +41,10 @@ PrintConditionalIncludeOpen PARAMS ((f, fileName),
     FILE *f _AND_
     char *fileName)
 {
-    char hdrFileDefSym[256];
     int i;
 
-    strcpy (hdrFileDefSym, fileName);
+    char *hdrFileDefSym = Strdup(fileName);
+    
     for (i = 0; i < (int)strlen (hdrFileDefSym); i++)
         if (hdrFileDefSym[i] == '-' || hdrFileDefSym[i] == '.' ||
            hdrFileDefSym[i] == '\\' || hdrFileDefSym[i] == '/')
@@ -51,6 +52,8 @@ PrintConditionalIncludeOpen PARAMS ((f, fileName),
 
     fprintf (f, "#ifndef _%s_\n", hdrFileDefSym);
     fprintf(f, "#define _%s_\n\n\n", hdrFileDefSym);
+
+    free(hdrFileDefSym);
 } /* PrintConditionalIncludeOpen */
 
 

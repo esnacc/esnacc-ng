@@ -84,7 +84,7 @@ SortAllDependencies PARAMS ((modList),
     ModuleList *modList)
 {
     Module *m;
-
+    
     FOR_EACH_LIST_ELMT (m, modList)
     {
         SortTypeDependencies (m);

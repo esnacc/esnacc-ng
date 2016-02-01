@@ -37,7 +37,12 @@ char *bVDAGlobalDLLExport=(char *)0;
 
 #ifdef WIN32
 #include <ctype.h>
+#define chdir _chdir
+#else
+#include <unistd.h>
 #endif
+
+#include <errno.h>
 
 #if TIME_WITH_SYS_TIME
 # include <sys/time.h>
@@ -53,7 +58,7 @@ char *bVDAGlobalDLLExport=(char *)0;
 #include <stdio.h>
 
 #include "asn-incl.h"
-	#if STDC_HEADERS || HAVE_STRING_H
+#if STDC_HEADERS || HAVE_STRING_H
 #include <string.h>
 #else
 #include <strings.h>
@@ -426,6 +431,15 @@ int main PARAMS ((argc, argv),
 				currArg++;
 				break;
 
+            case 'D':
+                currArg++;
+                errno = 0;
+                if(chdir(argv[currArg])) {
+                    fprintf(stderr, "ERROR: unable to change directory to provided.\n");
+                    exit(1);
+                }
+                break;
+                
 			case 'd':
 				genDecodeCode = TRUE;
 				currArg++;

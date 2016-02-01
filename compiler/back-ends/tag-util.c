@@ -565,7 +565,7 @@ int CmpTags PARAMS((a, b),
   /* Get tags for item2 */
   FOR_EACH_LIST_ELMT(tg2, t2) {
     tagBuf2[len2++] = MAKE_TAG_ID(tg2->tclass, tg2->form, tg2->code);
-    if (len1 == 256) {
+    if (len2 == 256) {
       /* XXX Can do better than this */
       fprintf(errFileG, "CmpTags: Tag length too long");
       abort();

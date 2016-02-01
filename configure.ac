@@ -16,13 +16,14 @@
 # limitations under the License.
 
 AC_INIT([esnacc], [1.80])
-AC_PREREQ([2.59])
+AC_PREREQ([2.60])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 AC_PROG_INSTALL
 AM_INIT_AUTOMAKE([-Wall foreign subdir-objects])
 AC_PROG_CC
 AC_PROG_CXX
+AC_USE_SYSTEM_EXTENSIONS
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 AC_PROG_LN_S
 AC_PROG_LEX

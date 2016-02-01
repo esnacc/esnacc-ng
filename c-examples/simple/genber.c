@@ -30,7 +30,6 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <errno.h>
-#include <fstream.h>
 
 #include "asn-incl.h"
 #include "p-rec.h"
@@ -38,7 +37,6 @@
 
 main (int argc, char *argv[])
 {
-    ofstream outputFile;
     AsnBuf outputBuf;
     size_t encodedLen;
     const size_t dataSize = 1024;
