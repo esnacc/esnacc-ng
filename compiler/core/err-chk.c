@@ -682,9 +682,7 @@ ErrChkValue PARAMS ((m, vd, v),
     ValueDef *vd _AND_
     Value *v)
 {
-    v = v;  /*AVOIDS Compiler warning.*/
-    vd = vd;
-    m = m;
+
 }
 
 

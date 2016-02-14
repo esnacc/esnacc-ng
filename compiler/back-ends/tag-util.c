@@ -523,8 +523,8 @@ Code2UnivCodeStr PARAMS ((code),
              * unvisersal tag code.  This is useful for defining new types
              * in local modules w/o having to modify the compiler.
              */
-            static char retstring[3];
-            sprintf(retstring, "%d", code); 
+            static char retstring[15];
+            snprintf(retstring, 15, "%d", code); 
             return retstring; 
         }
     }

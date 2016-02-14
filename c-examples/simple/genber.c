@@ -30,77 +30,115 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <string.h>
+#include <stdio.h>
 
 #include "asn-incl.h"
+#include "sbuf.h"
+#include "nibble-alloc.h"
 #include "p-rec.h"
 
-
+int
 main (int argc, char *argv[])
 {
-    AsnBuf outputBuf;
-    size_t encodedLen;
-    const size_t dataSize = 1024;
-    char data[dataSize];
-    ChildInformation *ciPtr;
+    FILE *outputFile;
+    SBuf outputBuf;
+    SBuf *outputBufP;
+    unsigned long int encodedLen;
+    int dataSize = 1024;
+    int i;
+    char data[1024];
     PersonnelRecord pr;
+    ChildInformation **childHndl;
 
-    // build internal value of a PersonnelRecord
-    pr.name = new Name;
-    pr.name->givenName = "John";  // this calls pr.name->givenName.Set ("John");
-    pr.name->initial = "E";
-    pr.name->familyName = "Smith";
+    InitNibbleMem(512,512);
 
-    pr.title.Set ("The Big Cheese");
-    pr.employeeNumber = 99999;
-    pr.dateOfHire.Set ("19820104");
+    pr.name = (Name *)Asn1Alloc(sizeof(Name));
+    pr.name->givenName.octs = "John";
+    pr.name->givenName.octetLen = strlen(pr.name->givenName.octs);
 
-    pr.nameOfSpouse = new Name;
-    pr.nameOfSpouse->givenName.Set ("Mary");
-    pr.nameOfSpouse->initial.Set ("L");
-    pr.nameOfSpouse->familyName.Set ("Smith");
+    pr.name->initial.octs = "E";
+    pr.name->initial.octetLen = strlen(pr.name->initial.octs);
 
-    pr.children = new PersonnelRecordSeqOf;
+    pr.name->familyName.octs = "Smith";
+    pr.name->familyName.octetLen = strlen(pr.name->familyName.octs);
 
-    ciPtr = pr.children->Append();
-    ciPtr->name = new Name;
-    ciPtr->name->givenName.Set ("James");
-    ciPtr->name->initial.Set ("R");
-    ciPtr->name->familyName.Set ("Smith");
-    ciPtr->dateOfBirth.Set ("19570310");
+    pr.title.octs = "El Presidente";
+    pr.title.octetLen = strlen(pr.title.octs);
 
-    ciPtr = pr.children->Append();
-    ciPtr->name = new Name;
-    ciPtr->name->givenName.Set ("Lisa");
-    ciPtr->name->initial.Set ("M");
-    ciPtr->name->familyName.Set ("Smith");
-    ciPtr->dateOfBirth.Set ("19610621");
+    pr.employeeNumber = 91991;
 
+    pr.dateOfHire.octs = "20071024";
+    pr.dateOfHire.octetLen = strlen(pr.dateOfHire.octs);
 
-    // set up buffer for writing to
-    outputBuf.Init (data, dataSize);
-    outputBuf.ResetInWriteRvsMode();
+    pr.nameOfSpouse = (Name *) Asn1Alloc(sizeof(Name));
+    pr.nameOfSpouse->givenName.octs = "Mary";
+    pr.nameOfSpouse->givenName.octetLen =
+        strlen(pr.nameOfSpouse->givenName.octs);
+    pr.nameOfSpouse->initial.octs = "F";
+    pr.nameOfSpouse->initial.octetLen =
+        strlen(pr.nameOfSpouse->initial.octs);
+    pr.nameOfSpouse->familyName.octs = "Smith";
+    pr.nameOfSpouse->familyName.octetLen =
+        strlen(pr.nameOfSpouse->familyName.octs);
 
-    // encode the internal value we just build into the buffer
-    if (!pr.BEncPdu (outputBuf, encodedLen))
-        cout << "failed encoding AnyTestType value" << endl;
+    pr.children = AsnListNew(sizeof(void*));
 
-    // open file to hold the BER value
-    outputFile.open ("pr.ber");
-    if (!outputFile)
-    {
-        perror ("ofstream::open");
-        exit (1);
+    childHndl = AsnListAppend(pr.children);
+    *childHndl = Asn1Alloc(sizeof(ChildInformation));
+
+    (*childHndl)->dateOfBirth.octs = "20090123";
+    (*childHndl)->dateOfBirth.octetLen = strlen((*childHndl)->dateOfBirth.octs);
+    (*childHndl)->name = (Name*)Asn1Alloc(sizeof(Name));
+    (*childHndl)->name->givenName.octs = "Jacob";
+    (*childHndl)->name->givenName.octetLen =
+        strlen((*childHndl)->name->givenName.octs);
+    (*childHndl)->name->initial.octs = "J";
+    (*childHndl)->name->initial.octetLen =
+        strlen((*childHndl)->name->initial.octs);
+    (*childHndl)->name->familyName.octs = "Smith";
+    (*childHndl)->name->familyName.octetLen =
+        strlen((*childHndl)->name->initial.octs);
+
+    childHndl = AsnListAppend(pr.children);
+    *childHndl = Asn1Alloc(sizeof(ChildInformation));
+    (*childHndl)->dateOfBirth.octs = "20101130";
+    (*childHndl)->dateOfBirth.octetLen = strlen((*childHndl)->dateOfBirth.octs);
+    (*childHndl)->name = (Name*)Asn1Alloc(sizeof(Name));
+    (*childHndl)->name->givenName.octs = "Jane";
+    (*childHndl)->name->givenName.octetLen =
+        strlen((*childHndl)->name->givenName.octs);
+    (*childHndl)->name->initial.octs = "D";
+    (*childHndl)->name->initial.octetLen =
+        strlen((*childHndl)->name->initial.octs);
+    (*childHndl)->name->familyName.octs = "Smith";
+    (*childHndl)->name->familyName.octetLen =
+        strlen((*childHndl)->name->initial.octs);
+
+    SBufInit(&outputBuf, data, dataSize);
+    SBufResetInWriteRvsMode(&outputBuf);
+
+    encodedLen = BEncPersonnelRecord((GenBuf *)&outputBuf, &pr);
+
+    if ((encodedLen <= 0) || (SBufWriteError(&outputBufP))) {
+        fprintf(stderr, "failed encoding Personnel Record");
+        exit(1);
     }
 
-    // copy the BER value from the buffer to the file
-    outputBuf.ResetInReadMode();
-    for (; encodedLen > 0; encodedLen--)
-        outputFile.put (outputBuf.GetByte());
+    outputFile = fopen("pr.ber", "w");
+    if (!outputFile) {
+        perror("fopen");
+        exit(1);
+    }
 
+    SBufResetInReadMode(&outputBufP);
+    for (;encodedLen > 0;encodedLen--){
+        fputc(SBufGetByte(&outputBufP), outputFile);
+    }
+    printf("wrote the BER value to pr.ber\n");
+    printf("test with \"def\" and \"indef\"\n");
 
-    cout << "Wrote the following BER PersonnelRecord value to pr.ber." << endl;
-    cout << "Test it with \"def\" and \"indef\"." << endl;
-    cout << pr << endl;
-
+    PrintPersonnelRecord(stdout, &pr, 0);
+    printf("\n");
     return 0;
 }
