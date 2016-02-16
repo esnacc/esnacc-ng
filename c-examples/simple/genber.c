@@ -43,11 +43,12 @@ main (int argc, char *argv[])
 {
     FILE *outputFile;
     SBuf outputBuf;
-    SBuf *outputBufP;
+    SBuf *outputBufP = &outputBuf;
+    GenBuf *genOutputBuf = 0;
     unsigned long int encodedLen;
-    int dataSize = 1024;
     int i;
-    char data[1024];
+    char data[2048] = {0};
+    int dataSize = sizeof(data);
     PersonnelRecord pr;
     ChildInformation **childHndl;
 
@@ -117,11 +118,12 @@ main (int argc, char *argv[])
 
     SBufInit(&outputBuf, data, dataSize);
     SBufResetInWriteRvsMode(&outputBuf);
-
-    encodedLen = BEncPersonnelRecord((GenBuf *)&outputBuf, &pr);
+    SBuftoGenBuf(&outputBuf, &genOutputBuf);
+    encodedLen = BEncPersonnelRecord(genOutputBuf, &pr);
 
     if ((encodedLen <= 0) || (SBufWriteError(&outputBufP))) {
-        fprintf(stderr, "failed encoding Personnel Record");
+        fprintf(stderr, "failed encoding Personnel Record: 0x%x\n",
+                SBufWriteError(&outputBufP));
         exit(1);
     }
 
