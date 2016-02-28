@@ -150,10 +150,6 @@ MakeChoiceIdValueRef PARAMS ((r, td, parent, fieldType, parentVarName, newVarNam
     char *parentVarName _AND_
     char *newVarName)
 {
-    CTRI *ctri;
-
-    ctri = fieldType->cTypeRefInfo;
-
     /* always put in brackets to save future referencing hassles */
     strcpy (newVarName, "(");
 

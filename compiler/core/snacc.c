@@ -296,7 +296,7 @@ int main PARAMS ((argc, argv),
 	char		*parseFile;
 	char		*file1, *file2;
     int			numSrcFiles;
-    ModuleList		*allMods = NULL, *ImpMods = NULL;
+    ModuleList		*allMods = NULL;
     Module		*currMod;
 	Module		**tmpModHndl;
     int			currArg;
@@ -324,7 +324,6 @@ int main PARAMS ((argc, argv),
     int			novolatilefuncs = FALSE;
 	char*		dirName;					/* REN -- 6/2/03 -- added */
 	char*		errFileName;				/* REN -- 7/7/03 -- added */
-	int			incDirSpecified = FALSE;	/* REN -- 7/7/03 -- added */
 
 	if (argc <= 1)
 	{
@@ -370,7 +369,6 @@ int main PARAMS ((argc, argv),
 				break;
 
 			case 'I':
-				incDirSpecified = TRUE;
 				if (argv[currArg][2] != '\0')
 					dirName = &argv[currArg][2];
 				else
@@ -715,7 +713,6 @@ error:
 	 * STEP 1---parse each ASN.1 src file
 	 */
 	allMods = (ModuleList *)AsnListNew (sizeof (void*));
-	ImpMods = (ModuleList *)AsnListNew (sizeof (void*));
 	
 	while (srcList != NULL)
 	{

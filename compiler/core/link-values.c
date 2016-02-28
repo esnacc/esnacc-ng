@@ -891,7 +891,6 @@ ValueLinkOid PARAMS ((m, currMod, head, v, oid),
     Value *v _AND_
     OID *oid)
 {
-    OID *firstElmt;
 
     /*
      * WARNING: for cyclic oid value definintions like.
@@ -912,7 +911,7 @@ ValueLinkOid PARAMS ((m, currMod, head, v, oid),
     else
         linkOidCallDepthG++;
 
-    for (firstElmt = oid; oid != NULL; oid = oid->next)
+    for (; oid != NULL; oid = oid->next)
     {
         if (oid->valueRef != NULL)
         {

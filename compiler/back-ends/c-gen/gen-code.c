@@ -339,10 +339,7 @@ PrintCHdrObjectDeclaration_and_Init PARAMS ((hdr, m, r),
 {
 	ObjectAssignment *oa;
 	ObjectSetAssignment *osa;
-	//RWC;ObjectAssignmentField *oaf;
-	//RWC;TypeOrValue* tOrV;
-	char* moduleName;
-	int osaCount=0, currOsa=0;
+	int osaCount=0;
 	char *osaName="";
 	//RWC;char *objName="";
 	
@@ -361,7 +358,6 @@ PrintCHdrObjectDeclaration_and_Init PARAMS ((hdr, m, r),
 	fprintf (hdr, "\n/* ========== Object Set Declarations ========== */\n");
 	FOR_EACH_LIST_ELMT (osa, m->objSetAssignments)
 	{
-		currOsa = 0;
 		osaCount = osa->objectNameList->count;
 		osaName = Asn1ValueName2CValueName(osa->objectSetName);
 		fprintf (hdr, "%s %s[%d];\n", Asn1ValueName2CValueName(osa->objectClassName), osaName, osaCount);
@@ -372,7 +368,6 @@ PrintCHdrObjectDeclaration_and_Init PARAMS ((hdr, m, r),
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Init Module Objects
-	moduleName = Asn1ValueName2CValueName(m->modId->name);
 	//RWC;REMOVED;fprintf (hdr, "/* ========== init_%sObjects() ========== */\n", moduleName);
     /*RWC;REMOVED;
 	fprintf (hdr, "void init_%sObjects()\n", moduleName);

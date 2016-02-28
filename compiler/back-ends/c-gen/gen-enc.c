@@ -299,7 +299,6 @@ PrintCEncoder PARAMS ((src, hdr, r, m, td),
     Module *m _AND_
     TypeDef *td)
 {
-    enum BasicTypeChoiceId typeId;
     CTDI *ctdi;
     TagList *tags = NULL;
     Tag *tag;
@@ -337,9 +336,6 @@ PrintCEncoder PARAMS ((src, hdr, r, m, td),
 	  //fprintf(hdr,"#define %s%s(b, v, bytesDecoded, env) %s%s(b, v, bytesDecoded, env)\n", GetEncRulePrefix(), td->cTypeDefInfo->encodeRoutineName, GetEncRulePrefix(), td->type->cTypeRefInfo->encodeRoutineName);
 	  return;
 	}
-      
-      typeId = GetBuiltinType (td->type);
-      
       
       /* print proto to hdr file */
 //      fprintf (hdr,"%s %s%s PROTO ((%s b, %s *v));\n\n", lenTypeNameG, GetEncRulePrefix(), ctdi->encodeRoutineName, bufTypeNameG, ctdi->cTypeName);
@@ -1239,7 +1235,6 @@ PrintCTagAndLenList PARAMS ((src, t, tagList),
     char *classStr;
     char *formStr;
     Tag *tg;
-    Tag *last;
     int tagLen;
     enum BasicTypeChoiceId typesType;
     int isShort;
@@ -1265,7 +1260,6 @@ PrintCTagAndLenList PARAMS ((src, t, tagList),
     /*
      * since encoding backward encode tags backwards
      */
-    last = (Tag*)LAST_LIST_ELMT (tagList);
     FOR_EACH_LIST_ELMT_RVS (tg, tagList)
     {
         classStr = Class2ClassStr (tg->tclass);

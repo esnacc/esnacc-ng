@@ -323,8 +323,6 @@ NormalizeType PARAMS ((m, td, parent, e, t),
  NamedTypeList *e _AND_
  Type *t)
 {
-    enum BasicTypeChoiceId typeId;
-    Type *tmpType;
     Tag *lastTag;
 
     if (t == NULL)
@@ -340,9 +338,6 @@ NormalizeType PARAMS ((m, td, parent, e, t),
 
     if ((m->tagDefault == IMPLICIT_TAGS))
     {
-        tmpType = ParanoidGetType (t);
-        typeId = tmpType->basicType->choiceId;
-
         if ((t->tags != NULL) && (!LIST_EMPTY (t->tags)))
             lastTag = (Tag*)LAST_LIST_ELMT (t->tags);
         else

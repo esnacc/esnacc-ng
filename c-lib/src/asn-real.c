@@ -783,8 +783,6 @@ BDecAsnRealContent PARAMS ((b, tagId, len, result, bytesDecoded, env),
     double mantissa;
     unsigned short base;
     long exponent = 0;
-    double tmpBase;
-    double tmpExp;
 
     if (len == 0)
     {
@@ -883,9 +881,6 @@ BDecAsnRealContent PARAMS ((b, tagId, len, result, bytesDecoded, env),
                     break;
 
             }
-
-            tmpBase = base;
-            tmpExp = exponent;
 
             *result =  mantissa * pow ((double)base, (double)exponent);
 

@@ -214,11 +214,7 @@ PrintCChoiceElmtPrint PARAMS ((src, td, parent, elmts,  e, varName),
     NamedType *e _AND_
     char *varName)
 {
-    CTRI *ctri;
     char elmtVarRef[MAX_VAR_REF];
-
-    ctri =  e->type->cTypeRefInfo;
-
 
     /* build ref to the elmt */
     MakeVarPtrRef (genPrintCRulesG, td, parent, e->type, varName, elmtVarRef);

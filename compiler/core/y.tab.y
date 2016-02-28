@@ -59,6 +59,7 @@ extern FILE* errFileG;		// Defined in snacc.c
  */
 int smallErrG = FALSE;
 
+#ifdef FLEX_IN_USE
 /*
  * firstTimeThroughG
  *    used incase the asn1.lex was compiled with flex in which
@@ -66,7 +67,8 @@ int smallErrG = FALSE;
  *    parsed, except the first
  */
 static int firstTimeThroughG = TRUE;
-
+#endif
+ 
 /*
  *  modulePtrG
  *    used to hold the parsed value.  The root of the parse tree.
@@ -110,19 +112,6 @@ ApplTag *applTagsG  = NULL;
  */
 void PushApplTag PROTO ((unsigned long tagCode, unsigned long lineNo));
 void FreeApplTags();
-
-
-
-/*
- * the following are globals to simplify disparity between
- * productions and produced data structure
- */
-
-/*
- * these are used in the ValueRange subtype production
- */
-static int      valueRangeUpperEndInclusiveG;
-static int      valueRangeLowerEndInclusiveG;
 
 /*
  * used to set exports flag in Type/value defs

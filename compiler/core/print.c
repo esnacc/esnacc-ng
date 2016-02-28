@@ -320,12 +320,10 @@ PrintType PARAMS ((f, head, t),
     Type *t)
 {
     Tag *tag;
-    Tag *lastTag;
 
     if (t == NULL)
         return;
 
-    lastTag = NULL;
     FOR_EACH_LIST_ELMT (tag, t->tags)
     {
 
@@ -337,7 +335,6 @@ PrintType PARAMS ((f, head, t),
             PrintTag (f, tag);
             fprintf (f, " ");
         }
-        lastTag = tag;
     }
 
     /*
@@ -1098,65 +1095,8 @@ PrintTag PARAMS ((f, tag),
     FILE *f _AND_
     Tag *tag)
 {
-    char *name=NULL;
-
     if (tag->tclass == UNIV)
     {
-        switch (tag->code)
-        {
-           case BOOLEAN_TAG_CODE: name = "BOOLEAN";
-                        break;
-           case INTEGER_TAG_CODE: name = "INTEGER";
-                        break;
-           case BITSTRING_TAG_CODE: name = "BITSTRING";
-                        break;
-           case OCTETSTRING_TAG_CODE: name = "OCTETSTRING";
-                        break;
-           case NULLTYPE_TAG_CODE: name = "NULL TYPE";
-                        break;
-           case OID_TAG_CODE: name = "OBJECT ID";
-                        break;
-           case OD_TAG_CODE: name = "OBEJECT DESCRIPTOR";
-                        break;
-           case EXTERNAL_TAG_CODE: name = "EXTERNAL";
-                        break;
-           case REAL_TAG_CODE: name = "REAL";
-                        break;
-           case ENUM_TAG_CODE: name = "ENUMERATED";
-                        break;
-		   case UTF8STRING_TAG_CODE: name = "UTF8String";
-						break;
-           case SEQ_TAG_CODE: name = "SEQUENCE";
-                        break;
-           case SET_TAG_CODE: name = "SET";
-                        break;
-           case NUMERICSTRING_TAG_CODE: name = "NumericString";
-                        break;
-           case PRINTABLESTRING_TAG_CODE: name = "PrintableString";
-                        break;
-           case TELETEXSTRING_TAG_CODE: name = "TELETEX STRING";
-                        break;
-           case VIDEOTEXSTRING_TAG_CODE: name = "VIDEOTEX STRING";
-                        break;
-           case IA5STRING_TAG_CODE: name = "IA5String";
-                        break;
-           case UTCTIME_TAG_CODE:  name = "UTC TIME";
-                        break;
-           case GENERALIZEDTIME_TAG_CODE: name = "GENERALIZED TIME";
-                        break;
-           case GRAPHICSTRING_TAG_CODE: name = "GRAPHIC STRING";
-                        break;
-           case VISIBLESTRING_TAG_CODE: name = "VISIBLE STRING";
-                        break;
-           case GENERALSTRING_TAG_CODE: name = "GENERAL STRING";
-                        break;
-		   case UNIVERSALSTRING_TAG_CODE: name = "UniversalString";
-						break;
-		   case BMPSTRING_TAG_CODE: name = "BMPString";
-						break;
-
-           default: name = "UNKNOWN UNIVERSAL TYPE";
-        }
         fprintf (f, "[UNIVERSAL %d]", tag->code);
     }
     else  if (tag->tclass  == APPL)
@@ -2854,12 +2794,10 @@ SpecialPrintType PARAMS ((f, head, t),
     Type *t)
 {
     Tag *tag;
-    Tag *lastTag;
 
     if (t == NULL)
         return;
 
-    lastTag = NULL;
     FOR_EACH_LIST_ELMT (tag, t->tags)
     {
         if (!(tag->tclass == UNIV && tag->code == LIBTYPE_GET_UNIV_TAG_CODE (t->basicType->choiceId)))
@@ -2867,7 +2805,6 @@ SpecialPrintType PARAMS ((f, head, t),
             PrintTag (f, tag);
             fprintf (f, " ");
         }
-        lastTag = tag;
     }
 
     /*

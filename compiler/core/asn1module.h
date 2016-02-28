@@ -9,6 +9,9 @@
  *- editing not recommended
  */
 
+#ifndef WIN32
+#include <unistd.h>
+#endif
 
 #ifndef _asn1module_h_
 #define _asn1module_h_
