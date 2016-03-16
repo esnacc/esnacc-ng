@@ -149,6 +149,7 @@ SortTypeDependencies PARAMS ((m),
     /* put each TypeDef in the appropriate list (1-4)*/
     FOR_EACH_LIST_ELMT (curr, m->typeDefs)
     {
+        curr->refList = NULL;
         if (IsDefinedByLibraryType (curr->type))	// Deepak: One Change Done Here...
             newElmtHndl = (TypeDef**) AsnListAppend (prims);
 
@@ -307,7 +308,8 @@ RemoveAndSortIndependents PARAMS ((tdl),
             if (currTd == last)
                 break; /* exit while */
 
-            SET_CURR_LIST_NODE (tdl, nextListNode);
+            if (nextListNode)
+                SET_CURR_LIST_NODE (tdl, nextListNode);
             currTd = (TypeDef*)CURR_LIST_ELMT (tdl);
         }
     }
@@ -401,7 +403,8 @@ SortTypeDefs PARAMS ((tdl),
         if (currTd == last)
             break; /* exit while */
 
-        SET_CURR_LIST_NODE (tdl, nextListNode);
+        if (nextListNode)
+            SET_CURR_LIST_NODE (tdl, nextListNode);
         currTd = (TypeDef*)CURR_LIST_ELMT (tdl);
     }
 
@@ -422,12 +425,18 @@ SortTypeDefs PARAMS ((tdl),
      * remain in the recursive list with weighting - ie types
      * that are ref'd as ptrs don't count. Then re-sort.
      */
-    last = (TypeDef*)LAST_LIST_ELMT (tdl);
-    SET_CURR_LIST_NODE (tdl, FIRST_LIST_NODE (tdl));
-    currTd = (TypeDef*)CURR_LIST_ELMT (tdl);
+    if (tdl->last) {
+        last = (TypeDef*)LAST_LIST_ELMT (tdl);
+    }
 
+    currTd = NULL;
+    if (FIRST_LIST_NODE(tdl)) {
+        SET_CURR_LIST_NODE (tdl, FIRST_LIST_NODE (tdl));
+        currTd = (TypeDef*)CURR_LIST_ELMT (tdl);
+    }
+    
     cLists = AsnListNew (sizeof (void*));
-    while (1)
+    while (currTd)
     {
         nextListNode = NEXT_LIST_NODE (tdl);
 
