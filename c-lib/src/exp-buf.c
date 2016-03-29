@@ -287,26 +287,21 @@ AsnLen *bytesDecoded _AND_
 ENV_TYPE env)
 {
     AsnLen totalElmtsLen1 = 0;
-    AsnTag tagId1 = 0;
     AsnLen elmtLen1 = 0;
     AsnOcts	*data = 0;	/* where we will store the stuff */
 	GenBuf gb;    // Our GenBuf
 	char *loc = 0;
 
-
-	if (b == 0)
+	if (!b)
 	{
-		ExpBufSetWriteError(*b, TRUE);
 		return -1;
 	}
 
 	// Put the ExpBuf into a GenBuf so we can use BDecTag & BDecLen
 	PutExpBufInGenBuf (*b, &gb);
 
-
 	loc = (*b)->curr;  // Get the buffer pointer
 
-	tagId1 = BDecTag(&gb, &totalElmtsLen1, env);			/* item tag */
 	elmtLen1 = BDecLen (&gb, &totalElmtsLen1, env);		/* len of item */
 	if (elmtLen1 == INDEFINITE_LEN)
 	{

@@ -132,7 +132,7 @@ enum { false, true };
  *  These macros munge C routine declarations such
  *  that they work for ANSI or non-ANSI C compilers
  */
-#ifdef __USE_ANSI_C__
+#ifndef __USE_NON_ANSI_C__
 
 #define PROTO( X)			X
 #define PARAMS( arglist, args)  	(args)
@@ -140,7 +140,7 @@ enum { false, true };
 #define _AND_				,
 #define DOTS				, ...
 
-#else /* !__USE_ANSI_C__ */
+#else /* __USE_ANSI_C__ */
 
 #define PROTO( X)			()
 #define PARAMS( arglist, args)	 	arglist args;

@@ -1055,7 +1055,6 @@ PrintCSeqDecodeCode PARAMS ((src, td, parent, elmts, elmtLevel, totalLevel, tagL
     char *codeStr;
     char  tmpVarName[MAX_VAR_REF];
     int   stoleChoiceTags;
-    char *routineName;
     int   inTailOptElmts = FALSE;
     int   initialElmtLevel;
     int   initialTagLevel;
@@ -1064,8 +1063,6 @@ PrintCSeqDecodeCode PARAMS ((src, td, parent, elmts, elmtLevel, totalLevel, tagL
     initialTagLevel = tagLevel;
     initialElmtLevel = elmtLevel;
 
-
-    routineName = td->cTypeDefInfo->decodeRoutineName;
 
     if ((elmts == NULL) || LIST_EMPTY (elmts)) /* empty seq */
     {
@@ -1527,7 +1524,6 @@ PrintCListDecoderCode PARAMS ((src, td, list, elmtLevel, totalLevel, tagLevel, v
     char *codeStr;
     char tmpVarName[MAX_VAR_REF];
     int  stoleChoiceTags;
-    char *routineName;
     int initialTagLevel;
     int initialElmtLevel;
     int taglessAny;
@@ -1535,8 +1531,6 @@ PrintCListDecoderCode PARAMS ((src, td, list, elmtLevel, totalLevel, tagLevel, v
     initialTagLevel = tagLevel;
     initialElmtLevel = elmtLevel;
 
-
-    routineName = td->cTypeDefInfo->decodeRoutineName;
     ctri = list->basicType->a.setOf->cTypeRefInfo;
     tags  = GetTags (list->basicType->a.setOf, &stoleChoiceTags);
     builtinType = GetBuiltinType (list->basicType->a.setOf);
@@ -1733,7 +1727,6 @@ PrintCChoiceDecodeCode PARAMS ((src, td, t, elmtLevel, totalLevel, tagLevel, var
     char *codeStr;
     char  tmpVarName[MAX_VAR_REF];
     char  choiceIdVarName[MAX_VAR_REF];
-    CTRI *parentCtri;
     int   stoleChoiceTags;
     void *tmp;
     int initialTagLevel;
@@ -1741,9 +1734,6 @@ PrintCChoiceDecodeCode PARAMS ((src, td, t, elmtLevel, totalLevel, tagLevel, var
 
     initialTagLevel = tagLevel;
     initialElmtLevel = elmtLevel;
-
-    parentCtri = t->cTypeRefInfo;
-
 
     fprintf (src, "    switch (tagId%d)\n", tagLevel);
     fprintf (src, "    {\n");

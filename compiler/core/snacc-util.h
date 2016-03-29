@@ -52,7 +52,7 @@
  *
  */
 #define PrintErrLoc( fileName, lineNo)\
-			fprintf (errFileG, "%s(%ld) : ", fileName, (lineNo))
+    fprintf (errFileG, "%s(%ld) : ", fileName, (long int)(lineNo))
 
 /*
  * macro to allocate room for str & null & put in give STR*

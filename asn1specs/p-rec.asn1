@@ -29,9 +29,9 @@ BEGIN
 
 PersonnelRecord ::= --snacc isPdu:"TRUE" -- [APPLICATION 0] IMPLICIT SET
 {
-                     Name,
+    name             Name,
     title        [0] IA5String,
-                     EmployeeNumber,
+    employeeNumber   EmployeeNumber,
     dateOfHire   [1] Date,
     nameOfSpouse [2] Name,
     children     [3] IMPLICIT SEQUENCE OF ChildInformation DEFAULT {}
@@ -39,7 +39,7 @@ PersonnelRecord ::= --snacc isPdu:"TRUE" -- [APPLICATION 0] IMPLICIT SET
 
 ChildInformation ::= SET
 {
-                    Name,
+    name            Name,
     dateOfBirth [0] Date
 }
 

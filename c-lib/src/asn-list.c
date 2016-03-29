@@ -382,7 +382,8 @@ AsnListCurr PARAMS ((list),
     return retVal;
 }
 
-/* Sort the list in ascending order of content */
+/* Sort the list in ascending order of content
+   XXX: In-place sort in the future */
 AsnList* 
 AsnListSort PARAMS ((list, cmp),
     AsnList *list _AND_
@@ -421,6 +422,8 @@ AsnListSort PARAMS ((list, cmp),
   
   }
 
+  Asn1Free(sortArray);
+  
   /* Return the sorted list */
   return ret;
 

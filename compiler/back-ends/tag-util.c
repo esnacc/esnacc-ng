@@ -523,8 +523,8 @@ Code2UnivCodeStr PARAMS ((code),
              * unvisersal tag code.  This is useful for defining new types
              * in local modules w/o having to modify the compiler.
              */
-            static char retstring[3];
-            sprintf(retstring, "%d", code); 
+            static char retstring[15];
+            snprintf(retstring, 15, "%d", code); 
             return retstring; 
         }
     }
@@ -565,7 +565,7 @@ int CmpTags PARAMS((a, b),
   /* Get tags for item2 */
   FOR_EACH_LIST_ELMT(tg2, t2) {
     tagBuf2[len2++] = MAKE_TAG_ID(tg2->tclass, tg2->form, tg2->code);
-    if (len1 == 256) {
+    if (len2 == 256) {
       /* XXX Can do better than this */
       fprintf(errFileG, "CmpTags: Tag length too long");
       abort();

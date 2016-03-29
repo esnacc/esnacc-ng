@@ -1,0 +1,9 @@
+.dirstamp
+.libs
+.deps
+esnacc
+core/y.output
+core/y.tab.c
+core/y.tab.h
+core/lex-asn1.c
+

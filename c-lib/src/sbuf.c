@@ -397,8 +397,6 @@ SBufPutSegRvs PARAMS ((b, seg, segLen),
 {
 	SBuf *buf = *b;
 	long sLen = segLen;
-	long bytesLeft = 0;
-	bytesLeft = buf->dataStart - buf->blkStart;
     if (buf->dataStart - segLen < buf->blkStart)
         buf->writeError = 1;
     else
@@ -435,12 +433,9 @@ ENV_TYPE env)
 
 {
     AsnLen totalElmtsLen1 = 0;
-    AsnTag tagId1 = 0;
     AsnLen elmtLen1 = 0;
     AsnOcts	*data = 0;	/* where we will store the stuff */
 	GenBuf gb;    // Our GenBuf
-	char *loc = 0;
-
 
 	if (b == 0)
 	{
@@ -451,10 +446,6 @@ ENV_TYPE env)
 	// Put the ExpBuf into a GenBuf so we can use BDecTag & BDecLen
 	PutSBufInGenBuf (b, &gb);
 
-
-	loc = b->dataStart;  // Get the buffer pointer
-
-	tagId1 = BDecTag(&gb, &totalElmtsLen1, env);			/* item tag */
 	elmtLen1 = BDecLen (&gb, &totalElmtsLen1, env);		/* len of item */
 	if (elmtLen1 == INDEFINITE_LEN)
 	{

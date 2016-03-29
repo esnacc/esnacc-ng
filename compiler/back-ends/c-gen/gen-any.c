@@ -100,8 +100,11 @@ void PrintCAnyCode(FILE *src, FILE *hdr, CRules *r, ModuleList *mods,
 	 * rule 
 	 */
 	encoding = GetEncRules();
-	SetEncRules(*encoding);
-
+	if(!SetEncRules(*encoding)) {
+        fprintf(stderr, "Failed to set encoding rules.\n");
+        return;
+    }
+    
     PrintCAnyEnum (hdr, m, r);
     PrintCAnyHashInitRoutine (src, hdr, mods, m, r, printEncoders, 
 		printDecoders, printPrinters, printFree);

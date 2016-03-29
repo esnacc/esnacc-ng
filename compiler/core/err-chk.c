@@ -437,21 +437,6 @@ ErrChkBasicType PARAMS ((m, td, parent, tnt, type),
                     fprintf (errFileG, "WARNING - untagged optional ANY encountered, the produced code will be wrong.\n");
                 }
 
-                /*
-                 *  if parent is SET or CHOICE then ANY or ANY DEFINED BY
-                 *  should be tagged to help determine its presence
-                 *
-                 * NOTE: there are also probs with untagged ANYs in SEQs
-                 * where the ANY is preceeded by optional elmts
-                 * (err msg written in produced code)
-                 */
-                if (((parent->basicType->choiceId == BASICTYPE_SET) ||
-                     (parent->basicType->choiceId == BASICTYPE_CHOICE)) &&
-                    (CountTags == 0))
-                {
-                    PrintErrLoc (m->asn1SrcFileName, (long)type->lineNo);
-                    fprintf (errFileG, "WARNING - untagged ANY in a SET or CHOICE, the produced code will be wrong.\n");
-                }
             }
 
             break;
@@ -682,9 +667,7 @@ ErrChkValue PARAMS ((m, vd, v),
     ValueDef *vd _AND_
     Value *v)
 {
-    v = v;  /*AVOIDS Compiler warning.*/
-    vd = vd;
-    m = m;
+
 }
 
 

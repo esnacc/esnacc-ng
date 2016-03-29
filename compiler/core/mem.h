@@ -27,12 +27,24 @@
  *
  */
 
+#include "snacc.h"
+
 #ifndef _snacc_mem_h_
 #define _snacc_mem_h_
 
 void	*Malloc PROTO ((int size));
 void	*Realloc PROTO ((void *ptr, int newsize));
 void	Free PROTO ((void *ptr));
+
+static inline void *Memdup (const char *p, size_t len) {
+    char *r = Malloc(len);
+    memcpy(r, p, len);
+    return r;
+}
+
+static inline char *Strdup (const char *str) {
+    return Memdup(str, strlen(str) + 1);
+}
 
 /* malloc type */
 #define MT( type)	(type *)Malloc (sizeof (type))

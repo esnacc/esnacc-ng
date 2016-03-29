@@ -1,0 +1,5 @@
+1.80
+----
+Need full support for windows again.
+Re-enable tcl support
+Python backend using the pyasn1 library should be done

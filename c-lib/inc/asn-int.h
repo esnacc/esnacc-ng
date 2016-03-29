@@ -20,25 +20,11 @@
 #ifndef _asn_int_h_
 #define _asn_int_h_
 
-#if SIZEOF_INT == 4
-#  define I		int
-#else
-#  if SIZEOF_LONG == 4
-#    define I		long
-#  else
-#    if SIZEOF_SHORT == 4
-#      define I		short
-#    endif
-#  endif
-# endif
+#include <stdint.h>
 
-#ifdef I
-  typedef I		AsnInt;
-  typedef unsigned I	UAsnInt;
-#else
-  #error "can't find integer type which is 4 bytes in size"
-#endif
-#undef I
+typedef int32_t I;
+typedef I		AsnInt;
+typedef uint32_t	UAsnInt;
 
 
 #ifdef __cplusplus

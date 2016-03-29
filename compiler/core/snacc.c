@@ -37,7 +37,12 @@ char *bVDAGlobalDLLExport=(char *)0;
 
 #ifdef WIN32
 #include <ctype.h>
+#define chdir _chdir
+#else
+#include <unistd.h>
 #endif
+
+#include <errno.h>
 
 #if TIME_WITH_SYS_TIME
 # include <sys/time.h>
@@ -53,7 +58,7 @@ char *bVDAGlobalDLLExport=(char *)0;
 #include <stdio.h>
 
 #include "asn-incl.h"
-	#if STDC_HEADERS || HAVE_STRING_H
+#if STDC_HEADERS || HAVE_STRING_H
 #include <string.h>
 #else
 #include <strings.h>
@@ -84,7 +89,7 @@ char *bVDAGlobalDLLExport=(char *)0;
 
 typedef struct SRC_FILE
 {
-    char      *fileName;
+    char   *fileName;
 	short	ImportFileFlag;
 	struct SRC_FILE *next;
 } SRC_FILE;
@@ -144,7 +149,7 @@ static void GenIDLCode PROTO ((ModuleList *allMods, long longJmpVal, int genType
 							 int genPrinters, int genValues, int genFree));
 static int ModNamesUnique PROTO ((ModuleList *m));
 static Module *ParseAsn1File PROTO ((char *fileName, short ImportFlag));
-static short compareDupeFile(char *fullpath, SRC_FILE *FileList);
+static short compareDupeFile(const char *fullpath, SRC_FILE *FileList);
 static char *sbasename(char *name);
 
 #if META
@@ -262,6 +267,7 @@ void Usage PARAMS ((prgName, fp),
 
     fprintf (fp, "Copyright (C) 1993 Michael Sample and UBC\n");
     fprintf (fp, "Copyright (C) 1994, 1995 by Robert Joop and GMD FOKUS\n\n");
+    fprintf (fp, "Copyright (C) 2011-2016 by Aaron Conole\n\n");
 
     fprintf (fp, "This program is free software; you can redistribute it and/or modify\n");
     fprintf (fp, "it under the terms of the GNU General Public License as published by\n");
@@ -290,7 +296,7 @@ int main PARAMS ((argc, argv),
 	char		*parseFile;
 	char		*file1, *file2;
     int			numSrcFiles;
-    ModuleList		*allMods = NULL, *ImpMods = NULL;
+    ModuleList		*allMods = NULL;
     Module		*currMod;
 	Module		**tmpModHndl;
     int			currArg;
@@ -318,7 +324,6 @@ int main PARAMS ((argc, argv),
     int			novolatilefuncs = FALSE;
 	char*		dirName;					/* REN -- 6/2/03 -- added */
 	char*		errFileName;				/* REN -- 7/7/03 -- added */
-	int			incDirSpecified = FALSE;	/* REN -- 7/7/03 -- added */
 
 	if (argc <= 1)
 	{
@@ -326,8 +331,7 @@ int main PARAMS ((argc, argv),
 		return 1;
 	}
 
-    srcList = (SRC_FILE*) Malloc ((argc -1) * sizeof (SRC_FILE));
-
+    srcList = NULL;
 
     /*
      * parse cmd line args
@@ -364,7 +368,6 @@ int main PARAMS ((argc, argv),
 				break;
 
 			case 'I':
-				incDirSpecified = TRUE;
 				if (argv[currArg][2] != '\0')
 					dirName = &argv[currArg][2];
 				else
@@ -425,6 +428,15 @@ int main PARAMS ((argc, argv),
 				currArg++;
 				break;
 
+            case 'D':
+                currArg++;
+                errno = 0;
+                if(chdir(argv[currArg])) {
+                    fprintf(stderr, "ERROR: unable to change directory to provided.\n");
+                    exit(1);
+                }
+                break;
+                
 			case 'd':
 				genDecodeCode = TRUE;
 				currArg++;
@@ -445,7 +457,7 @@ int main PARAMS ((argc, argv),
 				currArg++;
 				break;
             
-            case 'b': /* produce C++ code */
+            case 'b': /* produce per code */
 				genPERCode = TRUE;
 				currArg++;
 				break;
@@ -635,7 +647,6 @@ error:
 		else /* asn1srcFileName */
 		{
 			numSrcFiles++;
-			tmpLst = srcList;
 			file1 = sbasename(argv[currArg]);
 			Add2SrcList(&srcList, argv[currArg], FALSE);
 			currArg++;
@@ -700,19 +711,19 @@ error:
 	 * STEP 1---parse each ASN.1 src file
 	 */
 	allMods = (ModuleList *)AsnListNew (sizeof (void*));
-	ImpMods = (ModuleList *)AsnListNew (sizeof (void*));
 	
-	while (srcList != NULL)
+	tmpLst = srcList;
+	while (tmpLst != NULL)
 	{
 		// Only do if not NULL 
-		if (srcList->fileName)
+		if (tmpLst->fileName)
 		{
-			parseFile = strdup (srcList->fileName);
-			currMod = ParseAsn1File (parseFile, srcList->ImportFileFlag);
+			currMod = ParseAsn1File (tmpLst->fileName,
+                                     tmpLst->ImportFileFlag);
 		
-			if (currMod == NULL)
+			if (currMod == NULL) {
 				return 1;
-
+            }
 			/*
 			 * insert this module at the head of the list
 			 * of already parsed (if any) modules
@@ -720,7 +731,7 @@ error:
 			tmpModHndl = (Module **)AsnListAppend (allMods);
 			*tmpModHndl = currMod;
 		}
-		srcList = srcList->next;
+		tmpLst = tmpLst->next;
 	}  /* end per src file for loop */
 
     /*
@@ -932,6 +943,14 @@ error:
 			genPrintCode, genFreeCode);
 #endif
 
+    tmpLst = srcList;
+    while(tmpLst) {
+        SRC_FILE *tmp;
+        free(tmpLst->fileName);
+        tmp = tmpLst;
+        tmpLst = tmpLst->next;
+        free(tmp);
+    }
     free(allMods);
 
 	return 0;
@@ -1476,11 +1495,7 @@ int ModNamesUnique PARAMS ((mods),
  */
 short Add2SrcList(SRC_FILE **FileList, const char *InputFile, short ImportFlag)
 {
-#ifdef _WIN32		//RWC;
-	static const char* gAsnExt = "asn*";
-#else		//RWC;
-	static const char* gAsnExt = "asn1";  //RWC;
-#endif		//RWC;
+	static const char* gAsnExt = "asn1";
 
     GFSI_HANDLE gfsi_handle = NULL;
 	char *fileName = NULL;
@@ -1502,21 +1517,21 @@ short Add2SrcList(SRC_FILE **FileList, const char *InputFile, short ImportFlag)
 		fileName = GFSI_GetFirstFile(&gfsi_handle, InputFile, gAsnExt);
 		while (fileName != NULL)
 		{
+            size_t fullPathLen = strlen(InputFile)+strlen(fileName)+2;
             /* Alloc 2 extra bytes below - 1 for null byte, and 1 for the /
                which needs to be inserted in the middle */
-            fullPath = (char *)calloc(strlen(InputFile)+strlen(fileName)+2,
-                                      sizeof(char));
+            fullPath = (char *)calloc(fullPathLen, sizeof(char));
             
 			/* Build the full path to the file */
             
-			sprintf(fullPath, "%s/%s", InputFile, fileName);
+			snprintf(fullPath, fullPathLen, "%s/%s", InputFile, fileName);
 
 			/* Check if this file is already present */
 			err = compareDupeFile(fullPath, *FileList);
 			if (err < 0)
 			{
-				fprintf (stderr, "Duplicate include import file reference %s, using first reference \n",
-					fullPath);
+				fprintf (stderr, "W:Duplicate include import file reference"
+                         " %s, using first reference \n", fullPath);
 			}
 			else if (err == 0)
 			{
@@ -1545,14 +1560,23 @@ short Add2SrcList(SRC_FILE **FileList, const char *InputFile, short ImportFlag)
 	}
 	else	/* File name specified on command line */
 	{
-		/* Add to head of the list */
-		tmpList = (SRC_FILE*)Malloc(sizeof(SRC_FILE));
-		tmpList->ImportFileFlag = ImportFlag;
-		tmpList->fileName = strdup(InputFile);
-		tmpList->next = *FileList;
-		*FileList = tmpList;
-
 		err = 0;
+		if (*FileList) {
+			/* Check if this file is already present */
+			err = compareDupeFile(InputFile, *FileList);
+		}
+
+		if (err < 0) {
+			fprintf(errFileG, "W: Duplicate file %s specified.\n", InputFile);
+			err = 0;
+		} else {
+			/* Add to head of the list */
+			tmpList = (SRC_FILE*)Malloc(sizeof(SRC_FILE));
+			tmpList->ImportFileFlag = ImportFlag;
+			tmpList->fileName = strdup(InputFile);
+			tmpList->next = *FileList;
+			*FileList = tmpList;
+		}
 	}
 
 	return err;
@@ -1581,10 +1605,10 @@ char *sbasename (char *name)
 }
 
 
-short compareDupeFile(char *fullpath, SRC_FILE *FileList)
+short compareDupeFile(const char *fullpath, SRC_FILE *FileList)
 {
 	SRC_FILE *tmplist = FileList;
-	char* file1 = sbasename(fullpath);
+	char* file1 = sbasename((char*)fullpath);
 	char *file2;
 
 	while (tmplist != NULL)
