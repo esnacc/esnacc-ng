@@ -44,6 +44,7 @@
 #include "exports.h"
 #include "lex-stuff.h"
 
+static unsigned int enumCtr;
 
 int OidArcNameToNum PROTO ((char *name));
 int yylex();
@@ -376,9 +377,9 @@ int parseErrCountG = 0;
 
 %type <exportList>    ExportSymbolList
 
-%type <valueDefPtr>   NamedNumber
+%type <valueDefPtr>   NamedNumber Enumeration
 
-%type <valueDefListPtr> NamedNumberList NamedBitList
+%type <valueDefListPtr> NamedNumberList NamedBitList Enumerations
 
 %type <tagPtr>       Tag ClassNumber
 
@@ -933,6 +934,36 @@ IntegerType:
     }
 ;
 
+Enumeration:
+    identifier
+    {
+        $$ = MT(ValueDef);
+        $$->definedName = $1;
+        SetupValue (&$$->value, BASICVALUE_INTEGER, myLineNoG);
+        $$->value->basicValue->a.integer = enumCtr++;
+    }
+    | NamedNumber
+    {
+        enumCtr = $1->value->basicValue->a.integer + 1;
+        $$ = $1;
+    }
+;
+
+Enumerations:
+    Enumeration
+    {
+        $$ = NEWLIST();
+        APPEND ($1, $$);
+    }
+    | Enumerations COMMA_SYM Enumeration
+    {
+        APPEND ($3, $1);
+        $$ = $1;
+    }
+    | Enumerations COMMA_SYM ELLIPSIS_SYM
+    {
+        $$ = $1;
+    }
 
 NamedNumberList:
     NamedNumber
@@ -940,7 +971,7 @@ NamedNumberList:
         $$ = NEWLIST();
         APPEND ($1, $$);
     }
-  | NamedNumberList COMMA_SYM NamedNumber
+    | NamedNumberList COMMA_SYM NamedNumber
     {
         APPEND ($3,$1);
         $$ = $1;
@@ -982,10 +1013,11 @@ SignedNumber:
 ;
 
 EnumeratedType:
-    ENUMERATED_SYM LEFTBRACE_SYM NamedNumberList RIGHTBRACE_SYM
+    ENUMERATED_SYM LEFTBRACE_SYM Enumerations RIGHTBRACE_SYM
     {
         SetupType (&$$, BASICTYPE_ENUMERATED, myLineNoG);
         $$->basicType->a.enumerated = $3;
+        enumCtr = 0;
     }
 ;
 
