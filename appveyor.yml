@@ -17,6 +17,8 @@ init:
 
     7z x C:\pthreads-win32\pthreads-win32.zip
 
+    cd C:\esnacc-ng
+
 build_script:
 - '"C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\Tools\VsDevCmd"'
 - C:\MinGW\msys\1.0\bin\bash -lc "echo \"C:/MinGW /mingw\" > /etc/fstab"
