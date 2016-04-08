@@ -1,7 +1,12 @@
 language: c
 
+os:
+   - linux
+   - osx
+
 compiler:
    - gcc
+   - clang
 
 env:
   global:
@@ -23,3 +28,4 @@ script:
    - ./boot.sh
    - ./configure 
    - make
+   - make check

@@ -3,7 +3,7 @@ Enhanced Sample Neufield ASN C Compiler
 
 Build Status
 ------------
-[![Build Status](https://travis-ci.org/azsnacc/esnacc-ng.png)](https://travis-ci.org/azsnacc/esnacc-ng) [![Build Status](https://ci.appveyor.com/api/projects/status/github/azsnacc/esnacc-ng)]
+[![Build Status](https://travis-ci.org/azsnacc/esnacc-ng.png)](https://travis-ci.org/azsnacc/esnacc-ng) [![Build Status](https://ci.appveyor.com/api/projects/status/github/azsnacc/esnacc-ng)](https://ci.appveyor.com/api/projects/status/github/azsnacc/esnacc-ng)
 
 What is eSNACC
 --------------
