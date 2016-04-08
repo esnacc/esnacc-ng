@@ -31,14 +31,22 @@ cxx_lib_libcxxasn1_la_SOURCES = \
 	cxx-lib/src/asn-fileseg.cpp \
 	cxx-lib/src/asn-rvsbuf.cpp 
 
+cxx_lib_libcxxasn1_la_WIN32_FLAGS=
+if WIN32
+cxx_lib_libcxxasn1_la_WIN32_FLAGS += -DSNACCDLL_EXPORTS=1
+endif
+
 cxx_lib_libcxxasn1_la_CXXFLAGS = \
+	$(cxx_lib_libcxxasn1_la_WIN32_FLAGS) \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/cxx-lib \
 	-I$(top_srcdir)/cxx-lib/src \
 	-I$(top_srcdir)/cxx-lib/inc
 
 cxx_lib_libcxxasn1_la_CFLAGS = \
+	$(cxx_lib_libcxxasn1_la_WIN32_FLAGS) \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/cxx-lib \
 	-I$(top_srcdir)/cxx-lib/src \
 	-I$(top_srcdir)/cxx-lib/inc
+

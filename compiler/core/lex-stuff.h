@@ -35,7 +35,7 @@
 
 extern unsigned long myLineNoG;
 
-#ifdef YYTEXT_POINTER
+#if defined(YYTEXT_POINTER) || defined(WIN32)
 extern char	*yytext;
 #else
 extern char	yytext[];

@@ -44,3 +44,4 @@ config.h.in
 /GPATH
 /GRTAGS
 /GTAGS
+/test-driver
