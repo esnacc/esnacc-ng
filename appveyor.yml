@@ -1,0 +1,29 @@
+version: 1.0.{build}
+branches:
+  only: 
+  - master
+clone_folder: C:\esnacc-ng
+init:
+- ps: >-
+    mkdir C:\pthreads-win32
+
+    $source = "ftp://sourceware.org/pub/pthreads-win32/pthreads-w32-2-9-1-release.zip"
+
+    $destination = "C:\pthreads-win32\pthreads-win32.zip"
+
+    Invoke-WebRequest $source -OutFile $destination
+
+    cd C:\pthreads-win32
+
+    7z x C:\pthreads-win32\pthreads-win32.zip
+
+    cd C:\esnacc-ng
+
+build_script:
+- '"C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\Tools\VsDevCmd"'
+- C:\MinGW\msys\1.0\bin\bash -lc "echo \"C:/MinGW /mingw\" > /etc/fstab"
+- C:\MinGW\msys\1.0\bin\bash -lc "cp /c/pthreads-win32/Pre-built.2/dll/x86/*.dll /c/esnacc-ng/."
+- C:\MinGW\msys\1.0\bin\bash -lc "mv /bin/link.exe /bin/link_copy.exe"
+- C:\MinGW\msys\1.0\bin\bash -lc "cd /c/esnacc-ng && ./boot.sh"
+- C:\MinGW\msys\1.0\bin\bash -lc "cd /c/esnacc-ng && ./configure CC=build-aux/cccl CXX=build-aux/cccl LD=\"`which link`\" --with-pthread=C:/pthreads-win32/Pre-built.2"
+- C:\MinGW\msys\1.0\bin\bash -lc "cd /c/esnacc-ng && make "

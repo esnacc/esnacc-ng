@@ -60,6 +60,7 @@
 #include "snacc-util.h"
 #include "c-gen/util.h"
 #include "tag-util.h"
+#include "print.h"
 #include <memory.h>
 #ifdef WIN32
 #pragma  warning( disable : 4706 )  // IGNORE assign w/in conditional expression.
@@ -412,119 +413,91 @@ char*
 Code2UnivCodeStr PARAMS ((code),
     BER_UNIV_CODE code)
 {
-//static char UNKNOWN_TAG_CODE[10];
-
-
     switch (code)
     {
-      case BOOLEAN_TAG_CODE:
+    case BOOLEAN_TAG_CODE:
         return "BOOLEAN_TAG_CODE";
-        break;
 
-      case INTEGER_TAG_CODE:
+    case INTEGER_TAG_CODE:
         return "INTEGER_TAG_CODE";
-        break;
 
-      case BITSTRING_TAG_CODE:
+    case BITSTRING_TAG_CODE:
         return "BITSTRING_TAG_CODE";
-        break;
 
-      case OCTETSTRING_TAG_CODE:
+    case OCTETSTRING_TAG_CODE:
         return "OCTETSTRING_TAG_CODE";
-        break;
 
-      case NULLTYPE_TAG_CODE:
+    case NULLTYPE_TAG_CODE:
         return "NULLTYPE_TAG_CODE";
-        break;
 
-      case OID_TAG_CODE:
+    case OID_TAG_CODE:
         return "OID_TAG_CODE";
-        break;
 
-      case OD_TAG_CODE:
+    case OD_TAG_CODE:
         return "OD_TAG_CODE";
-        break;
 
-      case EXTERNAL_TAG_CODE:
+    case EXTERNAL_TAG_CODE:
         return "EXTERNAL_TAG_CODE";
-        break;
 
-      case REAL_TAG_CODE:
+    case REAL_TAG_CODE:
         return "REAL_TAG_CODE";
-        break;
 
-      case ENUM_TAG_CODE:
+    case ENUM_TAG_CODE:
         return "ENUM_TAG_CODE";
-        break;
 
-      case SEQ_TAG_CODE:
+    case SEQ_TAG_CODE:
         return "SEQ_TAG_CODE";
-        break;
 
-      case SET_TAG_CODE:
+    case SET_TAG_CODE:
         return "SET_TAG_CODE";
-        break;
-
-      case NUMERICSTRING_TAG_CODE:
+        
+    case NUMERICSTRING_TAG_CODE:
         return "NUMERICSTRING_TAG_CODE";
-        break;
 
-      case PRINTABLESTRING_TAG_CODE:
+    case PRINTABLESTRING_TAG_CODE:
         return "PRINTABLESTRING_TAG_CODE";
-        break;
 
-      case TELETEXSTRING_TAG_CODE:
+    case TELETEXSTRING_TAG_CODE:
         return "TELETEXSTRING_TAG_CODE";
-        break;
 
-      case VIDEOTEXSTRING_TAG_CODE:
+    case VIDEOTEXSTRING_TAG_CODE:
         return "VIDEOTEXSTRING_TAG_CODE";
-        break;
 
-      case IA5STRING_TAG_CODE:
+    case IA5STRING_TAG_CODE:
         return "IA5STRING_TAG_CODE";
-        break;
 
-      case UTCTIME_TAG_CODE:
+    case UTCTIME_TAG_CODE:
         return "UTCTIME_TAG_CODE";
-        break;
 
-      case GENERALIZEDTIME_TAG_CODE:
+    case GENERALIZEDTIME_TAG_CODE:
         return "GENERALIZEDTIME_TAG_CODE";
-        break;
 
-      case GRAPHICSTRING_TAG_CODE:
+    case GRAPHICSTRING_TAG_CODE:
         return "GRAPHICSTRING_TAG_CODE";
-        break;
 
-      case VISIBLESTRING_TAG_CODE:
+    case VISIBLESTRING_TAG_CODE:
         return "VISIBLESTRING_TAG_CODE";
-        break;
 
-      case GENERALSTRING_TAG_CODE:
+    case GENERALSTRING_TAG_CODE:
         return "GENERALSTRING_TAG_CODE";
-        break;
 
-      case UNIVERSALSTRING_TAG_CODE:
+    case UNIVERSALSTRING_TAG_CODE:
         return "UNIVERSALSTRING_TAG_CODE";
-        break;
 
-      case BMPSTRING_TAG_CODE:
+    case BMPSTRING_TAG_CODE:
         return "BMPSTRING_TAG_CODE";
-        break;
 
-      case UTF8STRING_TAG_CODE:
-         return "UTF8STRING_TAG_CODE";
-         break;
+    case UTF8STRING_TAG_CODE:
+        return "UTF8STRING_TAG_CODE";
 
-       default:
+    default:
         { 
             /* if the universal type is not known then just return the
              * unvisersal tag code.  This is useful for defining new types
              * in local modules w/o having to modify the compiler.
              */
             static char retstring[15];
-            snprintf(retstring, 15, "%d", code); 
+            snacc_snprintf(retstring, 15, "%d", code); 
             return retstring; 
         }
     }

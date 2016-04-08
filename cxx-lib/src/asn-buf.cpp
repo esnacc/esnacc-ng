@@ -39,11 +39,14 @@ AsnBuf::AsnBuf(const AsnBuf &o)
 
 void AsnBuf::insert(const AsnBuf &that)
 {
-	if (!m_deck.empty() && m_card != m_deck.end() && (*m_card)->length() == 0)
-		m_card = m_deck.erase(m_card);
+    if (!m_deck.empty() && m_card != m_deck.end()
+        && (*m_card)->length() == 0) {
+        delete *m_card;
+        m_card = m_deck.erase(m_card);
+    }
 
-	AsnRvsBuf *rvsBuf = new AsnRvsBuf(that);
-   m_card = m_deck.insert(m_deck.begin(), new Card(rvsBuf));
+    AsnRvsBuf *rvsBuf = new AsnRvsBuf(that);
+    m_card = m_deck.insert(m_deck.begin(), new Card(rvsBuf));
 }
 
 AsnBuf & AsnBuf::operator=(const AsnBuf &o)
@@ -127,10 +130,10 @@ void AsnBuf::ResetMode(std::ios_base::openmode mode) const
          // dump all cards that are not AsnRvsBuf's because
          // those are the only cards that can be encoded into.
          //
-         if ( (*i)->bufType() != RVS_BUF_TYPE)
-         {
-            i = m_deck.erase(i);
-            continue;
+         if ((*i)->bufType() != RVS_BUF_TYPE) {
+             delete *i;
+             i = m_deck.erase(i);
+             continue;
          }
       }
       (*i)->rdbuf()->pubseekpos(0, mode);
@@ -179,6 +182,7 @@ void AsnBuf::PutFileSeg(AsnFileSeg *pFs)
 char * AsnBuf::GetSeg(long segLen) const
 {
    char *seg = new char[segLen];
+   // XXXX Make this a return version
    GetSeg(seg, segLen);
    return seg;
 }
@@ -558,26 +562,20 @@ void AsnBuf::skip(size_t skipBytes)
 //
 long AsnBuf::splice(AsnBuf &b)
 {
-   Deck::iterator ib = b.m_deck.end();
-//#ifdef _DEBUG
-//   Card *tmpCard = *ib;
-//#endif
-   long length = b.length();
+    if (m_card != m_deck.end() &&
+        ((*m_card == NULL) || (*m_card)->length() == 0)) {
+        delete *m_card;
+        m_card = m_deck.erase(m_card);
+    }
 
-	if (m_card != m_deck.end() && (*m_card)->length() == 0)
-		m_card = m_deck.erase(m_card);
+    long length = b.length();
+    Deck::reverse_iterator ib;
+    for (ib = b.m_deck.rbegin(); ib != b.m_deck.rend(); ++ib) {
+        m_card = m_deck.insert(m_deck.begin(), *ib);
+    }
+    b.m_deck.clear();
 
-   do 
-   {
-      ib--;
-//#ifdef _DEBUG
-//      tmpCard = *ib;
-//#endif
-      m_card = m_deck.insert(m_deck.begin(), *ib);
-      ib = b.m_deck.erase(ib);
-   } while (ib != b.m_deck.begin()) ;
-
-   return length;
+    return length;
 }
 
 void BDEC_2ND_EOC_OCTET(const SNACC::AsnBuf &b, SNACC::AsnLen &bytesDecoded)
@@ -590,43 +588,34 @@ void BDEC_2ND_EOC_OCTET(const SNACC::AsnBuf &b, SNACC::AsnLen &bytesDecoded)
    bytesDecoded++;
 }
 
+
+// Sort by encoding included tag, length, and data
+//
+bool asnbuf_greater(const SNACC::AsnBuf &x, const SNACC::AsnBuf &y)
+{
+    AsnLen len(0);
+    AsnTag xTag = (BDecTag(x, len) & 0xDFFFFFFF);
+    AsnTag yTag = (BDecTag(y, len) & 0xDFFFFFFF);
+
+    x.ResetMode();
+    y.ResetMode();
+
+    return (xTag > yTag);
+}
+
 void sortSet(std::list<SNACC::AsnBuf> &bufList)
 {
-    std::greater<SNACC::AsnBuf> sortByByte;
-    std::list<SNACC::AsnBuf> i;
+    for (std::list<SNACC::AsnBuf>::iterator j = bufList.begin();
+         j != bufList.end(); ++j)
+        j->ResetMode();
 
-    std::list<SNACC::AsnBuf>::iterator j;
-
-    for (j = bufList.begin(); j != bufList.end(); j++)
-       j->ResetMode();
-
-	 bufList.sort(sortByByte);
-} 
+    bufList.sort(asnbuf_greater);
+}
 
 #define ASN_UNIVERSAL   0x00
 #define ASN_APPLICATION 0x40
 #define ASN_CONTEXT     0x80
 #define ASN_PRIVATE     0xC0
-
-// Sort by encoding included tag, length, and data
-//
-namespace std
-{
-
-template<>
-bool std::greater<SNACC::AsnBuf>::operator()(const SNACC::AsnBuf &x,
-                                             const SNACC::AsnBuf &y) const
-{
-   AsnLen len(0);
-   AsnTag xTag = (BDecTag(x, len) & 0xDFFFFFFF);
-   AsnTag yTag = (BDecTag(y, len) & 0xDFFFFFFF);
-
-   x.ResetMode();
-   y.ResetMode();
-   
-   return (xTag > yTag);
-}
-}
 
 bool AsnBuf::operator == (const AsnBuf &b) const
 {

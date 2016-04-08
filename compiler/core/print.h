@@ -135,3 +135,4 @@ void SpecialPrintBasicType PROTO ((FILE *f, TypeDef *head, Type *t, BasicType *b
 
 void SpecialPrintNamedElmts PROTO ((FILE *f, TypeDef *head, Type *t));
 
+int snacc_snprintf(char *dst, size_t destsz, const char *format, ...);

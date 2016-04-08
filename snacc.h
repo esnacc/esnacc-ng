@@ -72,12 +72,7 @@
 #define GLASS	1
 #define KHO	1
 
-#ifdef WIN32
-#include "config_win32.h"
-#else
-/* #include "config.h" */
 #include "config.h"
-#endif
 
 #ifndef NULL
 #define NULL	0

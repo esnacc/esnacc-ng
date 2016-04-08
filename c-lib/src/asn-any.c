@@ -200,9 +200,11 @@ void SetAnyTypeByOid PARAMS ((v, id),
 		if (anyOidHashTblG == NULL)
 			anyOidHashTblG = InitHash();
 
-		if(anyOidHashTblG != NULL)	/* make sure we didn't fail */
-	    	Insert(anyOidHashTblG, v->ai, hash);
-	    	
+        if (anyOidHashTblG != NULL) { /* make sure we didn't fail */
+            Insert(anyOidHashTblG, v->ai, hash);
+        } else {
+            free(a);
+        }
 #endif /* _OLDER_LIB_ */	    	
 	}
 	
@@ -214,7 +216,6 @@ void SetAnyTypeByOid PARAMS ((v, id),
 void SetAnyTypeUnknown PARAMS ((v),
     AsnAny *v)
 {
-    v->ai = NULL; /* indicates failure */
 	if(v->ai == NULL)	/* no table entry */
 	{
 		v->ai = (AnyInfo*) Asn1Alloc (sizeof(AnyInfo));
@@ -279,8 +280,11 @@ InstallAnyByInt PARAMS ((anyId, intId, size, Encode, Decode, Free, Print),
         anyIntHashTblG = InitHash();
 
     h = MakeHash ((char*)&intId, sizeof (intId));
-	if(anyIntHashTblG != NULL)	/* make sure we didn't fail */
+    if(anyIntHashTblG != NULL) { /* make sure we didn't fail */
     	Insert(anyIntHashTblG, a, h);
+    } else {
+        free(a);
+    }
 
 }  /* InstallAnyByOid */
 
@@ -316,8 +320,11 @@ InstallAnyByOid PARAMS ((anyId, oid, size, Encode, Decode, Free, Print),
     if (anyOidHashTblG == NULL)
         anyOidHashTblG = InitHash();
 
-	if(anyOidHashTblG != NULL)	/* make sure we didn't fail */
+    if(anyOidHashTblG != NULL) { /* make sure we didn't fail */
    		Insert(anyOidHashTblG, a, h);
+    } else {
+        free(a);
+    }
 
 }  /* InstallAnyByOid */
 
@@ -332,8 +339,15 @@ void
 FreeAsnAny PARAMS ((v),
     AsnAny *v)
 {
-    if ((v->ai != NULL) && (v->ai->Free != NULL))
+    if ((v->ai != NULL) && (v->ai->Free != NULL)) {
         v->ai->Free (v->value);
+    } else {
+        Asn1Free(v->value);
+    }
+
+    if (v->ai && v->ai->anyId == kUnknownAnyObjectID) {
+        Asn1Free(v->ai);
+    }
 } /* FreeAsnAny */
 
 

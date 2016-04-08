@@ -65,12 +65,14 @@
  *
  */
 
-
 #include "asn-incl.h"
 #include "asn1module.h"
 #include "lib-types.h"
 #include "print.h"
 
+#include <stdio.h>
+#include <sys/types.h>
+#include <stdarg.h>
 
 extern FILE* errFileG;		// Defined in snacc.c
 
@@ -2888,3 +2890,37 @@ SpecialPrintNamedElmts PARAMS ((f, head, t),
     fprintf (f," } ");
    head = head; /* AVOIDS warning. */
 }  /* SpecialPrintNamedElmts */
+
+#ifndef WIN32
+static int
+_vscprintf (const char * format, va_list pargs)
+{
+    int retval;
+    va_list argcopy;
+    va_copy(argcopy, pargs);
+    retval = vsnprintf(NULL, 0, format, pargs);
+    va_end(argcopy);
+    return retval;
+}
+#endif
+
+static int
+snacc_vsnprintf(char *dest, size_t destsz, const char *format, va_list args)
+{
+    int needed = _vscprintf(format, args);
+    if (dest && destsz) {
+        vsnprintf(dest, destsz, format, args);
+        dest[destsz-1] = '\0';
+    }
+    return needed;
+}
+
+int snacc_snprintf(char *dst, size_t destsz, const char *format, ...)
+{
+    va_list args;
+    int len;
+    va_start(args, format);
+    len = snacc_vsnprintf(dst, destsz, format, args);
+    va_end(args);
+    return len;
+}

@@ -38,11 +38,12 @@ CLEAN_LOCAL =
 DISTCLEANFILES =
 
 docs = \
-	readme.txt \
+	README.md \
 	licenseq.txt \
 	install.txt \
-	news \
+	NEWS \
 	copying
+
 EXTRA_DIST = \
 	$(docs) \
 	.travis.yml \

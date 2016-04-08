@@ -485,22 +485,19 @@ void AsnString::BDecContent(const AsnBuf &b, AsnTag tagId, AsnLen elmtLen, AsnLe
 	}
 	else	// primitive string
 	{
-        if (elmtLen != INDEFINITE_LEN)//RWC; TMP disable -1,indefinite length value
-                            //RWC;  FOUND through NISCC tests for EnvelopedData
-        {
-			  b.GetSeg(*this, elmtLen);
-			  bytesDecoded += elmtLen;
+        if (elmtLen != INDEFINITE_LEN) {
+            if (elmtLen > 0) {
+                b.GetSeg(*this, elmtLen);
+                bytesDecoded += elmtLen;
+            }
         }
-		  else
-		  {
-			  throw BoundsException("Indefinite length not allowed on primitive", STACK_ENTRY);
-		  }
+        else
+        {
+            throw BoundsException("Indefinite length not allowed on primitive",
+                                  STACK_ENTRY);
+        }
 	}
 
-/*RWC;DISABLE; USER CAN CALL SEPARATELY;#ifndef DISABLE_STRING_CHECK
-	if (!check())
-		throw EXCEPT("Invalid character present", RESTRICTED_TYPE_ERROR);
-#endif;RWC;*/
 }
 
 void AsnString::Print(std::ostream& os, unsigned short /*indent*/) const
@@ -533,28 +530,22 @@ void AsnString::BDecConsString(const AsnBuf &b, AsnLen elmtLen,
 			break;
 		}
 		
-		AsnLen innerLen = BDecLen(b, totalElmtsLen);
-		if (innerTag == MAKE_TAG_ID (UNIV, PRIM, OCTETSTRING_TAG_CODE))
-		{
-			char *seg =  new char[elmtLen];
-			if (seg == NULL)
-			   throw MemoryException(elmtLen, "seg", STACK_ENTRY);
-			b.GetSeg(seg, elmtLen);
-			bytesDecoded += elmtLen;
-			
-			totalElmtsLen += elmtLen;
+        AsnLen innerLen = BDecLen(b, totalElmtsLen);
+        if (innerTag == MAKE_TAG_ID (UNIV, PRIM, OCTETSTRING_TAG_CODE))
+        {
+            char *seg = new char[innerLen];
+            b.GetSeg(seg, innerLen);
+            bytesDecoded += innerLen;
 
-			append(seg, elmtLen);
-			innerLen -= elmtLen;
-			delete[] seg;
-		}
-		else if (innerTag == MAKE_TAG_ID (UNIV, CONS, OCTETSTRING_TAG_CODE))
-		{
-			BDecConsString(b, innerLen, totalElmtsLen);
-		}
-		else  // wrong tag
-			throw InvalidTagException(typeName(), innerTag, STACK_ENTRY);
-	}
+            totalElmtsLen += innerLen;
+
+            append(seg, innerLen);
+            delete [] seg;
+        } else if (innerTag == MAKE_TAG_ID (UNIV, CONS, OCTETSTRING_TAG_CODE)) {
+            BDecConsString(b, innerLen, totalElmtsLen);
+        } else  // wrong tag
+            throw InvalidTagException(typeName(), innerTag, STACK_ENTRY);
+    }
 
     bytesDecoded += totalElmtsLen;
 } // end of AsnString::BDecConsString()
@@ -1124,67 +1115,49 @@ int AsnString::checkConstraints (ConstraintFailList* pConstraintFails)const
     int sizePermittedAlpha;
     const char* permittedAlphabet = PermittedAlphabet(sizePermittedAlpha);
 
-	if(sizeConstraints)
-	{
-		for(count = 0; count< numSizeConstraints; count++)
-		{
+    if (sizeConstraints) {
+        for (count = 0; count < numSizeConstraints; count++) {
             tmpptr = NULL;
-			if(sizeConstraints[count].upperBoundExists == 1)
-			{
-                if( ( sizeConstraints[count].lowerBound > (strlen(c_str()))  ) || 
-                    sizeConstraints[count].upperBound < (strlen(c_str())) )
-                {
-                    tmpptr = ConstraintErrorStringList[ STRING_SIZE_VALUE_RANGE ];
+            if (sizeConstraints[count].upperBoundExists == 1) {
+                if (sizeConstraints[count].lowerBound > size()
+                   || sizeConstraints[count].upperBound < size()) {
+                    tmpptr =
+                        ConstraintErrorStringList[STRING_SIZE_VALUE_RANGE];
                 }
-			}
-			else
-			{
-                if( sizeConstraints[count].lowerBound != (strlen(c_str()))  )
-                {
-                    tmpptr = ConstraintErrorStringList[ STRING_SIZE_SINGLE_VALUE ];
+            } else {
+                if (sizeConstraints[count].lowerBound != size()) {
+                    tmpptr =
+                        ConstraintErrorStringList[STRING_SIZE_SINGLE_VALUE];
                 }
-			}
+            }
 
-			if(tmpptr)
-			{
-				ptr += tmpptr;
-			}
-			else
-			{
-				sizefailed = 0;
-			}
-		}
-	}
-	else
-	{
-		sizefailed = 0;
-	}
+            if(tmpptr) {
+                ptr += tmpptr;
+            } else {
+                sizefailed = 0;
+            }
+        }
+    } else {
+        sizefailed = 0;
+    }
 
-	if(sizePermittedAlpha > 0)
-	{
-        tmpptr = NULL;
-		tmpptr =  checkStringTypPermittedAlpha( permittedAlphabet, sizePermittedAlpha );
-		
-		if(tmpptr)
-		{
+    if (sizePermittedAlpha > 0) {
+        tmpptr = checkStringTypPermittedAlpha(permittedAlphabet,
+                                              sizePermittedAlpha);
+        if (tmpptr) {
             ptr += tmpptr;
-		}
-		else
-		{
-			alphafailed = 0;
-		}
-	}
+        } else {
+            alphafailed = 0;
+        }
+    }
 
-	if(sizefailed || alphafailed)
-	{
-		if(pConstraintFails!=NULL)
-        	pConstraintFails->push_back(ptr);
-		return 1;
-	}
+    if (sizefailed || alphafailed) {
+        if (pConstraintFails != NULL)
+            pConstraintFails->push_back(ptr);
+        return 1;
+    }
 
-
-	return 0;
-
+    return 0;
 }
 
 
@@ -1278,58 +1251,50 @@ AsnLen BMPString::BEncContent(AsnBuf &b) const
 void BMPString::BDecContent(const AsnBuf &b, AsnTag tagId, AsnLen elmtLen,
 							AsnLen &bytesDecoded)
 {
-	FUNC("BMPString::BDecContent");
-	
-	// Erase the existing characters
-	erase();
+    FUNC("BMPString::BDecContent");
 
-	if (elmtLen == INDEFINITE_LEN || elmtLen > b.length())
-	{
-	   throw MemoryException(elmtLen, "elmtLen requests for too much data", STACK_ENTRY);
-	}
+    // Erase the existing characters
+    erase();
 
-	// If tag is constructed, decode and combine the segments
-	std::string encStr;
-	if (TAG_IS_CONS(tagId))
-	{
-		bytesDecoded += CombineConsString(b, elmtLen, encStr);
-	}
-	else	// tag is primitive, just combine the one segment
-	{
-		char *seg =  new char[elmtLen];
-		if (seg == NULL)
-		   throw MemoryException(elmtLen, "seg", STACK_ENTRY);
-		b.GetSeg(seg, elmtLen);
-		bytesDecoded += elmtLen;
+    if (elmtLen == INDEFINITE_LEN || elmtLen > b.length()) {
+        throw MemoryException(elmtLen,
+                              "elmtLen requests for too much data",
+                              STACK_ENTRY);
+    }
 
-		encStr.append(seg, elmtLen);
-		delete[] seg;
-	}
+    // If tag is constructed, decode and combine the segments
+    std::string encStr;
+    if (TAG_IS_CONS(tagId)) {
+        bytesDecoded += CombineConsString(b, elmtLen, encStr);
+    } else { // tag is primitive, just combine the one segment
+        char *seg =  new char[elmtLen];
 
-	// encoding length must be a multiple of two since BMPString uses
-	// 2 bytes to represent a character.
-	//
-	if (encStr.length() % 2 != 0)
-	{
-		throw EXCEPT("Invalid BMPString length not multiple of 2",
-			RESTRICTED_TYPE_ERROR);
-	}
-	
-	// decode BMPString into wide string
-	//
-	resize(encStr.length() / 2);
-	std::string::const_iterator iEnc = encStr.begin();
-	for (size_type i = 0; i < size(); ++i)
-	{
-		wchar_t wtmpCh = *iEnc++;
-		wtmpCh <<= 8;
-		wtmpCh |= *iEnc++;
-		at(i) = wtmpCh;
-	}
+        b.GetSeg(seg, elmtLen);
+        bytesDecoded += elmtLen;
+
+        encStr.append(seg, elmtLen);
+        delete [] seg;
+    }
+
+    // encoding length must be a multiple of two since BMPString uses
+    // 2 bytes to represent a character.
+    if (encStr.length() % 2 != 0) {
+        throw EXCEPT("Invalid BMPString length not multiple of 2",
+                     RESTRICTED_TYPE_ERROR);
+    }
+
+    // decode BMPString into wide string
+    resize(encStr.length() / 2);
+    std::string::const_iterator iEnc = encStr.begin();
+    for (size_type i = 0; i < size(); ++i) {
+        wchar_t wtmpCh = (unsigned char)*iEnc++;
+        wtmpCh <<= 8;
+        wtmpCh |= (unsigned char)*iEnc++;
+        at(i) = wtmpCh;
+    }
 }
 
 // Encode UniversalString octets into byte stream
-//
 AsnLen UniversalString::BEncContent(AsnBuf &b) const
 {
 	FUNC("UniversalString::BEncContent");
@@ -1423,7 +1388,7 @@ void UniversalString::BDecContent(const AsnBuf &b, AsnTag tagId, AsnLen elmtLen,
 			else
 			{
 				wtmpCh <<= 8;
-				wtmpCh |= *iEnc++;
+				wtmpCh |= (unsigned char)*iEnc++;
 			}
 		}
 		at(i) = wtmpCh;
@@ -1444,42 +1409,36 @@ AsnLen UTF8String::BEncContent(AsnBuf &b) const
 void UTF8String::BDecContent(const AsnBuf &b, AsnTag tagId, AsnLen elmtLen,
 							 AsnLen &bytesDecoded)
 {
-	FUNC("UTF8String::BDecContent()");
-	
-	// Erase the existing characters
-	erase();
+    FUNC("UTF8String::BDecContent()");
 
-	try 
-	{
-    	if (elmtLen == INDEFINITE_LEN || elmtLen > b.length())
-		{
-	       throw MemoryException(elmtLen, "elmtLen requests for too much data", STACK_ENTRY);
-		}
+    // Erase the existing characters
+    erase();
 
+    try {
+    	if (elmtLen == INDEFINITE_LEN || elmtLen > b.length()) {
+            throw MemoryException(elmtLen,
+                                  "elmtLen requests for too much data",
+                                  STACK_ENTRY);
+        }
 
-		// If tag is constructed, decode and combine the segments
-		std::string encStr;
-		if (TAG_IS_CONS(tagId))
-		{
-			bytesDecoded += CombineConsString(b, elmtLen, encStr);
-		}
-		else	// tag is primitive, just combine the one segment
-		{
-			char *seg =  new char[elmtLen];
-			if (seg == NULL)
-			   throw MemoryException(elmtLen, "seg", STACK_ENTRY);
-			b.GetSeg(seg, elmtLen);
-			bytesDecoded += elmtLen;
-			
-			encStr.append(seg, elmtLen);
-			delete[] seg;
-		}
-		
-		// Decode this UTF-8 string and assign it to this object
-		set(encStr.c_str());
-	}
-	catch (SnaccException& snaccE) {
-		snaccE.push(STACK_ENTRY);
-		throw;
-	}
+        // If tag is constructed, decode and combine the segments
+        std::string encStr;
+        if (TAG_IS_CONS(tagId)) {
+            bytesDecoded += CombineConsString(b, elmtLen, encStr);
+        } else { // tag is primitive, just combine the one segment
+            char *seg =  new char[elmtLen];
+
+            b.GetSeg(seg, elmtLen);
+            bytesDecoded += elmtLen;
+
+            encStr.append(seg, elmtLen);
+            delete [] seg;
+        }
+
+        // Decode this UTF-8 string and assign it to this object
+        set(encStr.c_str());
+    } catch (SnaccException& snaccE) {
+        snaccE.push(STACK_ENTRY);
+        throw;
+    }
 }

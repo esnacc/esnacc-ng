@@ -23,6 +23,7 @@
  * $Header: /baseline/SNACC/compiler/core/snacc.c,v 1.54 2004/04/06 15:13:41 gronej Exp $
  *
  */
+#include <config.h>
 
 int gNO_NAMESPACE=0;
 const char *gAlternateNamespaceString=0;
@@ -56,6 +57,8 @@ char *bVDAGlobalDLLExport=(char *)0;
 #endif
 
 #include <stdio.h>
+#include <sys/types.h>
+#include <stdarg.h>
 
 #include "asn-incl.h"
 #if STDC_HEADERS || HAVE_STRING_H
@@ -1495,91 +1498,82 @@ int ModNamesUnique PARAMS ((mods),
  */
 short Add2SrcList(SRC_FILE **FileList, const char *InputFile, short ImportFlag)
 {
-	static const char* gAsnExt = "asn1";
-
+    static const char* gAsnExt = "asn1";
     GFSI_HANDLE gfsi_handle = NULL;
-	char *fileName = NULL;
-	char *fullPath;
-	SRC_FILE *tmpList;
-	SRC_FILE *prev;
-	short err = -1;
+    char *fileName = NULL;
+    char *fullPath;
+    SRC_FILE *tmpList;
+    SRC_FILE *prev;
+    short err = -1;
 
-	/* Find the last file in the list */
-	prev = *FileList;
-	while ((prev != NULL) && (prev->next != NULL))
-		prev = prev->next;
+    /* Find the last file in the list */
+    prev = *FileList;
+    while ((prev != NULL) && (prev->next != NULL))
+        prev = prev->next;
 
-	if (ImportFlag)
-	{
-		/* Loop through the files in the specified directory and
-		   process each file with the proper extension.
-		*/
-		fileName = GFSI_GetFirstFile(&gfsi_handle, InputFile, gAsnExt);
-		while (fileName != NULL)
-		{
+    if (ImportFlag) {
+        /* Loop through the files in the specified directory and
+           process each file with the proper extension.
+        */
+        fileName = GFSI_GetFirstFile(&gfsi_handle, InputFile, gAsnExt);
+        while (fileName != NULL) {
             size_t fullPathLen = strlen(InputFile)+strlen(fileName)+2;
             /* Alloc 2 extra bytes below - 1 for null byte, and 1 for the /
                which needs to be inserted in the middle */
             fullPath = (char *)calloc(fullPathLen, sizeof(char));
             
-			/* Build the full path to the file */
-            
-			snprintf(fullPath, fullPathLen, "%s/%s", InputFile, fileName);
+            /* Build the full path to the file */
 
-			/* Check if this file is already present */
-			err = compareDupeFile(fullPath, *FileList);
-			if (err < 0)
-			{
-				fprintf (stderr, "W:Duplicate include import file reference"
+            snacc_snprintf(fullPath, fullPathLen, "%s/%s", InputFile,
+                           fileName);
+
+            /* Check if this file is already present */
+            err = compareDupeFile(fullPath, *FileList);
+            if (err < 0) {
+                fprintf (stderr, "W:Duplicate include import file reference"
                          " %s, using first reference \n", fullPath);
-			}
-			else if (err == 0)
-			{
-				/* Add this file to the list */
-				tmpList = (SRC_FILE*)Malloc(sizeof(SRC_FILE));
-				if (prev == NULL)
-					*FileList = tmpList;
-				else
-					prev->next = tmpList;
-				prev = tmpList;
-				tmpList->fileName = strdup(fullPath);
-				tmpList->ImportFileFlag = ImportFlag;
-			}
-			/* else skip this file */
+            } else if (err == 0) {
+                /* Add this file to the list */
+                tmpList = (SRC_FILE*)Malloc(sizeof(SRC_FILE));
+                if (prev == NULL)
+                    *FileList = tmpList;
+                else
+                    prev->next = tmpList;
+                prev = tmpList;
+                tmpList->fileName = strdup(fullPath);
+                tmpList->ImportFileFlag = ImportFlag;
+            }
 
-			/* Get the next file */
-			fileName = GFSI_GetNextFile(&gfsi_handle, gAsnExt);
+            fileName = GFSI_GetNextFile(&gfsi_handle, gAsnExt);
 
-			err = 0;
+            err = 0;
             free(fullPath);
             fullPath = 0;
-		}
-		
-		GFSI_Close(&gfsi_handle);
+        }
+
+        GFSI_Close(&gfsi_handle);
         free(fileName);
-	}
-	else	/* File name specified on command line */
-	{
-		err = 0;
-		if (*FileList) {
-			/* Check if this file is already present */
-			err = compareDupeFile(InputFile, *FileList);
-		}
+    } else { /* File name specified on command line */
+        err = 0;
+        if (*FileList) {
+            /* Check if this file is already present */
+            err = compareDupeFile(InputFile, *FileList);
+        }
 
-		if (err < 0) {
-			fprintf(errFileG, "W: Duplicate file %s specified.\n", InputFile);
-			err = 0;
-		} else {
-			/* Add to head of the list */
-			tmpList = (SRC_FILE*)Malloc(sizeof(SRC_FILE));
-			tmpList->ImportFileFlag = ImportFlag;
-			tmpList->fileName = strdup(InputFile);
-			tmpList->next = *FileList;
-			*FileList = tmpList;
-		}
-	}
+        if (err < 0) {
+            fprintf(errFileG, "W: Duplicate file %s specified.\n", InputFile);
+            err = 0;
+        } else {
+            /* Add to head of the list */
+            tmpList = (SRC_FILE*)Malloc(sizeof(SRC_FILE));
+            tmpList->ImportFileFlag = ImportFlag;
+            tmpList->fileName = strdup(InputFile);
+            tmpList->next = *FileList;
+            *FileList = tmpList;
+        }
+    }
 
-	return err;
+    return err;
 }
 
 

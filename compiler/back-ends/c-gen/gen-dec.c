@@ -109,125 +109,140 @@ PrintCDecoder PARAMS ((src, hdr, r, m,  td, longJmpVal),
 
     encoding = GetEncRules();
     while (SetEncRules(*encoding)) {
-      encoding++;
+        encoding++;
 
-      /*
-       *  if is type that refs another pdu type or lib type
-       *  without generating a new type via tagging or named elmts
-       *  print define to the hdr file
-       * (a type is a pdu by default if it is ref'd by an ANY)
-       */
-      if (!IsNewType (td->type)  &&
-          (!IsTypeRef (td->type) ||
-           (IsTypeRef (td->type) &&
-            (td->type->basicType->a.localTypeRef->link->cTypeDefInfo->isPdu ||
-             ((td->type->basicType->a.localTypeRef->link->anyRefs != NULL) &&
-              !LIST_EMPTY (td->type->basicType->a.localTypeRef->link->anyRefs)))))) {
-        fprintf(hdr,"#define %s%s %s%s\n", 
-		GetEncRulePrefix(), td->cTypeDefInfo->decodeRoutineName, 
-		GetEncRulePrefix(), td->type->cTypeRefInfo->decodeRoutineName);
-	/*
-         fprintf(hdr,"#define %s%s(b, v, bytesDecoded, env) %s%s(b, v, bytesDecoded, env)\n", 
-	 GetEncRulePrefix(), td->cTypeDefInfo->decodeRoutineName, 
-	 GetEncRulePrefix() td->type->cTypeRefInfo->decodeRoutineName);
-	*/
-        return;
-      }
-      
-      
-
-      typeId = GetBuiltinType (td->type);
-
-      /* print proto type to hdr file */
-      fprintf (hdr, 
-	       "void %s%s PROTO ((%s b, %s *result, %s *bytesDecoded, %s env));\n", 
-	       GetEncRulePrefix(), ctdi->decodeRoutineName, bufTypeNameG, 
-	       ctdi->cTypeName, lenTypeNameG, envTypeNameG);
-
-      /* print routine in src */
-      fprintf (src,"void %s%s PARAMS ((b, result, bytesDecoded, env),\n", 
-	       GetEncRulePrefix(), ctdi->decodeRoutineName);
-      fprintf (src,"%s b _AND_\n", bufTypeNameG);
-      fprintf (src,"%s *result _AND_\n", ctdi->cTypeName);
-      fprintf (src,"%s *bytesDecoded _AND_\n", lenTypeNameG);
-      fprintf (src,"%s env)\n", envTypeNameG);
-      fprintf (src,"{\n");
-      fprintf (src,"    %s tag;\n", tagTypeNameG);
-      
-      /* print extra locals for redundant lengths */
-      tags = GetTags (td->type, &stoleChoiceTags);
-      for (i = 1; !stoleChoiceTags && (i <= LIST_COUNT (tags)); i++)
-        fprintf (src,"    %s elmtLen%d;\n", lenTypeNameG, i);
-
-      /* add extra len for choice */
-      if (typeId == BASICTYPE_CHOICE)
-        fprintf (src,"    %s elmtLen%d;\n", lenTypeNameG, i);
-
-      fprintf (src,"\n");
-
-      /* decode tag/length pairs */
-      elmtLevel = 0;
-      if (!stoleChoiceTags) {
-	FOR_EACH_LIST_ELMT (tag, tags) {
-	  classStr = Class2ClassStr (tag->tclass);
-	  if (tag->form == ANY_FORM)
-	    formStr = Form2FormStr (PRIM);
-	  else
-	    formStr = Form2FormStr (tag->form);
-
-	  fprintf (src,
-		   "    if (((tag = %sDecTag (b, bytesDecoded, env)) != \n", 
-		   GetEncRulePrefix());
-
-	  if (tag->tclass == UNIV) {
-	      fprintf (src,"MAKE_TAG_ID (%s, %s, %s))", classStr, formStr, DetermineCode(tag, NULL, 0));//RWC;Code2UnivCodeStr (tag->code));
-	      if (tag->form == ANY_FORM)
-		fprintf (src,"&&\n         (tag != MAKE_TAG_ID (%s, %s, %s)))\n", classStr, Form2FormStr (CONS), DetermineCode(tag, NULL, 0));//RWC;Code2UnivCodeStr (tag->code));
-                else
-		  fprintf (src,")\n");
-	  } else {
-	    fprintf (src,"MAKE_TAG_ID (%s, %s, %s))", classStr, formStr, DetermineCode(tag, NULL, 1));//RWC;tag->code);
-	    if (tag->form == ANY_FORM)
-	      fprintf (src,"&&\n        (tag != MAKE_TAG_ID (%s, %s, %s)))\n", classStr, Form2FormStr (CONS), DetermineCode(tag, NULL, 1));//RWC;tag->code);
-	    else
-	      fprintf (src,")\n");
-
-	  }
-	  fprintf (src,"    {\n");
-	  fprintf (src,"        Asn1Error (\"%s%s: ERROR - wrong tag\\n\");\n", 
-		   GetEncRulePrefix(), ctdi->decodeRoutineName);
-	  fprintf (src,"        longjmp (env, %d);\n", (int)(*longJmpVal)--);
-	  fprintf (src,"    }\n");
-
-	  fprintf (src,"    elmtLen%d = %sDecLen (b, bytesDecoded, env);\n", ++elmtLevel, GetEncRulePrefix());
+        /*
+         *  if is type that refs another pdu type or lib type
+         *  without generating a new type via tagging or named elmts
+         *  print define to the hdr file
+         * (a type is a pdu by default if it is ref'd by an ANY)
+         */
+        if (!IsNewType (td->type)  &&
+            (!IsTypeRef (td->type) ||
+             (IsTypeRef (td->type) &&
+              (td->type->basicType->a.localTypeRef->link->cTypeDefInfo->isPdu ||
+               ((td->type->basicType->a.localTypeRef->link->anyRefs != NULL) &&
+                !LIST_EMPTY (td->type->basicType->a.localTypeRef->link->anyRefs)))))) {
+            fprintf(hdr,"#define %s%s %s%s\n", 
+                    GetEncRulePrefix(), td->cTypeDefInfo->decodeRoutineName, 
+                    GetEncRulePrefix(),
+                    td->type->cTypeRefInfo->decodeRoutineName);
+            return;
         }
-      }
 
-      /* for choices always decode first tag of the choice's content */
-      if (typeId == BASICTYPE_CHOICE) {
-	fprintf (src,"    tag = %sDecTag (b, bytesDecoded, env);\n", GetEncRulePrefix());
-        fprintf (src,"    elmtLen%d = %sDecLen (b, bytesDecoded, env);\n", ++elmtLevel, GetEncRulePrefix());
-      }
+        typeId = GetBuiltinType (td->type);
 
-      if ((typeId != BASICTYPE_ANY) && (typeId != BASICTYPE_ANYDEFINEDBY))
-        fprintf (src,"    %s%sContent (b, tag, elmtLen%d, result, bytesDecoded, env);\n", GetEncRulePrefix(), ctdi->decodeRoutineName, elmtLevel);
-      else
-        fprintf (src,"    %s%s (b, result, bytesDecoded, env);\n", 
-		 GetEncRulePrefix(), ctdi->decodeRoutineName);
+        /* print proto type to hdr file */
+        fprintf (hdr, 
+                 "void %s%s PROTO ((%s b, %s *result, %s *bytesDecoded,"
+                 " %s env));\n", 
+                 GetEncRulePrefix(), ctdi->decodeRoutineName, bufTypeNameG,
+                 ctdi->cTypeName, lenTypeNameG, envTypeNameG);
 
+        /* print routine in src */
+        fprintf (src,
+                 "void %s%s PARAMS ((b, result, bytesDecoded, env),\n",
+                 GetEncRulePrefix(), ctdi->decodeRoutineName);
+        fprintf (src, "%s b _AND_\n", bufTypeNameG);
+        fprintf (src, "%s *result _AND_\n", ctdi->cTypeName);
+        fprintf (src, "%s *bytesDecoded _AND_\n", lenTypeNameG);
+        fprintf (src, "%s env)\n", envTypeNameG);
+        fprintf (src, "{\n");
+        fprintf (src, "    %s tag;\n", tagTypeNameG);
 
-      /* grab any EOCs that match redundant, indef lengths */
-      for (i = elmtLevel-1; i > 0; i--) {
-	fprintf (src,"    if (elmtLen%d == INDEFINITE_LEN)\n", i);
-        fprintf (src,"        %sDecEoc (b, bytesDecoded, env);\n", 
-		 GetEncRulePrefix());
-      }
+        /* print extra locals for redundant lengths */
+        tags = GetTags (td->type, &stoleChoiceTags);
+        for (i = 1; !stoleChoiceTags && (i <= LIST_COUNT (tags)); ++i)
+            fprintf (src, "    %s elmtLen%d;\n", lenTypeNameG, i);
 
+        /* add extra len for choice */
+        if (typeId == BASICTYPE_CHOICE)
+            fprintf (src,"    %s elmtLen%d;\n", lenTypeNameG, i);
 
-      fprintf (src,"}  /* %s%s */\n\n", GetEncRulePrefix(),
-	       ctdi->decodeRoutineName);
+        fprintf (src,"\n");
 
-      FreeTags (tags);
+        /* decode tag/length pairs */
+        elmtLevel = 0;
+        if (!stoleChoiceTags) {
+            FOR_EACH_LIST_ELMT (tag, tags) {
+                classStr = Class2ClassStr (tag->tclass);
+                if (tag->form == ANY_FORM)
+                    formStr = Form2FormStr (PRIM);
+                else
+                    formStr = Form2FormStr (tag->form);
+
+                fprintf (src,
+                         "    if (((tag = %sDecTag (b, bytesDecoded, env)) != \n",
+                         GetEncRulePrefix());
+
+                if (tag->tclass == UNIV) {
+                    fprintf(src,
+                            "       MAKE_TAG_ID (%s, %s, %s))", classStr,
+                            formStr, DetermineCode(tag, NULL, 0));
+                    if (tag->form == ANY_FORM)
+                        fprintf(src,
+                                "&&\n         (tag != MAKE_TAG_ID (%s, %s, %s)))\n",
+                                classStr, Form2FormStr (CONS),
+                                DetermineCode(tag, NULL, 0));
+                    else
+                        fprintf(src, ")\n");
+                } else {
+                    fprintf(src,
+                            "       MAKE_TAG_ID (%s, %s, %s))", classStr,
+                            formStr, DetermineCode(tag, NULL, 1));
+                    if (tag->form == ANY_FORM) {
+                            fprintf(src,
+                                    "&&\n        (tag != MAKE_TAG_ID"
+                                    " (%s, %s, %s)))\n", classStr,
+                                    Form2FormStr (CONS),
+                                    DetermineCode(tag, NULL, 1));
+                    } else {
+                            fprintf (src,")\n");
+                    }
+                }
+                fprintf(src, "    {\n");
+                fprintf(src,
+                         "        Asn1Error (\"%s%s: ERROR - wrong tag\\n\");\n", 
+                         GetEncRulePrefix(), ctdi->decodeRoutineName);
+                fprintf(src,
+                        "        longjmp (env, %d);\n",
+                        (int)(*longJmpVal)--);
+                fprintf(src, "    }\n");
+                fprintf(src,
+                        "    elmtLen%d = %sDecLen (b, bytesDecoded, env);\n",
+                        ++elmtLevel, GetEncRulePrefix());
+            }
+        }
+
+        /* for choices always decode first tag of the choice's content */
+        if (typeId == BASICTYPE_CHOICE) {
+            fprintf(src,
+                    "    tag = %sDecTag (b, bytesDecoded, env);\n",
+                    GetEncRulePrefix());
+            fprintf(src,
+                    "    elmtLen%d = %sDecLen (b, bytesDecoded, env);\n",
+                    ++elmtLevel, GetEncRulePrefix());
+        }
+
+        if ((typeId != BASICTYPE_ANY) && (typeId != BASICTYPE_ANYDEFINEDBY))
+            fprintf(src,
+                    "    %s%sContent (b, tag, elmtLen%d, result, bytesDecoded, env);\n",
+                    GetEncRulePrefix(), ctdi->decodeRoutineName, elmtLevel);
+        else
+            fprintf(src, "    %s%s (b, result, bytesDecoded, env);\n",
+                    GetEncRulePrefix(), ctdi->decodeRoutineName);
+
+        /* grab any EOCs that match redundant, indef lengths */
+        for (i = elmtLevel-1; i > 0; i--) {
+            fprintf(src, "    if (elmtLen%d == INDEFINITE_LEN)\n", i);
+            fprintf(src, "        %sDecEoc (b, bytesDecoded, env);\n", 
+                    GetEncRulePrefix());
+        }
+
+        fprintf(src, "}  /* %s%s */\n\n", GetEncRulePrefix(),
+                 ctdi->decodeRoutineName);
+
+        FreeTags (tags);
     }
     m = m;
     r = r;    /* AVOIDS warning. */
@@ -661,15 +676,6 @@ PrintCElmtDecodeCode PARAMS ((src, td, parent, t, elmtLevel, totalLevel, tagLeve
 		     tagIdVarNameG, tagLevel, itemLenVarNameG, elmtLevel, 
 		     elmtVarName, decodedLenVarNameG, totalLevel);
 
-	    /* From ftp://ftp.cs.ubc.ca/pub/local/src/snacc/bugs-in-1.1 */
-	    if ((tmpType->basicType->choiceId == BASICTYPE_CHOICE)
-		    && !stoleChoiceTags)
-	    {
-		fprintf(src,"    if (elmtLen%d == INDEFINITE_LEN)\n", elmtLevel-1);
-		fprintf(src,"        %sDecEoc(b, &totalElmtsLen%d, env);\n", 
-			GetEncRulePrefix(), totalLevel);
-	    }
-
         break;
 
 
@@ -901,31 +907,30 @@ PrintCSetDecodeCode PARAMS ((src, td, parent, elmts, elmtLevel, totalLevel, tagL
                 classStr = Class2ClassStr (tag->tclass);
                 formStr = Form2FormStr (tag->form);
 
-                if (stoleChoiceTags)
-                {
-                    if (tag->tclass == UNIV)
-                    {
-                        if (tag->form == ANY_FORM)
-                        {
-                            fprintf (src,"       case MAKE_TAG_ID (%s, %s, %s):\n", classStr, Form2FormStr (CONS), DetermineCode(tag, NULL, 1));//RWC;tag->code);
+                if (stoleChoiceTags) {
+                    classStr = Class2ClassStr(tag->tclass);
+                    formStr = Form2FormStr(tag->form);
 
-                            fprintf (src,"       case MAKE_TAG_ID (%s, %s, %s):\n", classStr, Form2FormStr (PRIM), DetermineCode(tag, NULL, 1));//RWC;tag->code);
-                        }
-                        fprintf (src,"       case MAKE_TAG_ID (%s, %s, %s):\n", classStr, formStr, codeStr);
+                    if (tag->tclass == UNIV) {
+                        codeStr = DetermineCode(tag, NULL, 0);
+                    } else {
+                        codeStr = DetermineCode(tag, NULL, 1);
                     }
-                    else
-                    {
-                        if (tag->form == ANY_FORM)
-                        {
-                            fprintf (src,"       case MAKE_TAG_ID (%s, %s, %s):\n", classStr, Form2FormStr (CONS), DetermineCode(tag, NULL, 1));//RWC;tag->code);
 
-                            fprintf (src,"       case MAKE_TAG_ID (%s, %s, %s):\n", classStr, Form2FormStr (PRIM), DetermineCode(tag, NULL, 1));//RWC;tag->code);
-                        }
-                        fprintf (src,"       case MAKE_TAG_ID (%s, %s, %s):\n", classStr, formStr, DetermineCode(tag, NULL, 1));//RWC;tag->code);
+                    if (tag->form == ANY_FORM) {
+                        fprintf(src,
+                                "       case MAKE_TAG_ID (%s, %s, %s):\n",
+                                classStr, Form2FormStr(CONS), codeStr);
+
+                        fprintf(src,
+                                "       case MAKE_TAG_ID (%s, %s, %s):\n",
+                                classStr, Form2FormStr(PRIM), codeStr);
+                    } else {
+                        fprintf(src,
+                                "       case MAKE_TAG_ID (%s, %s, %s):\n",
+                                classStr, formStr, codeStr);
                     }
-                }
-                else
-                {
+                } else {
                     tagLevel = initialTagLevel+2;
                     if (tag->form == ANY_FORM)
                     {
@@ -946,9 +951,9 @@ PrintCSetDecodeCode PARAMS ((src, td, parent, elmts, elmtLevel, totalLevel, tagL
                     else
                     {
                         if (tag->tclass == UNIV)
-                            fprintf (src,"if (%sDecTag (b, &totalElmtsLen%d, env) != MAKE_TAG_ID (%s, %s, %s))\n", GetEncRulePrefix(),  totalLevel, classStr, formStr, codeStr);
+                            fprintf (src,"if ((tagId%d = %sDecTag (b, &totalElmtsLen%d, env)) != MAKE_TAG_ID (%s, %s, %s))\n", tagLevel, GetEncRulePrefix(),  totalLevel, classStr, formStr, codeStr);
                         else
-                            fprintf (src,"if (%sDecTag (b, &totalElmtsLen%d, env) != MAKE_TAG_ID (%s, %s, %s))\n", GetEncRulePrefix(),  totalLevel, classStr, formStr, DetermineCode(tag, NULL, 1));//RWC;tag->code);
+                            fprintf (src,"if ((tagId%d = %sDecTag (b, &totalElmtsLen%d, env)) != MAKE_TAG_ID (%s, %s, %s))\n", tagLevel, GetEncRulePrefix(),  totalLevel, classStr, formStr, DetermineCode(tag, NULL, 1));//RWC;tag->code);
                     }
 
                     fprintf (src,"    {\n");
@@ -1223,14 +1228,17 @@ PrintCSeqDecodeCode PARAMS ((src, td, parent, elmts, elmtLevel, totalLevel, tagL
             {
                 if (tag->form == ANY_FORM)
                 {
-                    fprintf (src,"(tagId%d == MAKE_TAG_ID (%s, %s, %s)) ||\n", tagLevel, classStr, Form2FormStr (PRIM), codeStr);
-                fprintf (src,"(tagId%d == MAKE_TAG_ID (%s, %s, %s))", tagLevel, classStr, Form2FormStr (CONS), codeStr);
-                }
-                else
-                    fprintf (src,"(tagId%d == MAKE_TAG_ID (%s, %s, %s))", tagLevel, classStr, formStr, codeStr);
-            }
-            else
-            {
+                    fprintf(src, "(tagId%d == MAKE_TAG_ID (%s, %s, %s)) ||\n",
+                            tagLevel, classStr, Form2FormStr(PRIM),
+                            codeStr);
+
+                    fprintf(src, "(tagId%d == MAKE_TAG_ID (%s, %s, %s))",
+                            tagLevel, classStr, Form2FormStr (CONS),
+                            codeStr);
+                } else
+                    fprintf(src, "(tagId%d == MAKE_TAG_ID (%s, %s, %s))",
+                            tagLevel, classStr, formStr, codeStr);
+            } else {
                 if (tag->form == ANY_FORM)
                 {
                     fprintf (src,"(tagId%d == MAKE_TAG_ID (%s, %s, %s)) ||\n", tagLevel, classStr, Form2FormStr (PRIM), DetermineCode(tag, NULL, 1));//RWC;tag->code);
@@ -1870,11 +1878,11 @@ PrintCChoiceDecodeCode PARAMS ((src, td, t, elmtLevel, totalLevel, tagLevel, var
                     else
                     {
                         if (tag->tclass == UNIV)
-                            fprintf (src,"if (%sDecTag (b, &totalElmtsLen%d, env) != MAKE_TAG_ID (%s, %s, %s))\n", GetEncRulePrefix(), totalLevel, classStr, formStr, codeStr);
+                            fprintf (src,"if ((tagId%d = %sDecTag (b, &totalElmtsLen%d, env)) != MAKE_TAG_ID (%s, %s, %s))\n", tagLevel, GetEncRulePrefix(), totalLevel, classStr, formStr, codeStr);
                         else
                         {
                             codeStr = DetermineCode(tag, NULL, 1);
-                            fprintf (src,"if (%sDecTag (b, &totalElmtsLen%d, env) != MAKE_TAG_ID (%s, %s, %s))\n", GetEncRulePrefix(), totalLevel, classStr, formStr, codeStr);//RWC;tag->code);
+                            fprintf (src,"if ((tagId%d = %sDecTag (b, &totalElmtsLen%d, env)) != MAKE_TAG_ID (%s, %s, %s))\n", tagLevel, GetEncRulePrefix(), totalLevel, classStr, formStr, codeStr);
                         }
                     }
 

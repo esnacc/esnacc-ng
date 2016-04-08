@@ -17,7 +17,7 @@ addons:
     notification_email: aconole@bytheb.org
     build_command_prepend: "./boot.sh && ./configure"
     build_command:   "make"
-    branch_pattern: master
+    branch_pattern: coverity
 
 script:
    - ./boot.sh
