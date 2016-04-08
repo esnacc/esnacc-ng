@@ -61,6 +61,8 @@ typedef struct AsnAny
   void		*value; /* points to the value */
 } AsnAny;
 
+#define ASN_ANY_PRESENT(any) ((any)->value)
+
 /*
  * Returns anyId value for the given ANY type.
  * Use this to determine to the type of an ANY after decoding

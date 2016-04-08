@@ -214,7 +214,6 @@ void SetAnyTypeByOid PARAMS ((v, id),
 void SetAnyTypeUnknown PARAMS ((v),
     AsnAny *v)
 {
-    v->ai = NULL; /* indicates failure */
 	if(v->ai == NULL)	/* no table entry */
 	{
 		v->ai = (AnyInfo*) Asn1Alloc (sizeof(AnyInfo));
@@ -332,8 +331,15 @@ void
 FreeAsnAny PARAMS ((v),
     AsnAny *v)
 {
-    if ((v->ai != NULL) && (v->ai->Free != NULL))
+    if ((v->ai != NULL) && (v->ai->Free != NULL)) {
         v->ai->Free (v->value);
+    } else {
+        Asn1Free(v->value);
+    }
+
+    if (v->ai && v->ai->anyId == kUnknownAnyObjectID) {
+        Asn1Free(v->ai);
+    }
 } /* FreeAsnAny */
 
 
