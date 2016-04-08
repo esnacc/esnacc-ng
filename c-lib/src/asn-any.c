@@ -200,9 +200,11 @@ void SetAnyTypeByOid PARAMS ((v, id),
 		if (anyOidHashTblG == NULL)
 			anyOidHashTblG = InitHash();
 
-		if(anyOidHashTblG != NULL)	/* make sure we didn't fail */
-	    	Insert(anyOidHashTblG, v->ai, hash);
-	    	
+        if (anyOidHashTblG != NULL) { /* make sure we didn't fail */
+            Insert(anyOidHashTblG, v->ai, hash);
+        } else {
+            free(a);
+        }
 #endif /* _OLDER_LIB_ */	    	
 	}
 	
@@ -278,8 +280,11 @@ InstallAnyByInt PARAMS ((anyId, intId, size, Encode, Decode, Free, Print),
         anyIntHashTblG = InitHash();
 
     h = MakeHash ((char*)&intId, sizeof (intId));
-	if(anyIntHashTblG != NULL)	/* make sure we didn't fail */
+    if(anyIntHashTblG != NULL) { /* make sure we didn't fail */
     	Insert(anyIntHashTblG, a, h);
+    } else {
+        free(a);
+    }
 
 }  /* InstallAnyByOid */
 
@@ -315,8 +320,11 @@ InstallAnyByOid PARAMS ((anyId, oid, size, Encode, Decode, Free, Print),
     if (anyOidHashTblG == NULL)
         anyOidHashTblG = InitHash();
 
-	if(anyOidHashTblG != NULL)	/* make sure we didn't fail */
+    if(anyOidHashTblG != NULL) { /* make sure we didn't fail */
    		Insert(anyOidHashTblG, a, h);
+    } else {
+        free(a);
+    }
 
 }  /* InstallAnyByOid */
 
