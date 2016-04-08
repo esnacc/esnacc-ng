@@ -20,6 +20,7 @@
 #include "asn-incl.h"
 
 #include <stdlib.h>
+#include <algorithm>
 
 _BEGIN_SNACC_NAMESPACE
 
