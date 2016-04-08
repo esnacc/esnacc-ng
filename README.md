@@ -1,6 +1,31 @@
-				eSNACC EKMS PER beta release 
+Enhanced Sample Neufield ASN C Compiler
+=======================================
 
-Welcome to eSNACC (Enhanced SNACC) maintained by DigitalNet.  This distribution contains the latest release of eSNACC.  
+Build Status
+------------
+[![Build Status](https://travis-ci.org/azsnacc/esnacc-ng.png)](https://travis-ci.org/azsnacc/esnacc-ng) [![Build Status](https://ci.appveyor.com/api/projects/status/github/azsnacc/esnacc-ng)]
+
+What is eSNACC
+--------------
+This package originally provided the C/yacc/lex source code for snacc,
+an ASN.1 to C or C++ compiler.  Snacc is short for "Sample Neufeld Asn.1
+to C Compiler" and ASN.1 stands for Abstract Syntax Notation One (CCITT
+X.208/ ISO 8824).  See the COPYRIGHT file for copyright information.
+
+eSNACC is an enhanced version of the Sample Neufield ASN C Compiler. It 
+supports BER, DER, and PER rulesets for C and C++ code generation. There is
+experimental support for TCL.
+
+eSNACC takes ASN.1 code files, parses them, and outputs appropriate header
+and source files for inclusion in a larger project.
+
+eSNACC is licensed under two different liceses. The compiler itself is a
+GPLv2+ licensed software; the version maintained here will continue to be
+GPLv2, unless a compelling reason to switch presents itself. The runtime is
+a much less restrictive license - it is considered as Public Domain code. So
+if you wish to contribute, be sure that you understand any runtime changes
+you contribute MUST be public domain for inclusion into this distribution. Any
+compiler changes MUST be GPL, at least v2.
 
 Building eSNACC
 ---------------
@@ -19,27 +44,57 @@ Note: release and debug versions use the same library names.  If you want to be 
       Same goes for building a release version after building a debug version.
 
 
+Running eSNACC
+--------------
+
+Given an ASN.1 source file(s) esnacc can produce:
+
+   1. C routines for BER encoding, decoding, printing and freeing.
+   2. C++ routines for BER encoding, decoding, and printing.
+   3. A type table that can be used with C driver routines
+      for BER encoding, decoding, printing and freeing.
+   4. if you are really lucky, a core dump! :)
+
+esnacc tries to produce reasonably efficient C or C++ routines and data
+structures to support BER encoding and decoding values of the given
+ASN.1 data structures.  Printing routines for the decoded values are
+also generated.  For C only, hierarchical freeing routines are
+generated (but are not recommended for efficiency reasons).
+
+When using the C or C++ (not table) options, esnacc creates the
+following C files for each ASN.1 source file (module):
+
+        1. .h file for the C/C++ translation of the ASN.1 data
+           structure and prototypes for the generated routines.
+
+        2. .c/.cpp file for the C/C++ encode, decode, print and free
+           routines.
+
+When using the table option, snacc produces a type table file
+(a BER encoding) that can later be loaded at runtime by the
+table driven encoding and decoding routines.
+
+
 FUTURE ENCHANCEMENTS
 --------------------
 
-	
- * Support for 1997 ASN.1 syntax
- * Redesign AsnBuf with new expanding buffer and steal functionality from
-   CSM_Buffer (which will go away).
- * Change ANY tables so that each ASN.1 module is responsible for removing the 
-   ANYs they install in the table.
+* Support for 1997 ASN.1 syntax
+* Change ANY tables so that each ASN.1 module is responsible for removing the 
+  ANYs they install in the table.
 
 PER FUTURE ENHANCEMENTS
 -----------------------
- 
+
  * PER 'C' code generation
  * Recognition and handling of extensibility	 
- 
 
 CHANGE LOG
 ----------
+New in 1.8
+    * After years of dust accumulating, eSNACC is re-maintained.
+
 New in 1.7
-  *  Enchancements to C++ runtime:
+    *  Enchancements to C++ runtime:
     *	Support of constraints checking for BER/PER
     *	Added Asn-Relative-Oid's
     *	Updated Asn-Oid to be inherited from Asn-Relative-Oid
@@ -136,71 +191,11 @@ New in 1.3a<n>:
  * Initial move of tcl stuff to tcl7.6/tk4.2/tree4.1.
 
 
-
-################################################################
-WARNING: the rest of this README is out of date!
-
-
-For the newer releases, please look at
-
-  http://www.fokus.gmd.de/ovma/freeware/snacc/entry.html
-
-Please send comments and bug reports to the new maintainer you will find
-in the above web page.
-
-Newer Snacc versions will continue to be made available at:
-
-  ftp://ftp.fokus.gmd.de/pub/freeware/snacc/
-
-Robert Joop, 1997-02-16
-
-
-
-For more up-to-date information, please refer to doc/snacc.ps.
-
-The bug-report address given below was for Snacc 1.1.
-
-
-
-
 snacc ASN.1 Compiler Release  1.1 - (updated Jul 93)
 -----------------------------------------------------
 
-This package provides the C/yacc/lex source code for snacc, an ASN.1
-to C or C++ compiler.  Snacc is short for "Sample Neufeld Asn.1 to C
-Compiler" and ASN.1 stands for Abstract Syntax Notation One (CCITT
-X.208/ ISO 8824).  See the COPYRIGHT file for copyright information.
 
 
-What It Does
-------------
-
-Given an ASN.1 source file(s) snacc can produce:
-
-   1. C routines for BER encoding, decoding, printing and freeing.
-   2. C++ routines for BER encoding, decoding, and printing.
-   3. A type table that can be used with C driver routines
-      for BER encoding, decoding, printing and freeing.
-   4. if you are really lucky, a core dump! :)
-
-Snacc produces reasonably efficient C or C++ routines and data
-structures to support BER encoding and decoding values of the given
-ASN.1 data structures.  Printing routines for the decoded values are
-also generated.  For C only, hierarchical freeing routines are
-generated (but are not recommended for efficiency reasons).
-
-When using the C or C++ (not table) options, snacc creates the
-following C files for each ASN.1 source file (module):
-
-        1. .h file for the C/C++ translation of the ASN.1 data
-           structure and prototypes for the generated routines.
-
-        2. .c/.C file for the C/C++ encode, decode, print and free
-           routines.
-
-When using the table option, snacc produces a type table file
-(a BER encoding) that can later be loaded at runtime by the
-table driven encoding and decoding routines.
 
 See the latex or PostScript version of the documentation in the
 snacc/doc directory for indepth information on this tool.  For a quick
@@ -223,117 +218,3 @@ Features of ASN.1 Supported
      problems.  Does not require the ";"'s though.
    - ANY DEFINED BY types are handled using the SNMP OBJECT-TYPE
      macro to define the identifier to type mapping.
-
-
-Bugs are still quite likely even though this is the second release of
-snacc.  if you find any or have other comments please email:
-   snacc-bugs@cs.ubc.ca
-
-
-To Install It
--------------
-
-By default, the snacc makefile uses GNU bison and GNU flex (instead of
-yacc and lex).  If you do not have these installed, see the
-snacc/src/README and snacc/src/makefile.  Otherwise, type "make" in
-this directory.  Hopefully this will put the snacc binary in the
-snacc/bin directory and build the C runtime library, the table library
-and the table tools. Alternatively, type "make all" to install these
-and the C++ library.
-
-Compiling problems may occurr on different flavours of UNIX but they
-should not be too difficult fix.  Likely sources of problems include
-non-standard include files and lex, yacc and cc idiosyncrasies.
-If your yacc croaks with a message about too many productions use
-bison.  Same thing with lex -> use flex.   Bison and flex are both
-freely available from numerous ftp sites. (even cs.ubc.ca in /mirror2/gnu)
-
-The makefiles take advantage of the file inclusion feature. Since this
-has already been supported by UNIX System III make (somewhen around
-1980), I consider it to be pretty portable. If your make is crippled,
-either use a newer one (e.g. GNU make), or as a last resort, remove the
-include statements and call make with `-f makehead makefile maketail'.
-  The dependencies have been moved into a separate file that is not
-under cvs control. Otherwise, the makefiles would inflate the
-repository unnecessarily. GNU make automatically makes the dependencies
-if the file does not exist, but other makes simply give up. In that
-case, an initial (empty) file has to be generated. The top level
-makefile does this for you.
-  The behaviour of makedepend has been changed between X11R5 and R6.
-The new version keeps the source files' dirname and replaces the suffix
-only, the old version removed the dirname.  The makefiles expect the
-new behaviour. If you've still got the R5 makedepend, the compiler's
-dependencies will be useless.  (If you only install the code and don't
-make any changes, this won't hurt you.)
-
-The snacc compiler and the generated code will compile under ANSI and
-non-ANSI C compilers.  See the README and the makefile in the
-snacc/src directory for more compiling information.  Snacc has been
-successfully installed on Sun SPARCs, HP700s, IBM RS 6000s, MIPS,
-i486/Linux, Alpha OSF/1 and many other machines.
-
-#-------------------------------------------------------------------------------
-# $Header: /baseline/SNACC/readme.txt,v 1.6 2004/04/22 15:25:02 gronej Exp $
-# $Log: readme.txt,v $
-# Revision 1.6  2004/04/22 15:25:02  gronej
-# release  modifications
-#
-# Revision 1.5  2003/12/17 19:05:02  gronej
-# SNACC baseline merged with PER v1_7 tag
-#
-# Revision 1.4.2.3  2003/12/16 15:50:27  gronej
-# EKMS PER release
-#
-# Revision 1.4.2.1  2003/11/06 14:57:33  colestor
-# new for v1_7 baseline
-#
-# Revision 1.3  2003/08/06 13:05:33  colestor
-# New release notes, changed version to 1.6Beta.
-#
-# Revision 1.2  2003/08/05 17:18:21  colestor
-# Updates for interim 1.5Beta release.
-#
-# Revision 1.1  2002/07/19 15:03:30  leonberp
-# added new readme.txt removed old readmes
-#
-# Revision 1.1.1.1  2000/08/21 20:35:45  leonberp
-# First CVS Version of SNACC.
-#
-# Revision 1.13  1997/09/16 14:57:59  wan
-# Proper description of last-minute changes
-#
-# Revision 1.12  1997/09/05 07:51:04  wan
-# Updated
-#
-# Revision 1.11  1997/08/28 09:48:08  wan
-# Added description of changes
-#
-# Revision 1.10  1997/06/19 09:32:22  wan
-# Added 1.3b3 change description
-#
-# Revision 1.9  1997/05/07 15:20:57  wan
-# Added (limited) size constraints, bitstring and enumeration names to tables
-#
-# Revision 1.8  1997/04/07 13:14:16  wan
-# Final README for 1.3b1
-#
-# Revision 1.7  1997/03/20 15:50:24  wan
-# Push to 1.3b1.
-#
-# Revision 1.6  1997/02/16 22:26:40  rj
-# url corrected
-#
-# Revision 1.5  1997/02/16 20:23:14  rj
-# final release of snacc 1.2rj
-#
-# Revision 1.4  1995/09/07 20:54:03  rj
-# check-in for release 1.2rj.8
-#
-# Revision 1.3  1995/02/22  09:54:05  rj
-# added Alpha OSF/1 to the list of supported platforms.
-#
-# Revision 1.2  1994/09/01  01:40:54  rj
-# some word about makefile inclusion and dependencies added.
-#
-# Revision 1.1  1994/08/28  11:02:04  rj
-# first check-in
