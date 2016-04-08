@@ -61,8 +61,11 @@
  *  
  */
 
-
+#ifdef __APPLE__
+#include <malloc/malloc.h>
+#else
 #include <malloc.h>
+#endif
 #include <string.h>
 #include "asn-config.h"
 #include "nibble-alloc.h"
