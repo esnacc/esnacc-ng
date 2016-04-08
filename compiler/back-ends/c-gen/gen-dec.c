@@ -189,15 +189,16 @@ PrintCDecoder PARAMS ((src, hdr, r, m,  td, longJmpVal),
                 } else {
                     fprintf(src,
                             "       MAKE_TAG_ID (%s, %s, %s))", classStr,
-                            formStr, DetermineCode(tag, NULL, 1));/
-                        if (tag->form == ANY_FORM)
+                            formStr, DetermineCode(tag, NULL, 1));
+                    if (tag->form == ANY_FORM) {
                             fprintf(src,
                                     "&&\n        (tag != MAKE_TAG_ID"
                                     " (%s, %s, %s)))\n", classStr,
                                     Form2FormStr (CONS),
                                     DetermineCode(tag, NULL, 1));
-                        else
+                    } else {
                             fprintf (src,")\n");
+                    }
                 }
                 fprintf(src, "    {\n");
                 fprintf(src,
@@ -1881,7 +1882,7 @@ PrintCChoiceDecodeCode PARAMS ((src, td, t, elmtLevel, totalLevel, tagLevel, var
                         else
                         {
                             codeStr = DetermineCode(tag, NULL, 1);
-                            fprintf (src,"if ((tagId%d = %sDecTag (b, &totalElmtsLen%d, env)) != MAKE_TAG_ID (%s, %s, %s))\n", GetEncRulePrefix(), totalLevel, classStr, formStr, codeStr);
+                            fprintf (src,"if ((tagId%d = %sDecTag (b, &totalElmtsLen%d, env)) != MAKE_TAG_ID (%s, %s, %s))\n", tagLevel, GetEncRulePrefix(), totalLevel, classStr, formStr, codeStr);
                         }
                     }
 
