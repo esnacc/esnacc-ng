@@ -23,6 +23,7 @@
  * $Header: /baseline/SNACC/compiler/core/snacc.c,v 1.54 2004/04/06 15:13:41 gronej Exp $
  *
  */
+#include <config.h>
 
 int gNO_NAMESPACE=0;
 const char *gAlternateNamespaceString=0;
