@@ -32,8 +32,13 @@ cxx_lib_libcxxasn1_la_SOURCES = \
 	cxx-lib/src/asn-rvsbuf.cpp 
 
 cxx_lib_libcxxasn1_la_WIN32_FLAGS=
+cxx_lib_libcxxasn1_la_WIN32_LIBADD=
+cxx_lib_libcxxasn1_la_WIN32_LDFLAGS=
 if WIN32
-cxx_lib_libcxxasn1_la_WIN32_FLAGS += -DSNACCDLL_EXPORTS=1
+cxx_lib_libcxxasn1_la_WIN32_FLAGS += -DSNACCDLL_EXPORTS=1 \
+	${PTHREAD_INCLUDES}
+cxx_lib_libcxxasn1_la_WIN32_LDFLAGS += ${PTHREAD_LDFLAGS}
+cxx_lib_libcxxasn1_la_WIN32_LIBADD += ${PTHREAD_LIBS}
 endif
 
 cxx_lib_libcxxasn1_la_CXXFLAGS = \
@@ -50,3 +55,8 @@ cxx_lib_libcxxasn1_la_CFLAGS = \
 	-I$(top_srcdir)/cxx-lib/src \
 	-I$(top_srcdir)/cxx-lib/inc
 
+cxx_lib_libcxxasn1_la_LIBADD = \
+	$(cxx_lib_libcxxasn1_la_WIN32_LIBADD)
+
+cxx_lib_libcxxasn1_la_LDFLAGS = \
+	$(cxx_lib_libcxxasn1_la_WIN32_LDFLAGS)

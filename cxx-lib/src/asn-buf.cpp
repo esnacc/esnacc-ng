@@ -588,42 +588,34 @@ void BDEC_2ND_EOC_OCTET(const SNACC::AsnBuf &b, SNACC::AsnLen &bytesDecoded)
    bytesDecoded++;
 }
 
+
+// Sort by encoding included tag, length, and data
+//
+bool asnbuf_greater(const SNACC::AsnBuf &x, const SNACC::AsnBuf &y)
+{
+    AsnLen len(0);
+    AsnTag xTag = (BDecTag(x, len) & 0xDFFFFFFF);
+    AsnTag yTag = (BDecTag(y, len) & 0xDFFFFFFF);
+
+    x.ResetMode();
+    y.ResetMode();
+
+    return (xTag > yTag);
+}
+
 void sortSet(std::list<SNACC::AsnBuf> &bufList)
 {
-    std::greater<SNACC::AsnBuf> sortByByte;
-    std::list<SNACC::AsnBuf> i;
+    for (std::list<SNACC::AsnBuf>::iterator j = bufList.begin();
+         j != bufList.end(); ++j)
+        j->ResetMode();
 
-    std::list<SNACC::AsnBuf>::iterator j;
-
-    for (j = bufList.begin(); j != bufList.end(); j++)
-       j->ResetMode();
-
-	 bufList.sort(sortByByte);
-} 
+    bufList.sort(asnbuf_greater);
+}
 
 #define ASN_UNIVERSAL   0x00
 #define ASN_APPLICATION 0x40
 #define ASN_CONTEXT     0x80
 #define ASN_PRIVATE     0xC0
-
-// Sort by encoding included tag, length, and data
-//
-namespace std
-{
-    template<>
-    bool std::greater<SNACC::AsnBuf>::operator()(const SNACC::AsnBuf &x,
-                                                 const SNACC::AsnBuf &y) const
-    {
-        AsnLen len(0);
-        AsnTag xTag = (BDecTag(x, len) & 0xDFFFFFFF);
-        AsnTag yTag = (BDecTag(y, len) & 0xDFFFFFFF);
-
-        x.ResetMode();
-        y.ResetMode();
-
-        return (xTag > yTag);
-    }
-}
 
 bool AsnBuf::operator == (const AsnBuf &b) const
 {
