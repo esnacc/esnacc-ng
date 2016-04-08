@@ -206,6 +206,8 @@ SplitAndInsert (HashSlot *entry, void *element, Hash hash_value)
     return false;
 
   entry->leaf = false;
+  entry->value = NULL; // this is now contained in entry->table->value, so
+  // avoid a double release
   return true;
 }
 
