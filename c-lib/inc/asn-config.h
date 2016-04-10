@@ -93,10 +93,16 @@
 #include <stdio.h>
 #include <setjmp.h> /* for jmp_buf type, setjmp and longjmp */
 #include <stdlib.h>
+#include <stdio.h>
+#include <memory.h>
+
+
+#define ENV_TYPE jmp_buf
 
 /* for pow() used in asn_real.c - must include to avoid casting err on pow */
 /* #include <math.h> */
 
+#include "config.h"
 #include "snacc.h"
 
 
@@ -146,7 +152,6 @@ Asn1ErrorHandler Asn1InstallErrorHandler PROTO ((Asn1ErrorHandler handler));
 #endif /* __cplusplus */
 
 #ifdef USE_NIBBLE_MEMORY
-
 #include "nibble-alloc.h"
 
 #define Asn1Alloc( size)		NibbleAlloc (size)
@@ -166,12 +171,6 @@ Asn1ErrorHandler Asn1InstallErrorHandler PROTO ((Asn1ErrorHandler handler));
 	  longjmp (env, -27)
 
 #endif /* USE_NIBBLE_MEMORY */
-
-#define ENV_TYPE jmp_buf
-
-
-
-
 
 /*
  * NOTE: for use with tables, I defined the (slower)

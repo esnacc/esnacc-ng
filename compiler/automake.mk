@@ -13,7 +13,6 @@ compiler_esnacc_SOURCES = \
 	compiler/core/lib-types.c \
 	compiler/core/link-types.c \
 	compiler/core/link-values.c \
-	compiler/core/mem.c \
 	compiler/core/meta.c \
 	compiler/core/normalize.c \
 	compiler/core/oid.c \

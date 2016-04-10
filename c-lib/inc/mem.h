@@ -47,6 +47,9 @@
 extern "C" {
 #endif
 
+#include "snacc.h"
+#include "asn-incl.h"
+
 void	*Malloc PROTO ((int size));
 void	*Realloc PROTO ((void *ptr, int newsize));
 void	Free PROTO ((void *ptr));

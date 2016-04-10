@@ -5,7 +5,6 @@
 #define DEncTag1 BEncTag1
 #define DEncAsnOidContent BEncAsnOidContent
 #define DDecAsnOidContent BDecAsnOidContent
-#define DDecLen BDecLen
 #define DDecTag BDecTag
 #define DEncAsnOctsContent BEncAsnOctsContent
 #define DEncAsnBoolContent BEncAsnBoolContent
