@@ -242,7 +242,7 @@ void Usage PARAMS ((prgName, fp),
     fprintf (fp, "  -mm  mangle output file name into module name (by default, the output file\n");
     fprintf (fp, "       inherits the input file's name, with only the suffix replaced)\n");
     fprintf (fp, "  -mf <num> num is maximum file name length for the generated source files\n");
-
+    fprintf (fp, "  -mo <directory> store output in the directory specified by <directory>.\n");
     fprintf (fp, "  -l <neg num> where to start error longjmp values decending from (obscure).\n");
     fprintf (fp, "  -L <error log file> print syntax errors to the specified error log file\n");
 	fprintf (fp, "                      (default is stderr)\n");
@@ -291,48 +291,48 @@ void Usage PARAMS ((prgName, fp),
 /* main routine */
 /****************/
 int main PARAMS ((argc, argv),
-    int			argc _AND_
-    char		**argv)
+    int         argc _AND_
+    char        **argv)
 {
-    int			semErr;
-    SRC_FILE	*srcList = NULL, *tmpLst = NULL;
-	char		*parseFile;
-	char		*file1, *file2;
-    int			numSrcFiles;
-    ModuleList		*allMods = NULL;
-    Module		*currMod;
-	Module		**tmpModHndl;
-    int			currArg;
-    int			printModuleFlag = FALSE;  /* default: Don't print */
-    int			genTypeTbls = 0; /* default: Don't gen tbls */
-    char		*tblFileName=NULL;
-	int         encRulesSet = FALSE;
-    int			genTypeCode = FALSE;
-    int			genEncodeCode = FALSE;
-    int			genDecodeCode = FALSE;
-    int			genPrintCode = FALSE;
-    int			genValueCode = FALSE;
-    int			genFreeCode = FALSE;
+    int         semErr;
+    SRC_FILE    *srcList = NULL, *tmpLst = NULL;
+    char        *parseFile;
+    char        *file1, *file2;
+    int         numSrcFiles;
+    ModuleList      *allMods = NULL;
+    Module      *currMod;
+    Module      **tmpModHndl;
+    int         currArg;
+    int         printModuleFlag = FALSE;  /* default: Don't print */
+    int         genTypeTbls = 0; /* default: Don't gen tbls */
+    char        *tblFileName=NULL;
+    int         encRulesSet = FALSE;
+    int         genTypeCode = FALSE;
+    int         genEncodeCode = FALSE;
+    int         genDecodeCode = FALSE;
+    int         genPrintCode = FALSE;
+    int         genValueCode = FALSE;
+    int         genFreeCode = FALSE;
 #if META
-    MetaNameStyle	genMetaCode = META_off;
-    MetaPDU		*meta_pdus = NULL;
+    MetaNameStyle   genMetaCode = META_off;
+    MetaPDU     *meta_pdus = NULL;
 #if TCL
-    int			genTclCode = FALSE;
+    int         genTclCode = FALSE;
 #endif
 #endif
-    int			genCCode = FALSE;        /* defaults to C if neither specified */
-    int			genCxxCode = FALSE;
-    int			genIDLCode = FALSE;
-    long		longJmpVal = -100;
-    int			novolatilefuncs = FALSE;
-	char*		dirName;					/* REN -- 6/2/03 -- added */
-	char*		errFileName;				/* REN -- 7/7/03 -- added */
+    int         genCCode = FALSE;        /* defaults to C if neither specified */
+    int         genCxxCode = FALSE;
+    int         genIDLCode = FALSE;
+    long        longJmpVal = -100;
+    int         novolatilefuncs = FALSE;
+    char*       dirName;                    /* REN -- 6/2/03 -- added */
+    char*       errFileName;                /* REN -- 7/7/03 -- added */
 
-	if (argc <= 1)
-	{
-		Usage (argv[0], stderr);
-		return 1;
-	}
+    if (argc <= 1)
+    {
+        Usage (argv[0], stderr);
+        return 1;
+    }
 
     srcList = NULL;
 
@@ -343,22 +343,22 @@ int main PARAMS ((argc, argv),
     for (currArg = 1; (currArg < argc); )
     {
         if ((argv[currArg][0] == '-') && (argv[currArg][1] != '\0'))
-		{
-			switch (argv[currArg][1])
-			{
-      		case 'h':
-				Usage (argv[0], stdout);
-				return 0;
-				break;
-			
-			case 'M':	// Deepak: 24/Mar/2003
-				isSyntax1997 = 0;
-				isTableConstraintAllowed = 0;
-				currArg++;
-				break;
+        {
+            switch (argv[currArg][1])
+            {
+            case 'h':
+                Usage (argv[0], stdout);
+                return 0;
+                break;
+            
+            case 'M':   // Deepak: 24/Mar/2003
+                isSyntax1997 = 0;
+                isTableConstraintAllowed = 0;
+                currArg++;
+                break;
 
-			case 'a': /* AnyID start value */
-				if (argv[currArg][2] != '\0')  /* no space after -a */
+            case 'a': /* AnyID start value */
+                if (argv[currArg][2] != '\0')  /* no space after -a */
                 {
                     anyEnumValG = atoi (&argv[currArg][2]);
                     currArg++;
@@ -368,319 +368,327 @@ int main PARAMS ((argc, argv),
                     anyEnumValG = atoi (argv[currArg+1]);
                     currArg += 2;
                 }
-				break;
-
-			case 'I':
-				if (argv[currArg][2] != '\0')
-					dirName = &argv[currArg][2];
-				else
-					dirName = argv[++currArg];
-
-				// Add or append the files
-				if ((Add2SrcList(&srcList, dirName, TRUE)) == -1)
-				{
-					fprintf (stderr, "%s: ERROR---Unknown ASN Import Directory -I",
-						dirName);
-					Usage (argv[0], stderr);
-					return 1;
-				}
-				currArg++;
-				break;
-
-			case 'P':
-				printModuleFlag = TRUE;
-				currArg++;
-				break;
-
-			case 'v':
-				genValueCode = TRUE;
-				currArg++;
-				break;
-#if IDL
-			case 'i':
-				if (!strcmp (argv[currArg]+1, "idl"))
-				{
-					genIDLCode = TRUE;
-					currArg++;
-				}
-				else
-					goto error;
-				break;
-#endif
-
-			case 't':
-				if (!strcmp (argv[currArg]+1, "tcl"))
-				{
-#if TCL
-					meta_pdus = parse_type_list (argv[++currArg]);
-					genTclCode = TRUE;
-					if (!genMetaCode)
-						genMetaCode = META_backend_names;
-					genCxxCode = TRUE;
-#else
-					goto error;
-#endif
-				}
-				else
-					genTypeCode = TRUE;
-				currArg++;
-				break;
-
-			case 'e':
-				genEncodeCode = TRUE;
-				currArg++;
-				break;
-
-            case 'D':
-                currArg++;
-                errno = 0;
-                if(chdir(argv[currArg])) {
-                    fprintf(stderr, "ERROR: unable to change directory to provided.\n");
-                    exit(1);
-                }
                 break;
-                
-			case 'd':
-				genDecodeCode = TRUE;
-				currArg++;
-				break;
 
-			case 'p':
-				genPrintCode = TRUE;
-				currArg++;
-				break;
+            case 'I':
+                if (argv[currArg][2] != '\0')
+                    dirName = &argv[currArg][2];
+                else
+                    dirName = argv[++currArg];
 
-			case 'f':
-				genFreeCode = TRUE;
-				currArg++;
-				break;
+                // Add or append the files
+                if ((Add2SrcList(&srcList, dirName, TRUE)) == -1)
+                {
+                    fprintf (stderr, "%s: ERROR---Unknown ASN Import Directory -I",
+                        dirName);
+                    Usage (argv[0], stderr);
+                    return 1;
+                }
+                currArg++;
+                break;
 
-			case 'C': /* produce C++ code */
-				genCxxCode = TRUE;
-				currArg++;
-				break;
+            case 'P':
+                printModuleFlag = TRUE;
+                currArg++;
+                break;
+
+            case 'v':
+                genValueCode = TRUE;
+                currArg++;
+                break;
+#if IDL
+            case 'i':
+                if (!strcmp (argv[currArg]+1, "idl"))
+                {
+                    genIDLCode = TRUE;
+                    currArg++;
+                }
+                else
+                    goto error;
+                break;
+#endif
+
+            case 't':
+                if (!strcmp (argv[currArg]+1, "tcl"))
+                {
+#if TCL
+                    meta_pdus = parse_type_list (argv[++currArg]);
+                    genTclCode = TRUE;
+                    if (!genMetaCode)
+                        genMetaCode = META_backend_names;
+                    genCxxCode = TRUE;
+#else
+                    goto error;
+#endif
+                }
+                else
+                    genTypeCode = TRUE;
+                currArg++;
+                break;
+
+            case 'e':
+                genEncodeCode = TRUE;
+                currArg++;
+                break;
+
+            case 'd':
+                genDecodeCode = TRUE;
+                currArg++;
+                break;
+
+            case 'p':
+                genPrintCode = TRUE;
+                currArg++;
+                break;
+
+            case 'f':
+                genFreeCode = TRUE;
+                currArg++;
+                break;
+
+            case 'C': /* produce C++ code */
+                genCxxCode = TRUE;
+                currArg++;
+                break;
             
             case 'b': /* produce per code */
-				genPERCode = TRUE;
-				currArg++;
-				break;
-
-			case 'n':
-				if (!strcmp (argv[currArg], "nons"))
-				{
-					currArg++;
-					gNO_NAMESPACE=1;
-				}
-				else if(!strncmp(argv[currArg], "-ns", 3))
-				{
-					gAlternateNamespaceString = &argv[currArg][4];
-					currArg+=2;
-				}
-				else if (!strcmp (argv[currArg]+1, "novolat"))
-				{
-					novolatilefuncs = TRUE;
-					currArg++;
-				}
-				else
-					goto error;
-				break;
-
-			case 'c':
-				genCCode = TRUE;
-				currArg++;
-				break;
-
-			case 'l':
-				if (argv[currArg][2] != '\0')  /* no space after -l */
-				{
-					longJmpVal = atoi (&argv[currArg][2]);
-					currArg++;
-				}
-				else
-				{
-					longJmpVal = atoi (argv[currArg+1]);
-					currArg += 2;
-				}
-				break;
-
-			case 'T':
-			case 'O':
-				genTypeTbls = argv[currArg][1]=='T'?2:1;
-				if (argv[currArg][2] != '\0')  /* no space after -T */
-				{
-					tblFileName = &argv[currArg][2];
-					currArg++;
-				}
-				else
-				{
-					tblFileName = argv[currArg+1];
-					currArg += 2;
-				}
+                genPERCode = TRUE;
+                currArg++;
                 break;
-			
-			case 'E':
-				if (currArg + 1 == argc)
-				{
-					fprintf (errFileG, "%s: ERROR---encoding rule missing after -E\n",
-						argv[0]);
-					Usage(argv[0], stdout);
-					return 1;
-				}
-				/* Select encoding rules */
-				if (strcmp(argv[currArg+1], "BER") == 0)
-				{
-					AddEncRules(BER);
-					encRulesSet = TRUE;
-					currArg+=2;
-				}
-				else if (strcmp(argv[currArg+1], "DER") == 0)
-				{
-					AddEncRules(DER);
-					encRulesSet = TRUE;
-					currArg+=2;
-				}
-				else
-				{
-					fprintf (errFileG, "%s: ERROR---no such encoding rule \"%s\". Try BER or DER\n",
-						argv[0], argv[currArg+1]);
-					Usage(argv[0], stdout);
-					return 1;
-				}
-				break;
 
-			case 'V':
-				if (!strncmp (argv[currArg]+1, "VDAexport",
-					strlen("VDAexport")))
-				{
-					if (strlen(argv[currArg]+1) > strlen("VDAexport"))
-						bVDAGlobalDLLExport = strdup(argv[currArg]+1+
-						strlen("VDAexport")+1);    //TRUE
-					else        // Default a definition for SFL.
-						bVDAGlobalDLLExport = "VDASNACCDLL_API";
-					currArg++;
-					break;
-				}
-				else
-					currArg++;  // IGNORE the "-V" option.
-				break;
+            case 'n':
+                if (!strcmp (argv[currArg], "nons"))
+                {
+                    currArg++;
+                    gNO_NAMESPACE=1;
+                }
+                else if(!strncmp(argv[currArg], "-ns", 3))
+                {
+                    gAlternateNamespaceString = &argv[currArg][4];
+                    currArg+=2;
+                }
+                else if (!strcmp (argv[currArg]+1, "novolat"))
+                {
+                    novolatilefuncs = TRUE;
+                    currArg++;
+                }
+                else
+                    goto error;
+                break;
 
-			case 'L':
-				if (errFileG != NULL)
-				{
-					fprintf (stderr, "ERROR---Multiple occurrences of error log file option -L");
-					Usage (argv[0], stderr);
-					return 1;
-				}
-				if (argv[currArg][2] != '\0')
-					errFileName = &argv[currArg][2];
-				else
-					errFileName = argv[++currArg];
+            case 'c':
+                genCCode = TRUE;
+                currArg++;
+                break;
 
-				/* Open the error log file */
-				errFileG = fopen(errFileName, "wt");
-				if (errFileG == NULL)
-				{
-					fprintf (stderr, "ERROR---Unable to open error log file: \'%s\'\n",
-						errFileName);
-					return 1;
-				}
-				currArg++;
-				break;
+            case 'l':
+                if (argv[currArg][2] != '\0')  /* no space after -l */
+                {
+                    longJmpVal = atoi (&argv[currArg][2]);
+                    currArg++;
+                }
+                else
+                {
+                    longJmpVal = atoi (argv[currArg+1]);
+                    currArg += 2;
+                }
+                break;
 
-			case 'y':
-				/*RWC;yydebug = 1;*/
-				currArg++;
-				break;
+            case 'T':
+            case 'O':
+                genTypeTbls = argv[currArg][1]=='T'?2:1;
+                if (argv[currArg][2] != '\0')  /* no space after -T */
+                {
+                    tblFileName = &argv[currArg][2];
+                    currArg++;
+                }
+                else
+                {
+                    tblFileName = argv[currArg+1];
+                    currArg += 2;
+                }
+                break;
+            
+            case 'E':
+                if (currArg + 1 == argc)
+                {
+                    fprintf (errFileG, "%s: ERROR---encoding rule missing after -E\n",
+                        argv[0]);
+                    Usage(argv[0], stdout);
+                    return 1;
+                }
+                /* Select encoding rules */
+                if (strcmp(argv[currArg+1], "BER") == 0)
+                {
+                    AddEncRules(BER);
+                    encRulesSet = TRUE;
+                    currArg+=2;
+                }
+                else if (strcmp(argv[currArg+1], "DER") == 0)
+                {
+                    AddEncRules(DER);
+                    encRulesSet = TRUE;
+                    currArg+=2;
+                }
+                else
+                {
+                    fprintf (errFileG, "%s: ERROR---no such encoding rule \"%s\". Try BER or DER\n",
+                        argv[0], argv[currArg+1]);
+                    Usage(argv[0], stdout);
+                    return 1;
+                }
+                break;
 
-			case 'm':
-				if (argv[currArg][2] == 'f')
-				{
-					if (argv[currArg][3] != '\0')  /* no space after -mf */
-					{
-						maxFileNameLenG = atoi (&argv[currArg][3]);
-						currArg++;
-					}
-					else
-					{
-						maxFileNameLenG = atoi (argv[currArg+1]);
-						currArg += 2;
-					}
-					break;
-				}
+            case 'V':
+                if (!strncmp (argv[currArg]+1, "VDAexport",
+                    strlen("VDAexport")))
+                {
+                    if (strlen(argv[currArg]+1) > strlen("VDAexport"))
+                        bVDAGlobalDLLExport = strdup(argv[currArg]+1+
+                        strlen("VDAexport")+1);    //TRUE
+                    else        // Default a definition for SFL.
+                        bVDAGlobalDLLExport = "VDASNACCDLL_API";
+                    currArg++;
+                    break;
+                }
+                else
+                    currArg++;  // IGNORE the "-V" option.
+                break;
+
+            case 'L':
+                if (errFileG != NULL)
+                {
+                    fprintf (stderr, "ERROR---Multiple occurrences of error log file option -L");
+                    Usage (argv[0], stderr);
+                    return 1;
+                }
+                if (argv[currArg][2] != '\0')
+                    errFileName = &argv[currArg][2];
+                else
+                    errFileName = argv[++currArg];
+
+                /* Open the error log file */
+                errFileG = fopen(errFileName, "wt");
+                if (errFileG == NULL)
+                {
+                    fprintf (stderr, "ERROR---Unable to open error log file: \'%s\'\n",
+                        errFileName);
+                    return 1;
+                }
+                currArg++;
+                break;
+
+            case 'y':
+                /*RWC;yydebug = 1;*/
+                currArg++;
+                break;
+
+            case 'm':
+                if (argv[currArg][2] == 'f')
+                {
+                    if (argv[currArg][3] != '\0')  /* no space after -mf */
+                    {
+                        maxFileNameLenG = atoi (&argv[currArg][3]);
+                        currArg++;
+                    }
+                    else
+                    {
+                        maxFileNameLenG = atoi (argv[currArg+1]);
+                        currArg += 2;
+                    }
+                    break;
+                }
 #if META
-				else if (!strcmp (argv[currArg]+1, "meta"))
-				{
-					meta_pdus = parse_type_list (argv[++currArg]);
-					if (!genMetaCode)
-						genMetaCode = META_backend_names;
-					genCxxCode = TRUE;
-					currArg++;
-					break;
-				}
-				else if (!strcmp (argv[currArg]+1, "mA"))
-				{
-					genMetaCode = META_asn1_names;
-					genCxxCode = TRUE;
-					currArg++;
-					break;
-				}
-				else if (!strcmp (argv[currArg]+1, "mC"))
-				{
-					genMetaCode = META_backend_names;
-					genCxxCode = TRUE;
-					currArg++;
-					break;
-				}
+                else if (!strcmp (argv[currArg]+1, "meta"))
+                {
+                    meta_pdus = parse_type_list (argv[++currArg]);
+                    if (!genMetaCode)
+                        genMetaCode = META_backend_names;
+                    genCxxCode = TRUE;
+                    currArg++;
+                    break;
+                }
+                else if (!strcmp (argv[currArg]+1, "mA"))
+                {
+                    genMetaCode = META_asn1_names;
+                    genCxxCode = TRUE;
+                    currArg++;
+                    break;
+                }
+                else if (!strcmp (argv[currArg]+1, "mC"))
+                {
+                    genMetaCode = META_backend_names;
+                    genCxxCode = TRUE;
+                    currArg++;
+                    break;
+                }
 #endif
-				else if (argv[currArg][2] == 'm')
-				{
-					keepbaseG = FALSE;
-					currArg++;
-					break;
-				}
+                else if (argv[currArg][2] == 'm')
+                {
+                    keepbaseG = FALSE;
+                    currArg++;
+                    break;
+                }
+                else if (argv[currArg][2] == 'o')
+                {
+                    const char *outDirectory = NULL;
+                    if (argv[currArg][3] != '\0')
+                        outDirectory = &argv[currArg][2];
+                    else
+                        outDirectory = argv[++currArg];
 
+                    if (outDirectory == NULL) {
+                        fprintf (stderr,
+                                 "-mo Argument '<directory>' missing.\n");
+                        return 1;
+                    }
+                    printf("STORD: %s\n", outDirectory);
+                    StoreOutputDirectory(outDirectory);
+                    currArg++;
+                    break;
+                }
 
 error:
-			default:
-				fprintf (stderr, "%s: ERROR---unknown cmd line option `%s'\n\n", argv[0], argv[currArg]);
-				Usage (argv[0], stderr);
-				return 1;
-			}
-		}
-		else /* asn1srcFileName */
-		{
-			numSrcFiles++;
-			file1 = sbasename(argv[currArg]);
-			Add2SrcList(&srcList, argv[currArg], FALSE);
-			currArg++;
-			while (tmpLst != NULL)
-			{
-				if (tmpLst->fileName != NULL)
-				{
-					file2 = sbasename(tmpLst->fileName);
-					if (strstr (file1, file2))
-					{
-						free(tmpLst->fileName);
-						tmpLst->fileName = NULL;
-					}
-				}
-				tmpLst = tmpLst->next;
-			}
-		}
-	} /* end of for loop */
+            default:
+                fprintf (stderr, "%s: ERROR---unknown cmd line option `%s'\n\n", argv[0], argv[currArg]);
+                Usage (argv[0], stderr);
+                return 1;
+            }
+        }
+        else /* asn1srcFileName */
+        {
+            numSrcFiles++;
+            file1 = sbasename(argv[currArg]);
+            Add2SrcList(&srcList, argv[currArg], FALSE);
+            currArg++;
+            while (tmpLst != NULL)
+            {
+                if (tmpLst->fileName != NULL)
+                {
+                    file2 = sbasename(tmpLst->fileName);
+                    if (strstr (file1, file2))
+                    {
+                        free(tmpLst->fileName);
+                        tmpLst->fileName = NULL;
+                    }
+                }
+                tmpLst = tmpLst->next;
+            }
+        }
+    } /* end of for loop */
 
-	if (numSrcFiles == 0)
-	{
-		fprintf (stderr, "%s: ERROR---no ASN.1 source files were specified\n",
-			argv[0]);
-		Usage (argv[0], stderr);
-		return 1;
-	}
+    if (numSrcFiles == 0)
+    {
+        fprintf (stderr, "%s: ERROR---no ASN.1 source files were specified\n",
+            argv[0]);
+        Usage (argv[0], stderr);
+        return 1;
+    }
 
 
     /*
-	 * set default options
-	 */
+     * set default options
+     */
     if (!(genTypeCode || genValueCode || genEncodeCode || genDecodeCode ||
           genFreeCode || genPrintCode))
     {
@@ -694,7 +702,7 @@ error:
     else if (genCCode + genCxxCode + genTypeTbls + genIDLCode > 1)
     {
         fprintf (stderr, "%s: ERROR---Choose only one of the -c -C or -T options\n",
-			argv[0]);
+            argv[0]);
         Usage (argv[0], stderr);
         return 1;
     }
@@ -702,73 +710,73 @@ error:
     if (!genCCode && !genCxxCode && !genTypeTbls && !genIDLCode)
         genCCode = TRUE;  /* default to C if neither specified */
 
-	/* Set the encoding rules to BER if not set */
-	if (!encRulesSet)
-		AddEncRules(BER);
+    /* Set the encoding rules to BER if not set */
+    if (!encRulesSet)
+        AddEncRules(BER);
 
-	/* Set the error log file to stderr if not specified */
-	if (errFileG == NULL)
-		errFileG = stderr;
+    /* Set the error log file to stderr if not specified */
+    if (errFileG == NULL)
+        errFileG = stderr;
 
-	/*
-	 * STEP 1---parse each ASN.1 src file
-	 */
-	allMods = (ModuleList *)AsnListNew (sizeof (void*));
-	
-	tmpLst = srcList;
-	while (tmpLst != NULL)
-	{
-		// Only do if not NULL 
-		if (tmpLst->fileName)
-		{
-			currMod = ParseAsn1File (tmpLst->fileName,
+    /*
+     * STEP 1---parse each ASN.1 src file
+     */
+    allMods = (ModuleList *)AsnListNew (sizeof (void*));
+    
+    tmpLst = srcList;
+    while (tmpLst != NULL)
+    {
+        // Only do if not NULL 
+        if (tmpLst->fileName)
+        {
+            currMod = ParseAsn1File (tmpLst->fileName,
                                      tmpLst->ImportFileFlag);
-		
-			if (currMod == NULL) {
-				return 1;
+        
+            if (currMod == NULL) {
+                return 1;
             }
-			/*
-			 * insert this module at the head of the list
-			 * of already parsed (if any) modules
-			 */
-			tmpModHndl = (Module **)AsnListAppend (allMods);
-			*tmpModHndl = currMod;
-		}
-		tmpLst = tmpLst->next;
-	}  /* end per src file for loop */
+            /*
+             * insert this module at the head of the list
+             * of already parsed (if any) modules
+             */
+            tmpModHndl = (Module **)AsnListAppend (allMods);
+            *tmpModHndl = currMod;
+        }
+        tmpLst = tmpLst->next;
+    }  /* end per src file for loop */
 
     /*
-	 * Check that the module names/oids are unique
-	 */
-	if (!ModNamesUnique (allMods))
-	{
-		fprintf (errFileG, "\nConflicting module names, cannot proceed.\n");
-		return 1;
-	}
-
-
-	/*
-	 * STEP 2
-	 * Now that all files have been parsed,
-	 * link local and locatable import type refs
-	 */
-	if (LinkTypeRefs (allMods) < 0)
-	{
-		fprintf (errFileG, "\nType linking errors---cannot proceed\n");
-		return 2;
-	}
+     * Check that the module names/oids are unique
+     */
+    if (!ModNamesUnique (allMods))
+    {
+        fprintf (errFileG, "\nConflicting module names, cannot proceed.\n");
+        return 1;
+    }
 
 
     /*
-	 * STEP 3
-	 * Parse constructed values now that types are all parsed
-	 * and have been linked.  Need type info to be able to
-	 * parse values easily (elimitate ambiguity).
-	 */
-	FOR_EACH_LIST_ELMT (currMod, allMods)
-	{
-		if (ParseValues (allMods, currMod) != 0)
-			fprintf (errFileG, "WARNING: Value parsing error (s), attempting to continue\n");
+     * STEP 2
+     * Now that all files have been parsed,
+     * link local and locatable import type refs
+     */
+    if (LinkTypeRefs (allMods) < 0)
+    {
+        fprintf (errFileG, "\nType linking errors---cannot proceed\n");
+        return 2;
+    }
+
+
+    /*
+     * STEP 3
+     * Parse constructed values now that types are all parsed
+     * and have been linked.  Need type info to be able to
+     * parse values easily (elimitate ambiguity).
+     */
+    FOR_EACH_LIST_ELMT (currMod, allMods)
+    {
+        if (ParseValues (allMods, currMod) != 0)
+            fprintf (errFileG, "WARNING: Value parsing error (s), attempting to continue\n");
     }
 
 
@@ -792,158 +800,158 @@ error:
      *     so they are put in the id to ANY type hash tbl.
      */
     semErr = 0;
-	FOR_EACH_LIST_ELMT (currMod, allMods)
-	{	// For Macors, New TypeDefs are added here, if required
-		ProcessMacros (currMod);
-		if (currMod->status == MOD_ERROR)
-			semErr = 1;
-	}
-	if (semErr)
-		return 5;
-
-
-    /*
-	 * STEP 6
-	 * convert silly type constructs into
-	 * a normal format, leaving behind pure type/value info
-	 * eg: expand COMPONENTS OF refs, SELECTION types.
-	 * boil down values into simplest rep. (eg OID -> ENC_OID)
-	 */
-	semErr = 0;
-	FOR_EACH_LIST_ELMT (currMod, allMods)
-	{	// New TypeDefs are added here, if required
-		NormalizeModule (currMod);
-		if (currMod->status == MOD_ERROR)
-			semErr = 1;
-	}
+    FOR_EACH_LIST_ELMT (currMod, allMods)
+    {   // For Macors, New TypeDefs are added here, if required
+        ProcessMacros (currMod);
+        if (currMod->status == MOD_ERROR)
+            semErr = 1;
+    }
     if (semErr)
-		return 6;
+        return 5;
 
 
     /*
-	 * STEP 7
-	 * Mark recusive types.  Currently the recursive information is
-	 * not used elsewhere.
-	 */
-	FOR_EACH_LIST_ELMT (currMod, allMods)
-	{
-		MarkRecursiveTypes (currMod);
-	}
-
-
-	/*
-	 * STEP 8
-	 * Check for errors in the ASN.1 modules.
-	 * Check all modules and exit if errors were found
-	 */
-	semErr = 0;
-	FOR_EACH_LIST_ELMT (currMod, allMods)
-	{
-		ErrChkModule (currMod);
-		if (currMod->status == MOD_ERROR)
-			semErr = 1;
-	}
-	if (semErr)
-		return 8;
+     * STEP 6
+     * convert silly type constructs into
+     * a normal format, leaving behind pure type/value info
+     * eg: expand COMPONENTS OF refs, SELECTION types.
+     * boil down values into simplest rep. (eg OID -> ENC_OID)
+     */
+    semErr = 0;
+    FOR_EACH_LIST_ELMT (currMod, allMods)
+    {   // New TypeDefs are added here, if required
+        NormalizeModule (currMod);
+        if (currMod->status == MOD_ERROR)
+            semErr = 1;
+    }
+    if (semErr)
+        return 6;
 
 
     /*
-	 * exit if any sundry errors occurred at any point.
-	 * smallErrG is set upon finding small errors that prevent code
-	 * production but should not affect the other processing/error
-	 * checking steps.  This allows full display of errors.
-	 */
-	if (smallErrG)
-	{
-		/*
-		 * for debugging show "parsed" version of ASN.1 module if
-		 * the print flag is set.
-		 * Dumps each module to stdout. Printed from Module data struct
-		 * print here before exiting otherwise print after sorting
-		 */
-		if (printModuleFlag)
-		{
-			FOR_EACH_LIST_ELMT (currMod, allMods)
-			{
-				printf ("\n\n");
-				PrintModule (stdout, currMod);
-			}
-		}
-		
-		return 8;
-	}
+     * STEP 7
+     * Mark recusive types.  Currently the recursive information is
+     * not used elsewhere.
+     */
+    FOR_EACH_LIST_ELMT (currMod, allMods)
+    {
+        MarkRecursiveTypes (currMod);
+    }
 
 
-	/*
-	 * STEP 9
-	 * Make C/C++ typenames/routine names for enc/decode.
-	 * Type/Value renaming will occur if name conflicts
-	 * arise between modules.
-	 *
-	 * NOTE: this is done before sorting the types because
-	 *       the type sorting routine may use the 'isPtr'
-	 *       information to help order knots of recursive types.
-	 */
-	if (genCCode)
-		FillCTypeInfo (&cRulesG, allMods);
+    /*
+     * STEP 8
+     * Check for errors in the ASN.1 modules.
+     * Check all modules and exit if errors were found
+     */
+    semErr = 0;
+    FOR_EACH_LIST_ELMT (currMod, allMods)
+    {
+        ErrChkModule (currMod);
+        if (currMod->status == MOD_ERROR)
+            semErr = 1;
+    }
+    if (semErr)
+        return 8;
 
-	else if (genCxxCode)
-		FillCxxTypeInfo (&cxxRulesG, allMods);
+
+    /*
+     * exit if any sundry errors occurred at any point.
+     * smallErrG is set upon finding small errors that prevent code
+     * production but should not affect the other processing/error
+     * checking steps.  This allows full display of errors.
+     */
+    if (smallErrG)
+    {
+        /*
+         * for debugging show "parsed" version of ASN.1 module if
+         * the print flag is set.
+         * Dumps each module to stdout. Printed from Module data struct
+         * print here before exiting otherwise print after sorting
+         */
+        if (printModuleFlag)
+        {
+            FOR_EACH_LIST_ELMT (currMod, allMods)
+            {
+                printf ("\n\n");
+                PrintModule (stdout, currMod);
+            }
+        }
+        
+        return 8;
+    }
+
+
+    /*
+     * STEP 9
+     * Make C/C++ typenames/routine names for enc/decode.
+     * Type/Value renaming will occur if name conflicts
+     * arise between modules.
+     *
+     * NOTE: this is done before sorting the types because
+     *       the type sorting routine may use the 'isPtr'
+     *       information to help order knots of recursive types.
+     */
+    if (genCCode)
+        FillCTypeInfo (&cRulesG, allMods);
+
+    else if (genCxxCode)
+        FillCxxTypeInfo (&cxxRulesG, allMods);
 
 #if IDL
-	else if (genIDLCode)
-		FillIDLTypeInfo (&idlRulesG, allMods);
+    else if (genIDLCode)
+        FillIDLTypeInfo (&idlRulesG, allMods);
 #endif
 
 
-	/*
-	 * STEP 10
-	 * Sort each typedef list such that independent types are
-	 * before the types that depend on them
-	 *
-	 *  modules remain in same order as given on command line
-	 *  (cmd line file order should be
-	 *      least dependent module-> most dependent module
-	 *      so that include file order in generated src is correct)
-	 */
-	SortAllDependencies (allMods);
+    /*
+     * STEP 10
+     * Sort each typedef list such that independent types are
+     * before the types that depend on them
+     *
+     *  modules remain in same order as given on command line
+     *  (cmd line file order should be
+     *      least dependent module-> most dependent module
+     *      so that include file order in generated src is correct)
+     */
+    SortAllDependencies (allMods);
 
-	/*
-	 * for debugging show "parsed" version of ASN.1 module.
-	 * dumps each module to stdout. Printed from Module data struct
-	 * Shows the results of normalization and sorting.
-	 */
-	if (printModuleFlag)
-	{
-		FOR_EACH_LIST_ELMT (currMod, allMods)
-		{
-			printf ("\n\n");
-			PrintModule (stdout, currMod);
-		}
-	}
+    /*
+     * for debugging show "parsed" version of ASN.1 module.
+     * dumps each module to stdout. Printed from Module data struct
+     * Shows the results of normalization and sorting.
+     */
+    if (printModuleFlag)
+    {
+        FOR_EACH_LIST_ELMT (currMod, allMods)
+        {
+            printf ("\n\n");
+            PrintModule (stdout, currMod);
+        }
+    }
 
 
-	/*
-	 * Step 12
-	 * Final Step: Code/Type Table generation
-	 */
-	if (genCCode)
-		GenCCode (allMods, longJmpVal, genTypeCode, genValueCode,
-			genEncodeCode, genDecodeCode, genPrintCode, genFreeCode);
+    /*
+     * Step 12
+     * Final Step: Code/Type Table generation
+     */
+    if (genCCode)
+        GenCCode (allMods, longJmpVal, genTypeCode, genValueCode,
+            genEncodeCode, genDecodeCode, genPrintCode, genFreeCode);
 
     else if (genCxxCode)
         GenCxxCode (allMods, longJmpVal, genTypeCode, genValueCode,
-			genEncodeCode, genDecodeCode, genPrintCode, genFreeCode,
-			if_META (genMetaCode COMMA meta_pdus COMMA)
-			if_TCL (genTclCode COMMA) novolatilefuncs);
+            genEncodeCode, genDecodeCode, genPrintCode, genFreeCode,
+            if_META (genMetaCode COMMA meta_pdus COMMA)
+            if_TCL (genTclCode COMMA) novolatilefuncs);
 
-	else if (genTypeTbls)
-		GenTypeTbls (allMods, tblFileName, genTypeTbls);
+    else if (genTypeTbls)
+        GenTypeTbls (allMods, tblFileName, genTypeTbls);
 
 #if IDL
-	else if (genIDLCode)
-		GenIDLCode (allMods, longJmpVal, genTypeCode, genValueCode,
-			genPrintCode, genFreeCode);
+    else if (genIDLCode)
+        GenIDLCode (allMods, longJmpVal, genTypeCode, genValueCode,
+            genPrintCode, genFreeCode);
 #endif
 
     tmpLst = srcList;
@@ -956,7 +964,7 @@ error:
     }
     free(allMods);
 
-	return 0;
+    return 0;
 } /* end main */
 
 
@@ -1128,6 +1136,7 @@ GenCCode PARAMS ((allMods, longJmpVal, genTypes, genValues, genEncoders, genDeco
     {
 		if (currMod->ImportedFlag == FALSE)
 		{
+            printf("Opening: %s\n", currMod->cHdrFileName);
 			cHdrFilePtr = fopen (currMod->cHdrFileName, "w");
 			cSrcFilePtr = fopen (currMod->cSrcFileName, "w");
 		}

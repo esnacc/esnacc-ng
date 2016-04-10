@@ -65,6 +65,7 @@ void  MakeCxxStrUnique PROTO ((DefinedObj *nameList, char *str, int maxDigits, i
 
 extern int	keepbaseG;
 
+void StoreOutputDirectory PROTO ((const char *directory));
 char *MakeBaseFileName PROTO ((const char *moduleName));
 char *MakeFileName PROTO ((const char *moduleName, const char *suffix));
 char *MakeCHdrFileName PROTO ((const char *moduleName));

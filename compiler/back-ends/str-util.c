@@ -381,6 +381,24 @@ MakeCxxStrUnique PARAMS ((nameList, str, maxDigits, startingDigit),
     }
 }  /* MakeCxxStrUnique */
 
+static char *OutputDirectoryName;
+
+void StoreOutputDirectory PARAMS ((directory),
+        const char *directory)
+{
+    size_t len = strlen(directory);
+    free(OutputDirectoryName);
+    if (directory[len-1] != '/') {
+        fprintf(stderr, "W: Output '%s' does not end with '/'. Adding.\n",
+                directory);
+        OutputDirectoryName = Malloc(len+1);
+        memcpy(OutputDirectoryName, directory, len);
+        OutputDirectoryName[len] = '/';
+        OutputDirectoryName[len+1] = '\0';
+    } else {
+        OutputDirectoryName = Strdup(directory);
+    }
+}
 
 /*
  * if (keepbaseG)
@@ -400,74 +418,77 @@ char *
 MakeBaseFileName PARAMS ((refName),
     const char *refName)
 {
-  if (keepbaseG)
-  {
-    char	*base, *dot;
-    int		stublen;
-    char	*stub;
-
-    if ((base = strrchr (refName, '/')) != NULL)
-      base++;
-    else
-      base = (char *)refName;
-
-    if ((dot = strrchr (base, '.')) != NULL)
-      stublen = dot - base;
-    else
-      stublen = strlen (base);
-
-    stub = Malloc (stublen+1);
-    memcpy (stub, base, stublen);
-    stub[stublen] = '\0';
-
-    return stub;
-  }
-  else
-  {
-    int fNameLen;
-    int cpyLen;
     char *retVal;
-    int maxPathComponentLen;
-#ifdef _PC_NAME_MAX
-    char pathName[1024];
-#endif
-#   define MAX_SUFFIX_LEN 2 /* .c, .h, .C */
-    extern int maxFileNameLenG; /* declared in snacc.c */
+    if (keepbaseG) {
+        char	*base, *dot;
+        int		stublen;
 
-    /*
-     * if the user has not given the max file name len
-     * via the -mf option,
-     * find the max filename len (ala POSIX method)
-     * if possible.  Otherwise hardwire it to 14
-     * to support underpowered OSes
-     */
-    if (maxFileNameLenG > 2)
-        maxPathComponentLen = maxFileNameLenG;
-    else
+        if ((base = strrchr (refName, '/')) != NULL)
+            base++;
+        else
+            base = (char *)refName;
+
+        if ((dot = strrchr (base, '.')) != NULL)
+            stublen = dot - base;
+        else
+            stublen = strlen (base);
+
+        retVal = Malloc (stublen+1);
+        memcpy (retVal, base, stublen);
+        retVal[stublen] = '\0';
+    } else {
+        int fNameLen;
+        int cpyLen;
+        int maxPathComponentLen;
 #ifdef _PC_NAME_MAX
-        maxPathComponentLen = pathconf (getcwd (pathName, 1024), _PC_NAME_MAX);
+        char pathName[1024];
+#endif
+#   define MAX_SUFFIX_LEN 4 /* .c, .h, .cpp */
+        extern int maxFileNameLenG; /* declared in snacc.c */
+
+        /*
+         * if the user has not given the max file name len
+         * via the -mf option,
+         * find the max filename len (ala POSIX method)
+         * if possible.  Otherwise hardwire it to 14
+         * to support underpowered OSes
+         */
+        if (maxFileNameLenG > 2)
+            maxPathComponentLen = maxFileNameLenG;
+        else
+#ifdef _PC_NAME_MAX
+            maxPathComponentLen = pathconf (getcwd (pathName, 1024), _PC_NAME_MAX);
 #else
-        maxPathComponentLen = 14;
+            maxPathComponentLen = 14;
 #endif
 
-    retVal = (char *)Malloc (strlen (refName) +1);
-    fNameLen = strlen (refName) + MAX_SUFFIX_LEN;
-    if ((fNameLen > maxPathComponentLen) && (maxPathComponentLen != -1))
-    {
-        cpyLen = maxPathComponentLen - MAX_SUFFIX_LEN;
+            retVal = (char *)Malloc (strlen (refName) +1);
+            fNameLen = strlen (refName) + MAX_SUFFIX_LEN;
+            if ((fNameLen > maxPathComponentLen) &&
+                (maxPathComponentLen != -1)) {
+                cpyLen = maxPathComponentLen - MAX_SUFFIX_LEN;
 
-        /* don't allow trailing dash */
-        if (refName[cpyLen-1] == '-')
-            cpyLen--;
+                /* don't allow trailing dash */
+                if (refName[cpyLen-1] == '-')
+                    cpyLen--;
 
-        strncpy (retVal, refName, cpyLen);
-        retVal[cpyLen] = '\0';
+                strncpy (retVal, refName, cpyLen);
+                retVal[cpyLen] = '\0';
+            } else
+                strcpy (retVal, refName);
     }
-    else
-        strcpy (retVal, refName);
+
+    if (OutputDirectoryName && strlen(OutputDirectoryName)) {
+        const char *oldRetVal = Strdup(retVal);
+        size_t retValLen = strlen(retVal) + strlen(OutputDirectoryName) + 1;
+        retVal = Realloc(retVal, retValLen);
+        memcpy(retVal, OutputDirectoryName, strlen(OutputDirectoryName));
+        memcpy(retVal+strlen(OutputDirectoryName), oldRetVal,
+               strlen(oldRetVal)+1);
+        Free(oldRetVal);
+    }
 
     return retVal;
-  }
 } /* MakeBaseFileName */
 
 
@@ -496,79 +517,58 @@ FileNameOnly(const char *path)
  */
 char *
 MakeFileName PARAMS ((refName, suffix),
-    const char *refName _AND_
-    const char *suffix)
+                     const char *refName _AND_
+                     const char *suffix)
 {
-  
-  if (keepbaseG)
-  {  
-    const char *fn = FileNameOnly(refName);
-
-    size_t	baselen = strlen (fn);
-    size_t  sufflen = strlen (suffix);
-    char *filename = Malloc (baselen + sufflen + 1);
-
-    memcpy (filename, fn, baselen);
-    memcpy (filename+baselen, suffix, sufflen);
-    filename[baselen+sufflen] = '\0';
-
-    return filename;
-  }
-  else
-  {
-    int fNameLen;
     char *fName;
+
+    if (keepbaseG)
+    {  
+        const char *fn = FileNameOnly(refName);
+
+        size_t  baselen = strlen (fn);
+        size_t  sufflen = strlen (suffix);
+        fName = Malloc (baselen + sufflen + 1);
+
+        memcpy (fName, fn, baselen);
+        memcpy (fName+baselen, suffix, sufflen);
+        fName[baselen+sufflen] = '\0';
+    }
+    else
+    {
+        int fNameLen;
 #define MAX_UNDERSCORE 10
 
-    fName = Malloc (strlen (refName) + strlen (suffix) + 1);
-    strcpy (fName, refName);
-    strcat (fName, suffix);
+        fName = Malloc (strlen (refName) + strlen (suffix) + 1);
+        strcpy (fName, refName);
+        strcat (fName, suffix);
 
 
-    fNameLen = strlen (fName);
+        fNameLen = strlen (fName);
 
-    /*
-     * convert dashes to underscores, add spaces
-     */
-    Dash2Underscore (fName, fNameLen);
+        /*
+         * convert dashes to underscores, add spaces
+         */
+        Dash2Underscore (fName, fNameLen);
 
 
-    /*
-     * remove the next two lines if you uncomment the
-     * following underscore inserter
-     */
-    Str2LCase (fName, fNameLen - strlen (suffix));
-    return fName;
-
-    /*
-     *  NO LONGER DONE - LET THE USER MODIFY THE ASN.1 IF DESIRED
-     *  add underscore between Lcase/Ucase of UCase/UcaseLcasce
-     *  eg MTSAbstractSvc -> MTS_Abstract_Svc
-     *  (if enough space)
-    len = strlen (fName) + MAX_UNDERSCORE + 1;
-    hdrCpy = (char *) Malloc (len);
-
-    hdrCpy[0] = fName[0];
-    for (i = 1, cpyIndex = 1; (cpyIndex < len) && (i < fNameLen); i++)
-    {
-        if (((islower (fName[i-1])) && (isupper (fName[i]))) ||
-             ((isupper (fName[i-1])) && (isupper (fName[i])) &&
-                            ((i < (fNameLen-1)) && (islower (fName[i+1])))))
-        {
-            hdrCpy[cpyIndex++] = '_';
-            hdrCpy[cpyIndex++] = fName[i];
-        }
-        else
-            hdrCpy[cpyIndex++] = fName[i];
+        /*
+         * remove the next two lines if you uncomment the
+         * following underscore inserter
+         */
+        Str2LCase (fName, fNameLen - strlen (suffix));
     }
-    hdrCpy[cpyIndex++] = '\0';
 
-    Str2LCase (hdrCpy, cpyIndex - strlen (suffix));
-
-    Free (fName);
-    return hdrCpy;
-    */
-  }
+    if (OutputDirectoryName && strlen(OutputDirectoryName)) {
+        const char *oldRetVal = Strdup(fName);
+        size_t retValLen = strlen(fName) + strlen(OutputDirectoryName) + 1;
+        fName = Realloc(fName, retValLen);
+        memcpy(fName, OutputDirectoryName, strlen(OutputDirectoryName));
+        memcpy(fName+strlen(OutputDirectoryName), oldRetVal,
+               strlen(oldRetVal)+1);
+        Free(oldRetVal);
+    }
+    return fName;
 }  /* MakeFileName */
 
 
