@@ -642,7 +642,6 @@ int main PARAMS ((argc, argv),
                                  "-mo Argument '<directory>' missing.\n");
                         return 1;
                     }
-                    printf("STORD: %s\n", outDirectory);
                     StoreOutputDirectory(outDirectory);
                     currArg++;
                     break;
@@ -1136,7 +1135,6 @@ GenCCode PARAMS ((allMods, longJmpVal, genTypes, genValues, genEncoders, genDeco
     {
 		if (currMod->ImportedFlag == FALSE)
 		{
-            printf("Opening: %s\n", currMod->cHdrFileName);
 			cHdrFilePtr = fopen (currMod->cHdrFileName, "w");
 			cSrcFilePtr = fopen (currMod->cSrcFileName, "w");
 		}
