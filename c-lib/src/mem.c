@@ -108,3 +108,17 @@ void Free PARAMS ((ptr),
 {
     free (ptr);
 }
+
+char *
+Strdup PARAMS ((istring),
+     const char *istring)
+{
+    char *ret = strdup(istring);
+    if (ret == NULL)
+    {
+        fprintf (stderr, "out of memory! bye!\n");
+        fprintf (stderr, "tried to strdup %d bytes\n", strlen(istring));
+        exit (1);
+    }
+    return ret;
+}

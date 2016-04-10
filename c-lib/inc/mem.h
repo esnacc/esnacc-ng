@@ -51,6 +51,8 @@ void	*Malloc PROTO ((int size));
 void	*Realloc PROTO ((void *ptr, int newsize));
 void	Free PROTO ((void *ptr));
 
+char    *Strdup PROTO ((const char *istring));
+    
 /* malloc type */
 #define MT( type)	(type *)Malloc (sizeof (type))
 
