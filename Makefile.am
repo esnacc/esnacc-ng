@@ -95,11 +95,10 @@ pkgconfigdir = $(libdir)/pkgconfig
 noinst_HEADERS += $(EXTRA_DIST)
 
 .asn1.c:
-	compiler/esnacc -c $<
-	mv -f $(notdir $(basename $<)).{h,c} $(dir $@)
+	compiler/esnacc -c -mo `dirname $@` $<
 
 .asn1.cpp:
-	compiler/esnacc -D $(@D) -C $(notdir $<)
+	compiler/esnacc -c -mo `dirname $@` -C $<
 
 include c-lib/automake.mk
 include cxx-lib/automake.mk
