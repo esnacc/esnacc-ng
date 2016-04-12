@@ -1663,8 +1663,6 @@ PrintCListDecoderCode PARAMS ((src, td, list, elmtLevel, totalLevel, tagLevel, v
         fprintf (src, "        elmtLen%d = %sDecLen (b, &totalElmtsLen%d, env);\n", ++elmtLevel, GetEncRulePrefix(), totalLevel);
     }
 
-
-
     strcpy (tmpVarName, "(*tmpVar)");
     fprintf (src,"    tmpVar = (%s**) AsnListAppend (%s);\n", ctri->cTypeName, varName);
     fprintf (src, "    %s = (%s*) Asn1Alloc (sizeof (%s));\n", tmpVarName, ctri->cTypeName, ctri->cTypeName);
