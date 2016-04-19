@@ -117,7 +117,7 @@ Strdup PARAMS ((istring),
     if (ret == NULL)
     {
         fprintf (stderr, "out of memory! bye!\n");
-        fprintf (stderr, "tried to strdup %d bytes\n", strlen(istring));
+        fprintf (stderr, "tried to strdup too many bytes\n");
         exit (1);
     }
     return ret;
