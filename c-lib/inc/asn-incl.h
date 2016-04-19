@@ -103,7 +103,6 @@
 #include "asn-any.h"
 #include "asn-list.h"
 #include "asn-der.h"
-#include "asn-useful.h"
 #include "asn-PrintableStr.h"
 #include "asn-UniversalString.h"
 #include "asn-BMPString.h"

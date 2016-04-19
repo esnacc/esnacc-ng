@@ -1,6 +1,8 @@
 #include "cxxmultipleconstraints.h"
 #include <string.h>
 #include <math.h>
+#include <ctype.h>
+
 extern char *bVDAGlobalDLLExport;
 
 /*finds all of the alphabets in the subtype constraints */

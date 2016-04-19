@@ -633,7 +633,8 @@ ExpBufPeekSeg PARAMS ((b, len),
     }
 
     /* check for "buffer fault" and adjust "peeked" len */
-    if (((unsigned long)(*b)->dataEnd - (unsigned long)(*b)->curr) <= *len)
+    bytesLeft = ((unsigned long)(*b)->dataEnd - (unsigned long)(*b)->curr);
+    if (bytesLeft <= *len)
         *len = bytesLeft;
 
     return (*b)->curr;

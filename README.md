@@ -1,9 +1,9 @@
-Enhanced Sample Neufield ASN C Compiler
+Enhanced Sample Neufeld ASN C Compiler
 =======================================
 
 Build Status
 ------------
-[![Travis Build Status](https://travis-ci.org/azsnacc/esnacc-ng.png)](https://travis-ci.org/azsnacc/esnacc-ng)
+[![Travis Build Status](https://travis-ci.org/esnacc/esnacc-ng.png)](https://travis-ci.org/azsnacc/esnacc-ng)
 
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/azsnacc/esnacc-ng?branch=master&svg=true)](https://ci.appveyor.com/api/projects/status/github/azsnacc/esnacc-ng?branch=master)
 
@@ -14,7 +14,7 @@ an ASN.1 to C or C++ compiler.  Snacc is short for "Sample Neufeld Asn.1
 to C Compiler" and ASN.1 stands for Abstract Syntax Notation One (CCITT
 X.208/ ISO 8824).  See the COPYRIGHT file for copyright information.
 
-eSNACC is an enhanced version of the Sample Neufield ASN C Compiler. It 
+eSNACC is an enhanced version of the Sample Neufeld ASN C Compiler. It 
 supports BER, DER, and PER rulesets for C and C++ code generation. There is
 experimental support for TCL.
 

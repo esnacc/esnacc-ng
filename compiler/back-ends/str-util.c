@@ -479,7 +479,7 @@ MakeBaseFileName PARAMS ((refName),
     }
 
     if (OutputDirectoryName && strlen(OutputDirectoryName)) {
-        const char *oldRetVal = Strdup(retVal);
+        char *oldRetVal = Strdup(retVal);
         size_t retValLen = strlen(retVal) + strlen(OutputDirectoryName) + 1;
         retVal = Realloc(retVal, retValLen);
         memcpy(retVal, OutputDirectoryName, strlen(OutputDirectoryName));
@@ -560,7 +560,7 @@ MakeFileName PARAMS ((refName, suffix),
     }
 
     if (OutputDirectoryName && strlen(OutputDirectoryName)) {
-        const char *oldRetVal = Strdup(fName);
+        char *oldRetVal = Strdup(fName);
         size_t retValLen = strlen(fName) + strlen(OutputDirectoryName) + 1;
         fName = Realloc(fName, retValLen);
         memcpy(fName, OutputDirectoryName, strlen(OutputDirectoryName));
