@@ -26,7 +26,6 @@ c_lib_libcasn1_la_SOURCES = \
 	c-lib/src/asn-UniversalString.c \
 	c-lib/src/tbl-enc.c \
 	c-lib/src/asn-int.c \
-	c-lib/src/asn-useful.c \
 	c-lib/src/tbl-free.c \
 	c-lib/src/asn-len.c \
 	c-lib/src/asn-UTF8String.c \
