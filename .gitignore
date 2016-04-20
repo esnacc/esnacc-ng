@@ -16,6 +16,7 @@
 *.so
 config.h
 config.h.in
+ylwrap
 /Makefile
 /Makefile.in
 /aclocal.m4
