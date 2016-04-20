@@ -28,4 +28,4 @@ script:
    - ./boot.sh
    - ./configure 
    - make
-   - make check
+   - make distcheck
