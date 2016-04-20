@@ -1,5 +1,18 @@
 lib_LTLIBRARIES += cxx-lib/libcxxasn1.la
 
+nobase_include_HEADERS += cxx-lib/inc/asn-buf.h \
+	cxx-lib/inc/asn-chartraits.h \
+	cxx-lib/inc/asn-config.h \
+	cxx-lib/inc/asn-incl.h \
+	cxx-lib/inc/asn-list.h \
+	cxx-lib/inc/asn-listset.h \
+	cxx-lib/inc/asn-usefultypes.h \
+	cxx-lib/inc/init.h \
+	cxx-lib/inc/meta.h \
+	cxx-lib/inc/snaccdll.h \
+	cxx-lib/inc/snaccexcept.h \
+	cxx-lib/inc/tcl-if.h
+
 cxx_lib_libcxxasn1_la_SOURCES = \
 	cxx-lib/src/asn-null.cpp \
 	cxx-lib/src/asn-oid.cpp \

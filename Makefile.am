@@ -68,6 +68,7 @@ MAN_FRAGMENTS =
 MAN_ROOTS =
 noinst_DATA =
 noinst_HEADERS =
+nobase_include_HEADERS = snacc.h
 lib_LTLIBRARIES =
 noinst_man_MANS =
 noinst_PROGRAMS =

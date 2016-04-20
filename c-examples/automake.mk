@@ -11,6 +11,7 @@ c_examples_simple_genber_SOURCES = \
 
 c_examples_simple_genber_CFLAGS = \
 	-I$(top_srcdir)/asn1specs \
+	-I$(builddir)/asn1specs \
 	-I$(top_srcdir)/c-lib/inc
 
 c_examples_simple_genber_LDADD = \
