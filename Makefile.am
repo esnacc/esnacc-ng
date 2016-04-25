@@ -40,7 +40,7 @@ DISTCLEANFILES =
 docs = \
 	README.md \
 	licenseq.txt \
-	install.txt \
+	INSTALL.md \
 	NEWS \
 	copying
 
