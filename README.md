@@ -31,6 +31,9 @@ compiler changes MUST be GPL, at least v2.
 
 Building eSNACC
 ---------------
+The following represents a very quick start guide to building the esnacc
+codebase. For more detailed instructions, see [INSTALL.md]
+
 First, run the './boot.sh' script, to generate the appropriate configure
 scripts.
 
