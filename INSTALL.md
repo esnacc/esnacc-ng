@@ -154,6 +154,36 @@ Building the Sources
    running system, by default under /usr/local.
 
 
+Packages
+========
+
+esnacc includes a Debian compatible rules set, which can be used to generate
+appropriate .deb files for installation on any Debian or Debian-derived system
+(such as Ubuntu).  In order to build these packages, it is required that all
+prerequisites listed are installed.  This can be done using the `apt-get`
+and `dpkg` utilities.  For all builds, you must install at least the "cdbs,"
+"build-essential," "dh-autoreconf," and "fakeroot" packages.  This can be done,
+e.g. with:
+
+   `apt-get install build-essential cdbs dh-autoreconf fakeroot`
+
+It is then necessary to install all of the packages listed in the Build-Depends
+line in the debian/control file.  You can install these similarly e.g. with
+`apt-get install`.
+
+Check that you have installed all prerequisites by running
+`dpkg-checkbuilddeps` from the top-level of the esnacc directory.  If
+everything is installed correctly, dpkg-checkbuilddeps will exit without
+printing an error message. If you are missing any dependencies, they will
+be listed.
+
+To build the packages, run `fakeroot debian/rules binary` from the top-level
+esnacc directory.  This will do a build, including executing the targets of
+`make check`, and produce a number of .deb files in the parent directory.
+
+To install these built packages, use `dpkg -i`.
+
+
 Testsuites
 ==========
 
