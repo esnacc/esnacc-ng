@@ -496,8 +496,8 @@ Code2UnivCodeStr PARAMS ((code),
              * unvisersal tag code.  This is useful for defining new types
              * in local modules w/o having to modify the compiler.
              */
-            static char retstring[15];
-            snacc_snprintf(retstring, 15, "%d", code); 
+            static char retstring[256];
+            sprintf(retstring, "%d", code); 
             return retstring; 
         }
     }
@@ -561,10 +561,10 @@ int CmpTags PARAMS((a, b),
 //
 char *DetermineCode(Tag *tag, int *ptagLen, int bJustIntegerFlag)
 {
-    static char retstring[5];
+    static char retstring[256];
     char *codeStr=NULL;
     int iValue=500;     // WILL indicate a problem on source creation...
-
+    memset(retstring, 0, sizeof(retstring));
     if (tag->valueRef == NULL)
     {
         if (!bJustIntegerFlag)
@@ -576,8 +576,9 @@ char *DetermineCode(Tag *tag, int *ptagLen, int bJustIntegerFlag)
             sprintf(retstring, "%d", tag->code); 
             codeStr = retstring;
         }       // END IF bJustIntegerFlag
-        if (ptagLen)
+        if (ptagLen) {
             *ptagLen = TagByteLen(tag->code);
+        }
     }
     else
     {
@@ -622,12 +623,13 @@ char *DetermineCode(Tag *tag, int *ptagLen, int bJustIntegerFlag)
         {
             iValue = tag->valueRef->basicValue->a.importValueRef->link->
                         value->basicValue->a.integer;
-        }       // END IF Integer/Import
+        }
         sprintf(retstring, "%d", iValue); 
         codeStr = retstring;
-        if (ptagLen)
+        if (ptagLen) {
             *ptagLen = TagByteLen(iValue);
-    }       // END IF tag->valueRef
+        }
+    }
     return(codeStr);
-}       // END DetermineCode(...)
+}
 
