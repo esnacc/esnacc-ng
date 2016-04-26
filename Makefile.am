@@ -40,7 +40,7 @@ DISTCLEANFILES =
 docs = \
 	README.md \
 	licenseq.txt \
-	install.txt \
+	INSTALL.md \
 	NEWS \
 	copying
 
@@ -99,7 +99,7 @@ noinst_HEADERS += $(EXTRA_DIST)
 	compiler/esnacc -c -mo `dirname $@` $<
 
 .asn1.cpp:
-	compiler/esnacc -c -mo `dirname $@` -C $<
+	compiler/esnacc -C -mo `dirname $@` $<
 
 include c-lib/automake.mk
 include cxx-lib/automake.mk

@@ -31,6 +31,9 @@ compiler changes MUST be GPL, at least v2.
 
 Building eSNACC
 ---------------
+The following represents a very quick start guide to building the esnacc
+codebase. For more detailed instructions, see [INSTALL.md]
+
 First, run the './boot.sh' script, to generate the appropriate configure
 scripts.
 
@@ -92,56 +95,54 @@ PER FUTURE ENHANCEMENTS
 
 CHANGE LOG
 ----------
-New in 1.8
-    * After years of dust accumulating, eSNACC is re-maintained.
+New in 1.8:
+ * After years of dust accumulating, eSNACC is re-maintained.
 
-New in 1.7
-    *  Enchancements to C++ runtime:
-    *	Support of constraints checking for BER/PER
-    *	Added Asn-Relative-Oid's
-    *	Updated Asn-Oid to be inherited from Asn-Relative-Oid
-    *	Added Extensibility to the set/sequence/choice syntax (BER encoding/decoding only, PER is not yet supported)
-    *	asn::list has been changed to std::list (many changes)
-    *	non-optional set/sequence/choice elements are no longer generated as pointers
-    *	PER encode/decode capability for both aligned and unaligned variants (see PER beta notes below)
-  *  Enchancements to C runtime:
-    *	Added useful types
-    *	Added Asn-Relative-Oid's
-  *  Enhancements to compiler
-    *	eSNACC no longer supports un-named types (2002 syntax update)  
-    *	added -b compiler option to turn on/off PER encoding/decoding function generation in set/sequence/choice (Note -- calling PEnc/PDec will still work, but will not produce correct encoding unless -b is used!!)
+New in 1.7:
+ * Enchancements to C++ runtime:
+ * Support of constraints checking for BER/PER
+ * Added Asn-Relative-Oid's
+ * Updated Asn-Oid to be inherited from Asn-Relative-Oid
+ * Added Extensibility to the set/sequence/choice syntax (BER encoding/decoding only, PER is not yet supported)
+ * asn::list has been changed to std::list (many changes)
+ * non-optional set/sequence/choice elements are no longer generated as pointers
+ * PER encode/decode capability for both aligned and unaligned variants (see PER beta notes below)
+ * Enchancements to C runtime:
+   * Added useful types
+   * Added Asn-Relative-Oid's
+ * Enhancements to compiler
+   * eSNACC no longer supports un-named types (2002 syntax update)
+   * added -b compiler option to turn on/off PER encoding/decoding function generation in set/sequence/choice (Note -- calling PEnc/PDec will still work, but will not produce correct encoding unless -b is used!!)
 
-New in EKMS PER Beta (Packed Encoding Rules)
-    *	Aligned and unaligned PER variants (C++ only)
-    *	Limited constraint checking and PER encoding for PER visible constraints
-    * Supported
-	*  char Stringtypes
-        *  Integer
-	*  Octet String
-	*  Bit String
-	*  Sequence-of / Set-of (limited)
-    *Currently Unsupported 
-	*  wide char stringtypes
-	*  extensibility in constraints
+New in EKMS PER Beta (Packed Encoding Rules):
+ * Aligned and unaligned PER variants (C++ only)
+ * Limited constraint checking and PER encoding for PER visible constraints
+ * Supported
+   * char Stringtypes
+   * Integer
+   * Octet String
+   * Bit String
+   * Sequence-of / Set-of (limited)
+   * Currently Unsupported 
+     * wide char stringtypes
+     * extensibility in constraints
 
-New in 1.6Beta
-    *	Updated "C" library to automatically handle ANY load/unloads as buffers.
-    *	Added interpretation of ASN.1 integer constants as values in tag references for "C" and C++.
-    *	Added "--snacc namespace: " pre-processor feature for unique C++ ASn.1 
-    	  module namespace references.
-    *	Updated SNACC document (in the ./SNACC/doc directory) to present DigitalNet
-    	  updates/enhancements.
-    *	Updated c++-examples and c-examples to demontrate recent features.
+New in 1.6Beta:
+ * Updated "C" library to automatically handle ANY load/unloads as buffers.
+ * Added interpretation of ASN.1 integer constants as values in tag references for "C" and C++.
+ * Added "--snacc namespace: " pre-processor feature for unique C++ ASn.1 module namespace references.
+ * Updated SNACC document (in the ./SNACC/doc directory) to present DigitalNet updates/enhancements.
+ * Updated c++-examples and c-examples to demontrate recent features.
 
-New in 1.5
-    *	Updated "C" library to automatically handle ANY load/unloads as buffers.
-    *	Added interpretation of ASN.1 integer constants as values in tag references for "C" and C++.
-    *	Added "--snacc namespace: " pre-processor feature for unique C++ ASn.1 module namespace references.
-    *	Updated SNACC document (in the ./SNACC/doc directory) to present DigitalNet updates/enhancements.
-    *	Updated c++-examples and c-examples to demontrate recent features.
+New in 1.5:
+ * Updated "C" library to automatically handle ANY load/unloads as buffers.
+ * Added interpretation of ASN.1 integer constants as values in tag references for "C" and C++.
+ * Added "--snacc namespace: " pre-processor feature for unique C++ ASn.1 module namespace references.
+ * Updated SNACC document (in the ./SNACC/doc directory) to present DigitalNet updates/enhancements.
+ * Updated c++-examples and c-examples to demontrate recent features.
 
 
-New in 1.4
+New in 1.4:
  * rewrote makefiles to make build process easier and faster.
  * Enchancements to C++ runtime:
    * AsnInt changed to be so that it no longer inherits AsnOcts
