@@ -1,0 +1,61 @@
+Source: esnacc
+Section: devel
+Priority: optional
+Maintainer: Bálint Réczey <balint@balintreczey.hu>
+Uploaders: Bálint Réczey <balint@balintreczey.hu>, Aaron Conole <aconole@bytheb.org>
+Build-Depends: autoconf, automake (>= 1.11), autotools-dev, libtool, debhelper (>> 4), bison, flex
+Standards-Version: 3.8.0
+Vcs-Browser: https://github.com/esnacc/esnacc-ng
+Vcs-Git: https://github.com/esnacc/esnacc-ng.git
+Homepage: https://esnacc.org
+
+Package: esnacc
+Architecture: any
+Depends: ${shlibs:Depends}
+Recommends: libesnacc-dev
+Suggests: automake1.11
+Description: ASN.1 to C or C++ or IDL compiler
+ enacc is short for "Enhanced Sample Neufeld ASN.1 to C Compiler" and ASN.1
+ stands for Abstract Syntax Notation One (ITU-T X.208/ISO 8824).
+ esnacc supports a subset of ASN.1 1988.
+ .
+ Given an ASN.1 source file(s) esnacc can produce:
+ .
+ 1. C routines for BER encoding, decoding, printing and freeing.
+ 2. C++ routines for BER encoding, decoding, and printing.
+ 3. A type table that can be used with C driver routines
+    for BER encoding, decoding, printing and freeing.
+ .
+ If you want to build esnacc based applications, you want to install
+ the libesnacc-dev package, too.  Your application will then depend on
+ the esnacc libraries, you find in the libsnacc1.80 package.
+
+Package: libesnacc-dev
+Section: libdevel
+Architecture: any
+Depends: libesnacc180 (= ${binary:Version})
+Conflicts: libsnacc-dev
+Replaces: libsnacc-dev
+Description: ASN.1 to C or C++ or IDL compiler, development files
+ esnacc is short for "Enhanced Sample Neufeld ASN.1 to C Compiler" and ASN.1
+ stands for Abstract Syntax Notation One (ITU-T X.208/ISO 8824).
+ Snacc supports a subset of ASN.1 1988.  If you need features of
+ ASN.1 1992 or later, snacc is not for you.
+ .
+ This package contains the static libraries and C/C++ header files for
+ snacc development.
+ .
+
+Package: libesnacc180
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}
+Conflicts: libsnacc0c2
+Replaces: libsnacc0c2
+Description: ASN.1 to C or C++ or IDL compiler, shared libraries
+ esnacc is short for "Enhanced Sample Neufeld ASN.1 to C Compiler" and ASN.1
+ stands for Abstract Syntax Notation One (ITU-T X.208/ISO 8824).
+ Snacc supports a subset of ASN.1 1988.  If you need features of
+ ASN.1 1992 or later, snacc is not for you.
+ .
+ These are the shared libraries for programs developed using esnacc.

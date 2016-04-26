@@ -14,8 +14,12 @@
 *~
 *.Tpo
 *.so
+*.tar.gz
+*.cdbs-config_list
+config.guess.cdbs-orig
 config.h
 config.h.in
+config.sub.cdbs-orig
 ylwrap
 /Makefile
 /Makefile.in
