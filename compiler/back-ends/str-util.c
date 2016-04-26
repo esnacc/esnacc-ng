@@ -391,7 +391,7 @@ void StoreOutputDirectory PARAMS ((directory),
     if (directory[len-1] != '/') {
         fprintf(stderr, "W: Output '%s' does not end with '/'. Adding.\n",
                 directory);
-        OutputDirectoryName = Malloc(len+1);
+        OutputDirectoryName = Malloc(len+2);
         memcpy(OutputDirectoryName, directory, len);
         OutputDirectoryName[len] = '/';
         OutputDirectoryName[len+1] = '\0';
