@@ -50,3 +50,6 @@ ylwrap
 /GRTAGS
 /GTAGS
 /test-driver
+/rpm
+pr.ber
+test-suite.log

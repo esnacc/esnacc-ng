@@ -108,3 +108,4 @@ include cxx-lib/automake.mk
 include compiler/automake.mk
 include c-examples/automake.mk
 include debian/automake.mk
+include redhat/automake.mk
