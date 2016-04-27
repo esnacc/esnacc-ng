@@ -2,6 +2,7 @@
 .libs
 .deps
 esnacc
+esnacc.1
 core/y.output
 core/y.tab.c
 core/y.tab.h
