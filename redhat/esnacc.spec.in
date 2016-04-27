@@ -61,7 +61,7 @@ Header files and static libraries for developing with %name
 
 %build
 %configure --enable-static
-make %{?_smp_mflags}
+make %{?_smp_mflags} CFLAGS='-Wall -O2 -DYYTEXT_POINTER -fPIC'
 
 %install
 make DESTDIR=%{buildroot} install
