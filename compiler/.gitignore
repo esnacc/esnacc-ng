@@ -3,6 +3,7 @@
 .deps
 esnacc
 esnacc.1
+esnacc.xml
 core/y.output
 core/y.tab.c
 core/y.tab.h

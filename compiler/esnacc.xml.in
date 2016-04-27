@@ -16,7 +16,7 @@
   <refmeta>
     <refentrytitle>esnacc</refentrytitle>
     <manvolnum>1</manvolnum>
-    <refmiscinfo class="version">1.80</refmiscinfo>
+    <refmiscinfo class="version">@VERSION@</refmiscinfo>
     <refmiscinfo class="manual">Development</refmiscinfo>
     <refmiscinfo class="source">esnacc</refmiscinfo>
   </refmeta>

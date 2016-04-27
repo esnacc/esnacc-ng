@@ -79,11 +79,11 @@ compiler/core/y.tab.c compiler/core/y.tab.h: compiler/core/y.tab.y
 compiler/core/lex-asn1.c: compiler/core/lex-asn1.l compiler/core/y.tab.c compiler/core/y.tab.h
 	$(LEX) -t $< | $(SED) -e 's@#include <unistd.h>@@g' > $@
 
-EXTRA_DIST += compiler/esnacc.xml
+EXTRA_DIST += compiler/esnacc.xml.in
 
 if !WIN32
 man_MANS += compiler/esnacc.1
-CLEANFILES += compiler/esnacc.1
+DISTCLEANFILES += compiler/esnacc.1
 endif
 
 compiler/esnacc.1: compiler/esnacc.xml
@@ -92,7 +92,8 @@ compiler/esnacc.1: compiler/esnacc.xml
 CLEANFILES += compiler/core/lex-asn1.c \
 	compiler/core/y.output \
 	compiler/core/y.tab.c \
-	compiler/core/y.tab.h
+	compiler/core/y.tab.h \
+	compiler/esnacc.xml
 
 compiler_esnacc_CFLAGS = \
 	-I$(top_srcdir)/compiler/core \
