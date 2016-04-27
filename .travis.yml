@@ -15,6 +15,9 @@ env:
    - secure: "GcsLxtnsY96G7Fnrd0q4hTHRn8SBKz/rZskrI/YwwuIsUT1WiCHU2sqklaq7eD+mbVndpN53dwRtrtRKK+U4rhFZN5Nwdpha6RDEppDJXS0IwXbBRVNzX6DQ/iMWjwj/oyKYshUIq6wsJUYcG67/9iMYX1J3BrVII6o1MHm4xPpVfkcOy4XmQrBD1IBaQY+TrcExnV86giJfLhJjeD/MvQ8MYGY4S1ET9y1uRfCj9r06d64aOVRsGYqyqgRB+qTS9bjC4t0C/xkCk90LXSLkGqQ95MoHGK4byD5uExWb6+Px4RW/Rad0gjbBOwlszLxTqdF23eeLpyhNFaWBlpVMKOyKpWl8m31/t1HPO74ytXCXNVhx2FRodHMZg3Bj1zOuJs8PSARiu038T53qUHeGDQLGY0Ph8T2JdvPAgNpV+y7lK5Owk/G6nUabnDLwsHHuNWTk2mk6dr2reoZOdQF+dvzS2RaHGATwThd3HIZ1rLZo0ZQg7olbf4WB8QZorjtTA4xCF3MLAGJl6iSrhCY6pmdPsnYldaOpGcoo+29sBdjZHvSBPg8iBmgzowKSRennUNy4WqIj0JSW8/6lk/WnZLLb0Mf50LGYEhdJPkjks2UPlvSkZwTfHLtcHB5RxEyxi5msKi33EG6osgf68CCj6enx1kFQ1TtxjrqIvllLtwM="
 
 addons:
+  apt:
+    packages:
+      - xsltproc
   coverity_scan:
     project:
       name: "orgcandman/esnacc-ng"
