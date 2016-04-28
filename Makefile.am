@@ -20,17 +20,6 @@ ACLOCAL_AMFLAGS = -I m4
 AM_CFLAGS = -Wstrict-prototypes
 AM_CFLAGS += $(WARNING_FLAGS)
 
-# if NDEBUG
-# AM_CPPFLAGS += -DNDEBUG
-# AM_CFLAGS += -fomit-frame-pointer
-# endif
-
-# if WIN32
-# psep=";"
-# else
-# psep=":"
-# endif
-
 ALL_LOCAL =
 BUILT_SOURCES =
 CLEANFILES =
@@ -101,7 +90,22 @@ noinst_HEADERS += $(EXTRA_DIST)
 .asn1.cpp:
 	compiler/esnacc -C -mo `dirname $@` $<
 
+SUFFIXES += .in
+.in:
+	$(AM_V_GEN)$(SED) \
+               -e 's,[@]VERSION[@],$(VERSION),g' \
+               -e 's,[@]localstatedir[@],$(localstatedir),g' \
+               -e 's,[@]pkgdatadir[@],$(pkgdatadir),g' \
+               -e 's,[@]sysconfdir[@],$(sysconfdir),g' \
+               -e 's,[@]bindir[@],$(bindir),g' \
+               -e 's,[@]sbindir[@],$(sbindir),g' \
+               -e 's,[@]abs_builddir[@],$(abs_builddir),g' \
+               -e 's,[@]abs_top_srcdir[@],$(abs_top_srcdir),g' \
+               $< > $@
+
 include c-lib/automake.mk
 include cxx-lib/automake.mk
 include compiler/automake.mk
 include c-examples/automake.mk
+include debian/automake.mk
+include redhat/automake.mk

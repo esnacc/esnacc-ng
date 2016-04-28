@@ -309,7 +309,6 @@ PrintCEncoder PARAMS ((src, hdr, r, m, td),
     EncRulesType* encoding;
     char *pszCode=NULL;
 
-
     ctdi = td->cTypeDefInfo;
     if (!ctdi->genEncodeRoutine)
         return;
@@ -317,91 +316,76 @@ PrintCEncoder PARAMS ((src, hdr, r, m, td),
     /* Generate encoders for each encoding rule required */
     encoding = GetEncRules();
     while (SetEncRules(*encoding)) {
-      encoding++;
+        encoding++;
 
-      /*
-       *  if is type that refs another pdu type or lib type
-       *  without generating a new type via tagging or named elmts
-       *  print define to the hdr file
-       * (a type is a pdu by default if it is ref'd by an ANY)
-       */
-      if (!IsNewType (td->type)  &&
-          (!IsTypeRef (td->type) ||
-           (IsTypeRef (td->type) &&
-            (td->type->basicType->a.localTypeRef->link->cTypeDefInfo->isPdu ||
-             ((td->type->basicType->a.localTypeRef->link->anyRefs != NULL) &&
-              !LIST_EMPTY (td->type->basicType->a.localTypeRef->link->anyRefs))))))
-	{
-	  fprintf(hdr,"#define %s%s\t%s%s\n", GetEncRulePrefix(), td->cTypeDefInfo->encodeRoutineName, GetEncRulePrefix(), td->type->cTypeRefInfo->encodeRoutineName);
-	  //fprintf(hdr,"#define %s%s(b, v, bytesDecoded, env) %s%s(b, v, bytesDecoded, env)\n", GetEncRulePrefix(), td->cTypeDefInfo->encodeRoutineName, GetEncRulePrefix(), td->type->cTypeRefInfo->encodeRoutineName);
-	  return;
-	}
-      
-      /* print proto to hdr file */
-//      fprintf (hdr,"%s %s%s PROTO ((%s b, %s *v));\n\n", lenTypeNameG, GetEncRulePrefix(), ctdi->encodeRoutineName, bufTypeNameG, ctdi->cTypeName);
-      fprintf (hdr,"%s %s%s(%s b,%s *v);\n\n", lenTypeNameG, GetEncRulePrefix(), ctdi->encodeRoutineName, bufTypeNameG, ctdi->cTypeName);
-      
-      /* print routine to src file */
-//      fprintf (src,"%s %s%s PARAMS ((b, v),\n", lenTypeNameG, GetEncRulePrefix(), ctdi->encodeRoutineName);
-//      fprintf (src,"%s b _AND_\n",bufTypeNameG);
-//      fprintf (src,"%s *v)\n",ctdi->cTypeName);
-//      fprintf (src,"{\n");
-//      fprintf (src,"\t%s l=0;\n", lenTypeNameG);
+        /*
+         *  if is type that refs another pdu type or lib type
+         *  without generating a new type via tagging or named elmts
+         *  print define to the hdr file
+         * (a type is a pdu by default if it is ref'd by an ANY)
+         */
+        if (!IsNewType (td->type)  &&
+            (!IsTypeRef (td->type) ||
+             (IsTypeRef (td->type) &&
+              (td->type->basicType->a.localTypeRef->link->cTypeDefInfo->isPdu ||
+               ((td->type->basicType->a.localTypeRef->link->anyRefs != NULL) &&
+                !LIST_EMPTY (td->type->basicType->a.localTypeRef->link->anyRefs))))))
+        {
+            fprintf(hdr,"#define %s%s\t%s%s\n", GetEncRulePrefix(),
+                    td->cTypeDefInfo->encodeRoutineName, GetEncRulePrefix(),
+                    td->type->cTypeRefInfo->encodeRoutineName);
+            return;
+        }
 
+        fprintf(hdr, "%s %s%s(%s b,%s *v);\n\n", lenTypeNameG,
+                GetEncRulePrefix(), ctdi->encodeRoutineName, bufTypeNameG,
+                ctdi->cTypeName);
 
-      //fprintf (src,"%s %s%s", lenTypeNameG, GetEncRulePrefix(), ctdi->encodeRoutineName);
-	  // Deepak: 16/Apr/2003
-	  fprintf (src,"%s %s%s(", lenTypeNameG, GetEncRulePrefix(), ctdi->encodeRoutineName);
-      fprintf (src,"%s b,",bufTypeNameG);
-      fprintf (src,"%s *v)\n",ctdi->cTypeName);
-      fprintf (src,"{\n");
-      fprintf (src,"\t%s l=0;\n", lenTypeNameG);
-      
-      PrintEocEncoders (src, td, td->type);
-      
-      fprintf (src,"\tl = %s%sContent (b,v);\n", GetEncRulePrefix(), 
-	       ctdi->encodeRoutineName);
-      
-      /* encode each tag/len pair if any */
-      tags = GetTags (td->type, &stoleChoiceTags);
-      if (! stoleChoiceTags) {
-	  FOR_EACH_LIST_ELMT_RVS (tag, tags) {
-	    classStr = Class2ClassStr (tag->tclass);
-	    
-	    if (tag->form == ANY_FORM)
-	      tag->form = PRIM;
-	    formStr = Form2FormStr (tag->form);
-	    tagLen = TagByteLen (tag->code);
-	    
-	    
-	    if (tag->form == CONS)
-	      fprintf (src,"\tl += %sEncConsLen(b,l);\n", 
-		       GetEncRulePrefix());
-	    else
-	      fprintf (src,"\tl += %sEncDefLen(b,l);\n",
-		       GetEncRulePrefix());
-	    
-	    if (tag->tclass == UNIV)
-             pszCode = DetermineCode(tag, &tagLen, 0);
-	    else
-             pszCode = DetermineCode(tag, &tagLen, 1);
+        fprintf(src, "%s %s%s(", lenTypeNameG, GetEncRulePrefix(),
+                ctdi->encodeRoutineName);
+        fprintf(src, "%s b,",bufTypeNameG);
+        fprintf(src, "%s *v)\n",ctdi->cTypeName);
+        fprintf(src, "{\n");
+        fprintf(src, "    %s l=0;\n", lenTypeNameG);
 
-        fprintf (src,"\tl += %sEncTag%d(b,%s,%s,%s);\n", 
-			 GetEncRulePrefix(), tagLen, classStr, formStr, pszCode);
-			 /*RWC;Code2UnivCodeStr (tag->code));
-	    else
-	      fprintf (src,"\tl += %sEncTag%d(b,%s,%s,%d);\n", 
-		       GetEncRulePrefix(), tagLen, classStr, formStr, 
-		       tag->code);*/
-	  }
-      }
-      fprintf (src,"\treturn l;\n");
-      fprintf (src,"} /* %s%s */\n\n", GetEncRulePrefix(), ctdi->encodeRoutineName);
-    
-      FreeTags (tags);
-    } 
-    m = m ;
-    r = r;    /* AVOIDS warning. */
+        PrintEocEncoders (src, td, td->type);
+
+        fprintf (src, "    l = %s%sContent (b,v);\n", GetEncRulePrefix(), 
+                 ctdi->encodeRoutineName);
+
+        /* encode each tag/len pair if any */
+        tags = GetTags (td->type, &stoleChoiceTags);
+        if (! stoleChoiceTags) {
+            FOR_EACH_LIST_ELMT_RVS (tag, tags) {
+                classStr = Class2ClassStr (tag->tclass);
+	    
+                if (tag->form == ANY_FORM)
+                    tag->form = PRIM;
+                formStr = Form2FormStr (tag->form);
+                tagLen = TagByteLen (tag->code);
+
+                if (tag->form == CONS)
+                    fprintf (src, "    l += %sEncConsLen(b,l);\n", 
+                             GetEncRulePrefix());
+                else
+                    fprintf (src, "    l += %sEncDefLen(b,l);\n",
+                             GetEncRulePrefix());
+	    
+                if (tag->tclass == UNIV)
+                    pszCode = DetermineCode(tag, &tagLen, 0);
+                else
+                    pszCode = DetermineCode(tag, &tagLen, 1);
+
+                fprintf (src, "    l += %sEncTag%d(b,%s,%s,%s);\n", 
+                         GetEncRulePrefix(), tagLen, classStr, formStr,
+                         pszCode);
+            }
+        }
+        fprintf (src, "    return l;\n");
+        fprintf (src, "}\n\n", GetEncRulePrefix(), ctdi->encodeRoutineName);
+
+        FreeTags (tags);
+    }
 }  /*  PrintCEncoder */
 
 void
@@ -1275,19 +1259,6 @@ PrintCTagAndLenList PARAMS ((src, t, tagList),
             PrintCLenEncodingCode (src, FALSE, isShort);
         }
 
-/*       GetTags sets the form bit correctly now
-        if (IsPrimitiveByDefOrRef (t) && (tg == last))
-        {
-            formStr = Form2FormStr (PRIM);
-            PrintCLenEncodingCode (src, FALSE, isShort);
-        }
-        else
-        {
-            formStr = Form2FormStr (CONS);
-            PrintCLenEncodingCode (src, TRUE, isShort);
-        }
-  */
-
         fprintf (src,"\n");
 
         if (tg->code < 31)
@@ -1301,10 +1272,9 @@ PrintCTagAndLenList PARAMS ((src, t, tagList),
         else
             tagLen = 5;
 
-        fprintf (src,"\t%s += %sEncTag%d(%s,%s,%s,%s);\n", itemLenNameG, 
-		 GetEncRulePrefix(), tagLen, bufNameG, classStr, formStr, 
-         DetermineCode(tg, &tagLen, 0));
-		 //RWC;Code2UnivCodeStr (tg->code));
+        fprintf (src,"    %s += %sEncTag%d(%s,%s,%s,%s);\n", itemLenNameG, 
+                 GetEncRulePrefix(), tagLen, bufNameG, classStr, formStr, 
+                 DetermineCode(tg, &tagLen, 0));
     }
 
 }  /* PrintCTagAndLenList */

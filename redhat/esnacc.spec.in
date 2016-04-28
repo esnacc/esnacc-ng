@@ -1,0 +1,88 @@
+# Spec file for Enhanced Sample Neufeld ASN.1 C Compiler
+
+# Copyright (C) 2016 Aaron Conole
+#
+# Copying and distribution of this file, with or without modification,
+# are permitted in any medium without royalty provided the copyright
+# notice and this notice are preserved.  This file is offered as-is,
+# without warranty of any kind.
+#
+# If tests have to be skipped while building, specify the '--without check'
+# option. For example:
+# rpmbuild -bb --without check redhat/esnacc.spec
+
+%bcond_without check
+
+# some distros (e.g: RHEL-7) don't define _rundir macro yet
+# Fedora 15 onwards uses /run as _rundir
+%if 0%{!?_rundir:1}
+%define _rundir /run
+%endif
+
+Name: esnacc
+Summary: Enhanced Sample Neufeld ASN.1 C Compiler
+Group: System Environment/Libraries
+URL: http://esnacc.org/
+Version: @VERSION@
+Release: 0
+License: Public Domain
+Source: http://esnacc.org/files/esnacc-%version.tar.gz
+BuildRequires: flex bison gcc-c++ libtool-ltdl libtool-ltdl-devel
+BuildRequires: autoconf automake libxslt
+Requires: libesnacc = %version-%release
+
+%description
+The Enhanced Sample Neufeld ASN.1 C Compiler software is used to compile
+Abstract Syntax Notation version one (ASN.1) syntax into various source
+languages. This package provides the actual esnacc compiler which generates
+the various language sources.
+
+%package -n libesnacc
+Summary: Enhanced Sample Neufeld ASN.1 C Compiler libraries
+Group: Development/Languages
+License: GPLv2
+
+%description -n libesnacc
+The Enhanced Sample Neufeld ASN.1 C Compiler software is used to compile
+Abstract Syntax Notation version one (ASN.1) syntax into various source
+languages. This package provides the shared libraries used by applications
+which use the esnacc framework.
+
+%package devel
+Summary: Header files for %name
+Group: Development/Languages
+Requires: %name = %version-%release libesnacc = %version-%release
+
+%description devel
+Header files and static libraries for developing with %name
+
+%prep
+%setup -q
+
+%build
+%configure --enable-static
+make %{?_smp_mflags} CFLAGS='-Wall -O2 -DYYTEXT_POINTER -fPIC'
+
+%install
+make DESTDIR=%{buildroot} install
+
+%clean
+
+%files
+%_bindir/esnacc
+%_datadir/man/man1/esnacc.1.gz
+
+%files -n libesnacc
+%_libdir/lib*.so
+%_libdir/lib*.so.*
+
+%files devel
+%_includedir/c-lib/inc
+%_includedir/cxx-lib/inc
+%_includedir/snacc.h
+%_libdir/lib*.a
+%_libdir/lib*.la
+
+%changelog
+* Tue Apr 26 2016 Aaron Conole <aconole@bytheb.org> - 1.80
+- First build of esnacc RPM

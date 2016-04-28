@@ -1,0 +1,201 @@
+esnacc (1.80-0) unstable; urgency=medium
+
+  * Update to esnacc
+
+ -- Aaron Conole <aconole@bytheb.org>  Mon, 25 Apr 2016 21:23:02 +0200
+
+snacc (1.3.1-5) unstable; urgency=medium
+
+  * Fix FTBFS by using -O0 in build (Closes: #746913)
+
+ -- Balint Reczey <balint@balintreczey.hu>  Mon, 26 May 2014 21:23:02 +0200
+
+snacc (1.3.1-4) unstable; urgency=low
+
+  * debian/control
+    - bump standards version to 3.9.4, no change was needed
+    - remove DM-Upload-Allowed field
+  * override package-name-doesnt-match-sonames Lintian warning
+  * pick 01_Fix-options-parsing-in-snacc.patch and
+    02_Fix-printing-version-information-in-berdecode.patch from upstream
+    to fix crashes reported by The Mayhem Team
+
+ -- Balint Reczey <balint@balintreczey.hu>  Sun, 30 Jun 2013 22:47:59 +0200
+
+snacc (1.3.1-2) unstable; urgency=low
+
+  [ Bart Martens ]
+  * add watch file
+
+  [ Balint Reczey ]
+  * multiarch support
+
+ -- Balint Reczey <balint@balintreczey.hu>  Mon, 07 Jan 2013 18:49:00 +0100
+
+snacc (1.3.1-1) unstable; urgency=low
+
+  * Adopting the package (Closes: #572884)
+  * New upstream release 1.3.1 from new upstream
+    - fix autoreconf warnings (Closes: #506439)
+    - fix FTBS with -Werror=format-security (Closes: #654403)
+    - use std::endl in asn-len.h (Closes: #547784)
+  * Depend on dh-autoreconf instead of automake1.7 and autoconf
+    (Closes:#648590, #628346)
+  * Don't ship .la files in libsnacc-dev
+  * Depend on debhelper >= 9
+  * Use dh_clean for make clean
+  * Drop simple patch system
+
+ -- Balint Reczey <balint@balintreczey.hu>  Sun, 11 Mar 2012 20:40:57 +0100
+
+snacc (1.3bbn-10) unstable; urgency=low
+
+  * Endorse NMUs (closes: #374045, #377083, #394709, #418476, #424249, #442873).
+  * New (= old) maintainer, because team does not exist.
+  * Fixed some lintians.
+  * Removed TeX source files from snacc-doc binary package.
+
+ -- W. Martin Borgert <debacle@debian.org>  Tue, 22 Jul 2008 18:08:21 +0000
+
+snacc (1.3bbn-9.3) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * debian/rules
+    - updated clean target (Closes: #424249)
+    - added removal for usr/share/doc/snacc-doc in snacc (Closes: #418476)
+  * debian/control
+    - bump Suggest to automake1.7 (to follow what's in build-dep) (Closes:
+      #394709)
+    - updated libsnacc-dev to use ${binary:Version} for depends over libsnacc0c2
+  * debian/patches/bts-442873.patch
+    - added (Closes: #442873)
+  * debian/snacc-doc.doc-base
+    - fixed Section to Programming
+  * debian/copyright
+    - updated FSF address
+
+ -- Sandro Tosi <matrixhasu@gmail.com>  Wed, 16 Apr 2008 01:42:50 +0200
+
+snacc (1.3bbn-9.2) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * debian/rules: Fix kshism.  Closes: #377083.
+
+ -- Matej Vela <vela@debian.org>  Wed,  9 Aug 2006 14:52:26 +0200
+
+snacc (1.3bbn-9.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * debian/rules:
+    - Use automake-1.7 even if /usr/bin/automake points to a different
+      version.  Closes: #374045.
+    - cdbs seems to have changed the default patch level for new files;
+      adjust $(DEB_INSTALL_EXAMPLES_libsnacc-dev).
+  * Change libsnacc-dev section to libdevel in accordance with the
+    override file.
+
+ -- Matej Vela <vela@debian.org>  Wed,  5 Jul 2006 09:30:10 +0200
+
+snacc (1.3bbn-9) unstable; urgency=low
+
+  * Now build-depends on libtool (closes: #321199).
+
+ -- W. Borgert <debacle@debian.org>  Thu, 04 Aug 2005 18:40:05 +0000
+
+snacc (1.3bbn-8) unstable; urgency=low
+
+  * New maintainer:
+    Debian FDT tool team <pkg-fdt-tools-team@lists.alioth.debian.org>,
+    mainly Martin v. Löwis <martin@v.loewis.de>.
+    (Closes: #204807).
+    FDT = Formal Description Technique (e.g. ASN.1, MSC, SDL, TTCN-3)
+  * Port to standard C++ library (Martin).
+  * Rebuild for new C++ ABI (Martin).
+  * Replace EOC with EOC_TAG_ID (Martin) (Closes: #307760).
+  * Build uses CDBS, divided earlier changes in clean patches (me).
+  * Removed -dbg package temporarily (me).
+  * Fixes FTBFS on amd64 (Closes: #277690), thanks to Kurt Roeckx
+    <Q@ping.be> for reporting and Larry Doolittle
+    <ldoolitt@recycle.lbl.gov> for the patch.
+
+ -- W. Borgert <debacle@debian.org>  Sat, 30 Jul 2005 17:32:55 +0000
+
+snacc (1.3bbn-7) unstable; urgency=low
+
+  * QA upload.
+  * Manpages relicensed from GFDL to GNU GPL (closes: #292242)
+  * debian/rules: remove generated manpages on clean
+
+ -- Frederic Peters <fpeters@debian.org>  Wed, 26 Jan 2005 10:55:09 +0100
+
+snacc (1.3bbn-6) unstable; urgency=low
+
+  * QA upload.
+  * bootstrap:
+    + Fixed the autotools calling order.
+    + Re-ran the bootstrap script.
+  * debian/control:
+    + Do not build-depend on the autotools.
+    + Set policy to 3.6.1.1.
+    + Recommend gv | postscript-viewer instead of postscript-viewer only.
+  * debian/rules:
+    + Fix timestamps at configure time (Closes: #249740).
+    + Run make distclean, not merely make clean.
+    + Remove configure.in at clean time.
+    + Fixed {} wildcard bashisms.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Tue, 10 Aug 2004 18:01:47 +0200
+
+snacc (1.3bbn-5.1) unstable; urgency=low
+
+  * g++-3.3: strstream.h is now strstream (closes: #197705).
+  * Orphaned the package.  Good-bye, snacc.
+  * Updated some ./debian/ files.
+
+ -- W. Borgert <debacle@debian.org>  Sun, 10 Aug 2003 10:40:47 +0200
+
+snacc (1.3bbn-5) unstable; urgency=low
+
+  * Fixed an incompatibility with new bison, thanks to Junichi Uekawa
+    (closes: #167051).
+  * Changed Debian specific manual pages from DocBook/SGML to DocBook/XML.
+  * Changed bootstrap and configure.in/ac to latest autotools.
+
+ -- W. Borgert <debacle@debian.org>  Tue, 19 Nov 2002 16:04:46 +0000
+
+snacc (1.3bbn-4) unstable; urgency=low
+
+  * Adjusted to new gcc version (closes: #133010).
+
+ -- W. Borgert <debacle@debian.org>  Wed, 13 Feb 2002 20:59:59 +0000
+
+snacc (1.3bbn-3) unstable; urgency=low
+
+  * Dependencies on autotools-dev etc. introduced (closes: #104708, #115058).
+
+ -- W. Borgert <debacle@debian.org>  Wed, 24 Oct 2001 23:24:08 +0000
+
+snacc (1.3bbn-2.1) unstable; urgency=low
+
+  * Update config.sub/guess so that snacc will build on ia64.
+    (closes: Bug#115058)
+
+ -- Doug Porter <dsp@debian.org>  Wed, 17 Oct 2001 12:13:20 -0600
+
+snacc (1.3bbn-2) unstable; urgency=low
+
+  * Builds binary-all package in binary-arch target (closes: #87203).
+  * libstdc++2.10-dev build dependency removed (closes: #92383).
+  * Fixed debian/rules: Overwrote right manual page with wrong one.
+  * Changes in control file, new package libsnacc-dbg etc.
+  * Use current libtool.
+
+ -- W. Borgert <debacle@debian.org>  Sun, 25 Feb 2001 13:42:05 +0000
+
+snacc (1.3bbn-1) unstable; urgency=low
+
+  * Initial Release.
+  * Fixed configure.in and snacc-config.in.
+
+ -- W. Borgert <debacle@debian.org>  Sat, 27 Jan 2001 01:18:46 +0000
+

@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+
+<refentry>
+  <refentryinfo>
+    <address>
+      <email>aconole@bytheb.org</email>
+    </address>
+    <copyright>
+      <year>2016</year>
+      <holder>Aaron Conole</holder>
+    </copyright>
+    <date>2016-04-26</date>
+  </refentryinfo>
+  <refmeta>
+    <refentrytitle>esnacc</refentrytitle>
+    <manvolnum>1</manvolnum>
+    <refmiscinfo class="version">@VERSION@</refmiscinfo>
+    <refmiscinfo class="manual">Development</refmiscinfo>
+    <refmiscinfo class="source">esnacc</refmiscinfo>
+  </refmeta>
+  <refnamediv>
+    <refname>esnacc</refname>
+    <refpurpose>ASN.1 compiler which generates C/C++ code suitable for
+    encoding/decoding BER and PER</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+      <command>esnacc</command>
+      <arg><option>-h</option></arg>
+      <arg><option>-P</option></arg>
+      <arg><option>-t</option></arg>
+      <arg><option>-v</option></arg>
+      <arg><option>-e</option></arg>
+      <arg><option>-d</option></arg>
+      <arg><option>-p</option></arg>
+      <arg><option>-f</option></arg>
+      <arg><option>-y</option></arg>
+      <arg><option>-M</option></arg>
+      <arg><option>-B</option></arg>
+      <arg><option>-c</option></arg>
+      <arg><option>-C</option></arg>
+      <arg><option>-T <replaceable>table file</replaceable></option></arg>
+      <arg><option>-idl</option></arg>
+      <arg><option>-I <replaceable>include directory</replaceable></option></arg>
+      <arg><option>-mm</option></arg>
+      <arg><option>-mf</option></arg>
+      <arg><option>-mo</option></arg>
+      <arg><option>-l <replaceable>negative number</replaceable></option></arg>
+      <arg><option>-VDAexport=<replaceable>DEFINE_NAME</replaceable></option></arg>
+      <arg><option>-E <replaceable>BER|DER</replaceable></option></arg>
+      <arg><option>-a <replaceable>start number</replaceable></option></arg>
+      <arg>ASN.1 File List</arg>
+  </refsynopsisdiv>
+  <refsect1>
+    <title>Description</title>
+    <para><command>esnacc</command> is an enhanced version of the Sample
+    Neufeld ASN.1 C Compiler.  It takes ASN.1 formatted sources and produces C
+    or C++ source code for BER encode and decode routines as well as print
+    and free routines for each type in the given ASN.1 modules.  Alternatively,
+    esnacc can produce type tables that can be used for table based/intepreted
+    encoding and decoding.  The type table based methods tend to be slower than
+    their C or C++ counterparts, but they usually use less memory (table size
+    vs. object code)</para>
+    <para>Most of the 1990 ASN.1 features are parsed although some do not affect
+    the generated code.  Fairly rigorous error checking is performed on the
+    ASN.1 source; any errors detected will be reported (printed to stderr).</para>
+    <para>Each file in the ASN.1 file list should contain a complete ASN.1
+    module.  ASN.1 modules that use IMPORTS feature will be compiled together.
+    The generated source files will include each module's header file in command
+    line order.  This means it is important to order the modules from least
+    dependent to most dependent on the command line to avoid type ordering
+    problems.  Currently, esnacc assumes that each ASN.1 file given on the
+    command line depends on all of the others from the command line.  No attempt
+    is made to only include the header files from modules referenced in the
+    import list for that module.</para>
+    <para>If the target language is C, esnacc generates <filename>.c</filename>
+    and <filename>.h</filename> files.  If the target language is C++, esnacc
+    generates <filename>.cpp</filename> and <filename>.h</filename> files.</para>
+  </refsect1>
+  <refsect1>
+    <title>Options</title>
+    <variablelist>
+      <varlistentry>
+        <term><option>-h</option></term>
+        <listitem>
+          <para>Prints a synopsis of <command>esnacc</command> and exits.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+  <refsect1>
+    <title>AUTHOR</title>
+    <para>Enhanced SNACC was originally written by Michael Sample, but has since
+    been modified by numerous contributors.</para>
+  </refsect1>
+</refentry>
+    
+        

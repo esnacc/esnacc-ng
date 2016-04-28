@@ -26,7 +26,6 @@
 P-REC DEFINITIONS ::=
 BEGIN
 
-
 PersonnelRecord ::= --snacc isPdu:"TRUE" -- [APPLICATION 0] IMPLICIT SET
 {
     name             Name,
@@ -53,7 +52,5 @@ Name ::= [APPLICATION 1] IMPLICIT SEQUENCE
 EmployeeNumber ::= [APPLICATION 128] IMPLICIT INTEGER
 
 Date ::= [APPLICATION 3] IMPLICIT IA5String -- YYYYMMDD
-
-
 
 END
