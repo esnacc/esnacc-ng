@@ -1,4 +1,7 @@
 .dirstamp
 .libs
 .deps
+*.log
+*.trs
 simple/genber
+simple/minbuf
