@@ -52,7 +52,7 @@ typedef unsigned char	*(*BufGetSegFcn) PROTO ((void *b, unsigned long *lenPtr));
 typedef long 	(*BufCopyFcn) PROTO ((char *dst, void *b, unsigned long len));
 typedef void		(*BufSkipFcn) PROTO ((void *b, unsigned long len));
 typedef unsigned char	(*BufPeekByteFcn) PROTO ((void *b));
-typedef unsigned char	*(*BufPeekSegFcn) PROTO ((void *b, unsigned long lenPtr));
+typedef unsigned char	*(*BufPeekSegFcn) PROTO ((void *b, unsigned long *lenPtr));
 typedef long 	(*BufPeekCopyFcn) PROTO ((char *dst, void *b, unsigned long len));
 typedef void		(*BufPutByteRvsFcn) PROTO ((void *b, unsigned char byte));
 typedef void		(*BufPutSegRvsFcn) PROTO ((void *b, char *data, unsigned long len));
@@ -82,20 +82,104 @@ typedef struct GenBuf
 } GenBuf;
 
 
-#define GenBufCopyAny( b, value, bytesdecode, env)		((b)->copyAny ((b)->bufInfo, value, bytesDecoded, env))
-#define GenBufGetByte( b)		((b)->getByte (b->bufInfo))
-#define GenBufGetSeg( b, lenPtr)	((b)->getSeg (b->bufInfo, lenPtr))
-#define GenBufCopy( dst, b, len)	((b)->copy (dst, b->bufInfo, len))
-#define GenBufSkip( b, len)		((b)->skip (b->bufInfo,len))
-#define GenBufPeekByte( b)		((b)->peekByte (b->bufInfo))
-#define GenBufPeekSeg( b, lenPtr)	((b)->peekSeg (b->bufInfo, lenPtr))
-#define GenBufPeekCopy( dst, b, len)	((b)->peekCopy (dst, b->bufInfo, len))
-#define GenBufPutByteRvs( b, byte)	((b)->putByteRvs (b->bufInfo, byte))
-#define GenBufPutSegRvs( b, data, len)	((b)->putSegRvs (b->bufInfo, data, len))
-#define GenBufReadError( b)		((b)->readError (b->bufInfo))
-#define GenBufWriteError( b)		((b)->writeError (b->bufInfo))
-#define GenBufSetWriteError( b, value)  ((b)->setWriteError (b , value))
-#define GenBufResetInReadMode( b)		((b)->resetInReadMode (b->bufInfo))
+static inline
+int
+GenBufCopyAny(GenBuf *b, void *value, unsigned long *bytesDecoded,
+              ENV_TYPE env)
+{
+    return b->copyAny(b->bufInfo, value, bytesDecoded, env);
+}
+
+static inline
+unsigned char
+GenBufGetByte(GenBuf *b)
+{
+    return b->getByte(b->bufInfo);
+}
+
+static inline
+unsigned char *
+GenBufGetSeg(GenBuf *b, unsigned long *lenPtr)
+{
+    return b->getSeg(b->bufInfo, lenPtr);
+}
+
+static inline
+long
+GenBufCopy(char *dst, GenBuf *b, unsigned long len)
+{
+    return b->copy(dst, b->bufInfo, len);
+}
+
+static inline
+void
+GenBufSkip(GenBuf *b, unsigned long len)
+{
+    b->skip(b->bufInfo, len);
+}
+
+static inline
+unsigned char
+GenBufPeekByte(GenBuf *b)
+{
+    return b->peekByte(b->bufInfo);
+}
+
+static inline
+unsigned char *
+GenBufPeekSeg(GenBuf *b, unsigned long *lenPtr)
+{
+    return b->peekSeg(b->bufInfo, lenPtr);
+}
+
+static inline
+long
+GenBufPeekCopy(char *dst, GenBuf *b, unsigned long len)
+{
+    return b->peekCopy(dst, b->bufInfo, len);
+}
+
+static inline
+void
+GenBufPutByteRvs(GenBuf *b, unsigned char byte)
+{
+    b->putByteRvs(b->bufInfo, byte);
+}
+
+static inline
+void
+GenBufPutSegRvs(GenBuf *b, char *data, unsigned long len)
+{
+    b->putSegRvs(b->bufInfo, data, len);
+}
+
+static inline
+int
+GenBufReadError(GenBuf *b)
+{
+    return b->readError(b->bufInfo);
+}
+
+static inline
+int
+GenBufWriteError(GenBuf *b)
+{
+    return b->writeError(b->bufInfo);
+}
+
+static inline
+int
+GenBufSetWriteError(GenBuf *b, unsigned short value)
+{
+    return b->setWriteError(b, value);
+}
+
+static inline
+void
+GenBufResetInReadMode(GenBuf *b)
+{
+    b->resetInReadMode(b->bufInfo);
+}
 
 #define GenBufFree(b) free(b)
 
