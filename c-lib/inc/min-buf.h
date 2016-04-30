@@ -52,8 +52,10 @@
  *
  */
 
-#ifndef _min_buf_h_
-#define _min_buf_h_
+#ifndef MIN_BUF_H_
+#define MIN_BUF_H_
+
+struct GenBuf;
 
 #define MinBufGetByte(b)\
     (unsigned char)(*((*(b))++))
@@ -81,6 +83,8 @@
 
 #define MinBufReadError( b)	0  /* always false */
 #define MinBufWriteError( b)	0  /* always false */
+
+void GenBufFromMinBuf PROTO ((struct GenBuf *, void *));
 
 #endif /* conditional include */
 
