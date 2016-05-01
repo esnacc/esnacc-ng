@@ -17,7 +17,7 @@
 
 ACLOCAL_AMFLAGS = -I m4
 
-AM_CFLAGS = -Wstrict-prototypes
+AM_CFLAGS = -Wstrict-prototypes -Wall
 AM_CFLAGS += $(WARNING_FLAGS)
 
 ALL_LOCAL =
