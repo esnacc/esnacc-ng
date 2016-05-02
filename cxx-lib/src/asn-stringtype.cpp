@@ -926,84 +926,65 @@ const char* WideAsnString::checkStringTypPermittedAlpha(const char* permittedAlp
 
 int WideAsnString::checkConstraints (ConstraintFailList* pConstraintFails)const
 {
-	int count = 0;
-	int sizefailed = 1;
+    int count = 0;
+    int sizefailed = 1;
     int alphafailed = 1;
-	std::string  ptr;
-	const char* tmpptr=NULL;
+    std::string  ptr;
+    const char* tmpptr=NULL;
     int numSizeConstraints;
     const SizeConstraint* sizeConstraints = SizeConstraints(numSizeConstraints);
     int sizePermittedAlpha;
     const char* permittedAlphabet = PermittedAlphabet(sizePermittedAlpha);
 
-	if(sizeConstraints)
-	{
-		for(count = 0; count < numSizeConstraints; count++)
-        {   
+    if (sizeConstraints) {
+        for (count = 0; count < numSizeConstraints; count++) {
             tmpptr = NULL;
-			if(sizeConstraints[count].upperBoundExists == 1)
-			{
-                if( (sizeConstraints[count].lowerBound > (strlen(getAsUTF8())) ) ||
-                    (sizeConstraints[count].upperBound < (strlen(getAsUTF8())) ) )
-                {
-                    tmpptr = ConstraintErrorStringList[ WIDE_STRING_SIZE_VALUE_RANGE ];
+            if (sizeConstraints[count].upperBoundExists == 1) {
+                if ((sizeConstraints[count].lowerBound > strlen(getAsUTF8())) ||
+                    (sizeConstraints[count].upperBound < strlen(getAsUTF8()))) {
+                    tmpptr = ConstraintErrorStringList[WIDE_STRING_SIZE_VALUE_RANGE];
                 }
-			}
-			else
-			{
+            } else {
                 char *utf8str = getAsUTF8();
-                if(sizeConstraints[count].lowerBound != (strlen(utf8str)))
-                {
-                    tmpptr = ConstraintErrorStringList[ WIDE_STRING_SIZE_SINGLE_VALUE ];
+                if (sizeConstraints[count].lowerBound != strlen(utf8str)) {
+                    tmpptr =
+                        ConstraintErrorStringList[WIDE_STRING_SIZE_SINGLE_VALUE];
                 }
-                free( utf8str );
-			}
+                free(utf8str);
+            }
 
-			if(tmpptr)
-			{
-				ptr += tmpptr;
-			}
-			else
-			{
-				sizefailed = 0;
-			}
-		}
-	}
-	else
-	{
-		sizefailed = 0;
-	}
+            if (tmpptr) {
+                ptr += tmpptr;
+            } else {
+                sizefailed = 0;
+            }
+        }
+    } else {
+        sizefailed = 0;
+    }
 
-	if(sizePermittedAlpha > 0)
-	{
+    if (sizePermittedAlpha > 0) {
         tmpptr = NULL;
-		tmpptr =  checkStringTypPermittedAlpha( permittedAlphabet, sizePermittedAlpha );
-	
-		if(tmpptr)
-		{
+        tmpptr = checkStringTypPermittedAlpha(permittedAlphabet,
+                                              sizePermittedAlpha);
+
+        if (tmpptr) {
             ptr += tmpptr;
-		}
-		else
-		{
-			alphafailed = 0;
-		}
-	
-	}
-	else
-	{
-		alphafailed = 0;
-	}
+        } else {
+            alphafailed = 0;
+        }
 
-	
-	if(sizefailed || alphafailed)
-	{
-		if(pConstraintFails!=NULL)
-			pConstraintFails->push_back(ptr);
+    } else {
+        alphafailed = 0;
+    }
+
+    if (sizefailed || alphafailed) {
+        if (pConstraintFails!=NULL)
+            pConstraintFails->push_back(ptr);
         return 1;
-	}
+    }
 
-	return 0;
-
+    return 0;
 }
 
 /*
