@@ -937,20 +937,20 @@ int WideAsnString::checkConstraints (ConstraintFailList* pConstraintFails)const
     const char* permittedAlphabet = PermittedAlphabet(sizePermittedAlpha);
 
     if (sizeConstraints) {
+        char *utf8str = getAsUTF8();
         for (count = 0; count < numSizeConstraints; count++) {
             tmpptr = NULL;
             if (sizeConstraints[count].upperBoundExists == 1) {
-                if ((sizeConstraints[count].lowerBound > strlen(getAsUTF8())) ||
-                    (sizeConstraints[count].upperBound < strlen(getAsUTF8()))) {
-                    tmpptr = ConstraintErrorStringList[WIDE_STRING_SIZE_VALUE_RANGE];
+                if ((sizeConstraints[count].lowerBound > strlen(utf8str)) ||
+                    (sizeConstraints[count].upperBound < strlen(utf8str))) {
+                    tmpptr =
+                        ConstraintErrorStringList[WIDE_STRING_SIZE_VALUE_RANGE];
                 }
             } else {
-                char *utf8str = getAsUTF8();
                 if (sizeConstraints[count].lowerBound != strlen(utf8str)) {
                     tmpptr =
                         ConstraintErrorStringList[WIDE_STRING_SIZE_SINGLE_VALUE];
                 }
-                free(utf8str);
             }
 
             if (tmpptr) {
@@ -959,6 +959,7 @@ int WideAsnString::checkConstraints (ConstraintFailList* pConstraintFails)const
                 sizefailed = 0;
             }
         }
+        free(utf8str);
     } else {
         sizefailed = 0;
     }
