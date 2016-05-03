@@ -382,7 +382,7 @@ PrintCEncoder PARAMS ((src, hdr, r, m, td),
             }
         }
         fprintf (src, "    return l;\n");
-        fprintf (src, "}\n\n", GetEncRulePrefix(), ctdi->encodeRoutineName);
+        fprintf (src, "} /* %s%s */\n\n", GetEncRulePrefix(), ctdi->encodeRoutineName);
 
         FreeTags (tags);
     }
