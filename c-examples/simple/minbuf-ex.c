@@ -31,6 +31,7 @@
  *
  */
 
+#include "snacc.h"
 #include "asn-incl.h"
 
 #include <sys/file.h>
@@ -48,8 +49,7 @@ main PARAMS ((argc, argv),
     char *argv[])
 {
     int fd;
-    char  *buf;
-    char *encBuf;
+    GenBuf buf, encBuf;
     char *encData;
     int encBufSize;
     AsnLen encodedLen;
@@ -62,41 +62,37 @@ main PARAMS ((argc, argv),
     jmp_buf env;
     int  decodeErr;
     AsnTag tag;
+    char *filename;
 
-
-    if (argc != 2)
-    {
-        fprintf (stderr, "Usage: %s <BER data file name>\n", argv[0]);
-        fprintf (stderr, "   Decodes the given PersonnelRecord BER data file\n");
-        fprintf (stderr, "   and re-encodes it to stdout\n");
-        exit (1);
+    if (argc != 2) {
+        filename = "pr.ber";
+    } else {
+        filename = argv[1];
     }
 
-    fd = open (argv[1], O_RDONLY, 0);
-    if (fd < 0)
-    {
-        perror ("main: fopen");
-        exit (1);
+    fd = open(filename, O_RDONLY, 0);
+    if (fd < 0) {
+        fprintf(stderr, "Usage: %s <BER data file name>\n", argv[0]);
+        fprintf(stderr, "   Decodes the given PersonnelRecord BER data "
+                "file\n");
+        fprintf(stderr, "   and re-encodes it to stdout\n");
+        perror("main: fopen");
+        exit(1);
     }
 
-    if (fstat (fd, &sbuf) < 0)
-    {
+    if (fstat (fd, &sbuf) < 0) {
         perror ("main: fstat");
         exit (1);
     }
 
     size = sbuf.st_size;
-    origData = (char*)malloc (size);
-    if (read (fd, origData, size) != size)
-    {
-        perror ("main: read");
-        exit (1);
+    origData = (char*)malloc(size);
+    if (read(fd, origData, size) != size) {
+        perror("main: read");
+        exit(1);
     }
 
-    close (fd);
-
-    /* set up min buf  */
-    buf = origData;
+    close(fd);
 
     /*
      * the first argument (512) is the number of bytes to
@@ -104,27 +100,26 @@ main PARAMS ((argc, argv),
      * The second argument (512) is the size in bytes to
      * enlarge the nibble memory by when it fills up
      */
-    InitNibbleMem (512, 512);
+    InitNibbleMem(512, 512);
 
+    /* set up min buf  */
+    GenBufFromMinBuf(&buf, origData);
 
     decodedLen = 0;
     decodeErr = FALSE;
-    if ((val = setjmp (env)) == 0)
-    {
-        BDecPersonnelRecord (&buf, &pr, &decodedLen, env);
-    }
-    else
-    {
+    if ((val = setjmp(env)) == 0) {
+        BDecPersonnelRecord(&buf, &pr, &decodedLen, env);
+    } else {
         decodeErr = TRUE;
-        fprintf (stderr, "ERROR - Decode routines returned %d\n",val);
+        fprintf(stderr, "ERROR - Decode routines returned %d\n", val);
     }
 
     if (decodeErr)
-        exit (1);
+        exit(1);
 
-    fprintf (stderr, "decodedValue PersonnelRecord ::= ");
-    PrintPersonnelRecord (stderr, &pr, 0);
-    fprintf (stderr, "\n\n");
+    fprintf(stderr, "decodedValue PersonnelRecord ::= ");
+    PrintPersonnelRecord(stderr, &pr, 0);
+    fprintf(stderr, "\n\n");
 
     /*
      * setup a new buffer set up for writing.
@@ -133,25 +128,14 @@ main PARAMS ((argc, argv),
      * with indef lengths - so add 512 slush bytes)
      */
     encBufSize = size + 512;
-    encData = (char*) malloc (encBufSize);
+    encData = (char*) malloc(encBufSize);
 
     /*
      * set 'buffer' up for writing by setting ptr
      * byte after last byte of the block
      */
-    encBuf = encData + encBufSize;
-    encodedLen =  BEncPersonnelRecord (&encBuf, &pr);
-
-    /*
-     *  this will never report a write error
-     *  since no error checking done by MinBuf code
-     *  and alawys return false for when read or write errors.
-     */
-    if (MinBufWriteError (&encBuf))
-    {
-        fprintf (stderr, "ERROR - buffer to hold the encoded value was too small\n");
-        exit (1);
-    }
+    GenBufFromMinBuf(&encBuf, encData + encBufSize);
+    encodedLen = BEncPersonnelRecord(&encBuf, &pr);
 
     /*
      * free all of the decoded value since
@@ -161,11 +145,7 @@ main PARAMS ((argc, argv),
      */
     ResetNibbleMem();
 
-    /*
-     * write encoded value from encBuf
-     * to stdout
-     */
-    fwrite (encBuf, encData + encBufSize - encBuf, 1, stdout);
-
+    free(encData);
+    free(origData);
     return 0;
 }

@@ -4,6 +4,7 @@ c_lib_libcasn1_la_SOURCES = \
 	c-lib/src/asn1init.c \
 	c-lib/src/asn-octs.c \
 	c-lib/src/mem.c \
+	c-lib/src/min-buf.c \
 	c-lib/src/asn-any.c \
 	c-lib/src/asn-oid.c \
 	c-lib/src/nibble-alloc.c \

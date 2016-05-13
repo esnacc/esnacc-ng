@@ -4,6 +4,9 @@
 * Restarting full eSnacc support with eSnacc NG
 * Converted to modern automake
 * All c++ libraries have been renamed to cxx
+* Fixed minbuf to follow the GenBuf abstraction
+* Fixed GenBuf prototype
+* Moved GenBuf macros to static inline functions
 
 =======================================================================
 
