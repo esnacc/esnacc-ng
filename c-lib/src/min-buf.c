@@ -23,7 +23,7 @@ MinBufGetByte__(void *b)
 static long
 MinBufCopy__(char *dst, void *b, unsigned long len)
 {
-    char *src = MinBufGetSeg__(b, &len);
+    char *src = (char *)MinBufGetSeg__(b, &len);
     memcpy(dst, src, len);
     return len;
 }
