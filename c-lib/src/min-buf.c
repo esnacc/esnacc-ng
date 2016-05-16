@@ -35,7 +35,7 @@ MinBufSkip__(void *b, unsigned long len)
 }
 
 static unsigned char *
-MinBufPeekSeg__(void *b, unsigned long *len)
+MinBufPeekSeg__(void *b, unsigned long *len ESNACC_UNUSED)
 {
     return (unsigned char *)(*(unsigned char **)b);
 }

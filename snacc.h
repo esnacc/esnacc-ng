@@ -182,4 +182,10 @@ enum { false, true };
 #define if_TCL( code)
 #endif
 
+#if __GNUC__
+#define ESNACC_UNUSED __attribute__((__unused__))
+#else
+#define ESNACC_UNUSED
+#endif
+
 #endif /* _SNACC_H_ */
