@@ -66,23 +66,23 @@ MinBufPutSegRvs__(void *b, char *src, unsigned long len)
 static void
 MinBufPutByteRvs__(void *b, unsigned char byte)
 {
-    MinBufPutSegRvs__(b, &byte, 1);
+    MinBufPutSegRvs__(b, (char *)&byte, 1);
 }
 
 static int
-MinBufIgnore__(void *b)
+MinBufIgnore__(void *b ESNACC_UNUSED)
 {
     return 0;
 }
 
 static int
-MinBufSetWriteError__(void *b, unsigned short i)
+MinBufSetWriteError__(void *b ESNACC_UNUSED, unsigned short i ESNACC_UNUSED)
 {
     return 0;
 }
 
 static void
-MinBufReset__(void *b)
+MinBufReset__(void *b ESNACC_UNUSED)
 {
 }
 
