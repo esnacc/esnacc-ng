@@ -76,7 +76,7 @@ typedef unsigned long AsnLen;
  */
 
 /* max unsigned value  - used for internal rep of indef len */
-#define INDEFINITE_LEN		~0L
+#define INDEFINITE_LEN		~0UL
 
 
 #ifdef USE_INDEF_LEN
