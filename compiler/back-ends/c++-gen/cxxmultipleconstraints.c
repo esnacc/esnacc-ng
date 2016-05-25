@@ -983,7 +983,7 @@ int PrintCxxMultiConstraintOrHandler PARAMS((hdr, src, definedName, e, i),
 	
 			fprintf(hdr, "     public:\n");
 			fprintf(hdr, "		%s (const char *stringForm=NULL):AsnBits(stringForm){ }\n", className);
-			fprintf(hdr, "		%s (size_t numBits):AsnBits(numBits) { }\n", e->type->cxxTypeRefInfo->fieldName);
+			fprintf(hdr, "		%s (size_t numBits):AsnBits(numBits) { }\n", className);
 			fprintf(hdr, "		%s (const unsigned char *bitOcts, size_t numBits):AsnBits(bitOcts, numBits){ }\n", className);
 			fprintf(hdr, "		%s (const %s &_b):AsnBits(_b){ }\n", className, className);
      
