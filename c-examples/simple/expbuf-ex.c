@@ -31,6 +31,7 @@
  *
  */
 
+#include "snacc.h"
 #include "asn-incl.h"
 
 #include <sys/file.h>
@@ -39,19 +40,18 @@
 #include <fcntl.h>
 #endif
 #include <stdio.h>
+#include <unistd.h>
 
 #include "p-rec.h"
 
-
+int
 main PARAMS ((argc, argv),
     int argc _AND_
     char *argv[])
 {
     int fd;
-    ExpBuf *buf;
-    ExpBuf  b;
-    ExpBuf *tmpBuf;
-    AsnLen encodedLen;
+    GenBuf *buf = NULL, *encBuf = NULL;
+    ExpBuf *ebuf, *tmpBuf, b;
     AsnLen decodedLen;
     int     val;
     PersonnelRecord pr;
@@ -60,39 +60,36 @@ main PARAMS ((argc, argv),
     struct stat sbuf;
     jmp_buf env;
     int  decodeErr;
-    AsnTag tag;
+    char *filename;
 
-
-    if (argc != 2)
-    {
-        fprintf (stderr, "Usage: %s <BER data file name>\n", argv[0]);
-        fprintf (stderr, "   Decodes the given PersonnelRecord BER data file\n");
-        fprintf (stderr, "   and re-encodes it to stdout\n");
-        exit (1);
+    if (argc != 2) {
+        filename = "pr.ber";
+    } else {
+        filename = argv[1];
     }
 
-    fd = open (argv[1], O_RDONLY, 0);
-    if (fd < 0)
-    {
-        perror ("main: fopen");
-        exit (1);
+    fd = open(filename, O_RDONLY, 0);
+    if (fd < 0) {
+        fprintf(stderr, "Usage: %s <BER data file name>\n", argv[0]);
+        fprintf(stderr, "   Decodes the given PersonnelRecord BER data "
+                "file\n");
+        fprintf(stderr, "   and re-encodes it to stdout\n");
+        exit(1);
     }
 
-    if (fstat (fd, &sbuf) < 0)
-    {
-        perror ("main: fstat");
-        exit (1);
+    if (fstat(fd, &sbuf) < 0) {
+        perror("main: fstat");
+        exit(1);
     }
 
     size = sbuf.st_size;
-    origData = (char*)malloc (size);
-    if (read (fd, origData, size) != size)
-    {
-        perror ("main: read");
-        exit (1);
+    origData = (char*)malloc(size);
+    if (read(fd, origData, size) != size) {
+        perror("main: read");
+        exit(1);
     }
 
-    close (fd);
+    close(fd);
 
     /*
      * the "1024" is the size in bytes of the data
@@ -102,74 +99,46 @@ main PARAMS ((argc, argv),
     ExpBufInit (1024);
 
     /*
-     * the first argument (512) is the number of bytes to
-     * initially allocate for the decoder to allocate from.
-     * The second argument (512) is the size in bytes to
-     * enlarge the nibble memory by when it fills up
-     */
-    InitNibbleMem (512, 512);
-
-    /*
      * put the BER data read from the file
      * into buffer format, ready for reading from the
      * beginning
      */
-    buf = &b;
-    ExpBufInstallDataInBuf (buf, origData, size);
-
+    ebuf = &b;
+    ExpBufInstallDataInBuf (ebuf, origData, size);
+    ExpBuftoGenBuf(ebuf, &buf);
     decodedLen = 0;
     decodeErr = FALSE;
-    if ((val = setjmp (env)) == 0)
-    {
-        BDecPersonnelRecord (&buf, &pr, &decodedLen, env);
-    }
-    else
-    {
+    if ((val = setjmp (env)) == 0) {
+        BDecPersonnelRecord(buf, &pr, &decodedLen, env);
+    } else {
         decodeErr = TRUE;
-        fprintf (stderr, "ERROR - Decode routines returned %d\n",val);
+        fprintf(stderr, "ERROR - Decode routines returned %d\n",val);
     }
 
     if (decodeErr)
-        exit (1);
+        exit(1);
 
-    fprintf (stderr, "decodedValue PersonnelRecord ::= ");
-    PrintPersonnelRecord (stderr, &pr, 0);
-    fprintf (stderr, "\n\n");
+    fprintf(stderr, "decodedValue PersonnelRecord ::= ");
+    PrintPersonnelRecord(stderr, &pr, 0);
+    fprintf(stderr, "\n\n");
 
     /*
      * allocate a new buffer set up for writing to
      */
-    buf = ExpBufAllocBufAndData();
-
-    encodedLen =  BEncPersonnelRecord (&buf, &pr);
+    tmpBuf = ExpBufAllocBufAndData();
+    ExpBuftoGenBuf(tmpBuf, &encBuf);
+    (void)BEncPersonnelRecord(encBuf, &pr);
 
     /*
      * Alway check for a buffer write error after encoding
      */
-    if (ExpBufWriteError (&buf))
-    {
+    if (ExpBufWriteError (&tmpBuf)) {
         fprintf (stderr, "ERROR - buffer write error during encoding\n");
         exit (1);
     }
 
-
-    /*
-     * free all of the decoded value since
-     * it has been encoded into the buffer.
-     * This is much more efficient than freeing
-     * each compontent of the value individually
-     */
-    ResetNibbleMem();
-
-    /*
-     * go through buffer (s) and write encoded value
-     * to stdout
-     */
-    buf->curr = buf->dataStart;
-    for ( tmpBuf = buf; tmpBuf != NULL; tmpBuf = tmpBuf->next)
-    {
-        fwrite (tmpBuf->dataStart, tmpBuf->dataEnd - tmpBuf->dataStart, 1, stdout);
-    }
-
+    ExpBufFreeBufAndData(tmpBuf);
+    printf("Freed tmpBuf\n");
+    ExpBufFreeData(ebuf->blkStart);
     return 0;
 }
