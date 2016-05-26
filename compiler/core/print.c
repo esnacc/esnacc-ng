@@ -2904,6 +2904,7 @@ _vscprintf (const char * format, va_list pargs)
 }
 #endif
 
+#ifdef WIN32
 static int
 snacc_vsnprintf(char *dest, size_t destsz, const char *format, va_list args)
 {
@@ -2917,10 +2918,11 @@ snacc_vsnprintf(char *dest, size_t destsz, const char *format, va_list args)
 
 int snacc_snprintf(char *dst, size_t destsz, const char *format, ...)
 {
-    va_list args;
     int len;
+    va_list args;
     va_start(args, format);
     len = snacc_vsnprintf(dst, destsz, format, args);
     va_end(args);
     return len;
 }
+#endif

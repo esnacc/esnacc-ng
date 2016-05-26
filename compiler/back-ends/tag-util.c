@@ -497,7 +497,7 @@ Code2UnivCodeStr PARAMS ((code),
              * in local modules w/o having to modify the compiler.
              */
             static char retstring[256];
-            sprintf(retstring, "%d", code); 
+            snacc_snprintf(retstring, 256, "%d", code); 
             return retstring; 
         }
     }

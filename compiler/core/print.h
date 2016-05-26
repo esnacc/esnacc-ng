@@ -135,4 +135,8 @@ void SpecialPrintBasicType PROTO ((FILE *f, TypeDef *head, Type *t, BasicType *b
 
 void SpecialPrintNamedElmts PROTO ((FILE *f, TypeDef *head, Type *t));
 
+#ifdef WIN32
 int snacc_snprintf(char *dst, size_t destsz, const char *format, ...);
+#else
+#define snacc_snprintf snprintf
+#endif
