@@ -90,7 +90,7 @@ static int
 MinBufCopyAny__(void *b,  void *value, unsigned long *bytesDecoded,
                 ENV_TYPE env)
 {
-    AsnLen elmtsLen, totalElmtsLen;
+    AsnLen elmtsLen, totalElmtsLen = 0;
     AsnOcts *data;
     GenBuf gb;
     char *loc = 0;
