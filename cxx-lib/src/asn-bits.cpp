@@ -682,6 +682,7 @@ AsnLen AsnBits::EncodeWithSizeConstraint (AsnBufBits &b)const
 		temp = new unsigned char[(tempLength + 7) / 8];
 		memset(temp, 0, (tempLength + 7) / 8);
 		len += b.PutBits(temp, tempLength);
+        delete [] temp;
 	}
 	else if((unsigned)bitLen > (unsigned)iSCUpperBound)
 	{
