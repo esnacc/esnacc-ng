@@ -45,6 +45,11 @@ AC_CHECK_LIB([m], [pow])
 AC_CHECK_FUNCS([strchr getchar memset memcmp memcpy])
 ESNACC_CHECK_WIN32
 ESNACC_CHECK_WARNINGS
+AX_CODE_COVERAGE
+AS_IF([ test "$enable_code_coverage" = "yes"], [
+    CFLAGS=$CODE_COVERAGE_CFLAGS
+    LDFLAGS=$CODE_COVERAGE_LDFLAGS
+])
 AC_CHECK_XSLTPROC
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
