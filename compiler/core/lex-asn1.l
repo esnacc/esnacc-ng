@@ -416,14 +416,14 @@ WHITESPC	[ \t\n\r]
 
 
 
-<INITIAL>\'[0-1]*\'B {
+<INITIAL>\'[0-1 \t\r\v\f\n]*\'B {
           COUNT_NEWLINES (myLineNoG, yytext);
           yylval.charPtr = (char*)Malloc (yyleng);
           strncpy (yylval.charPtr, yytext+1, yyleng -1);  /* strip "'"s */
           yylval.charPtr[yyleng-2] = '\0';
           return BSTRING_SYM;}
 
-<INITIAL>\'[0-9A-Fa-f]*\'H {
+<INITIAL>\'[0-9A-Fa-f \r\t\v\f\n]*\'H {
           COUNT_NEWLINES (myLineNoG, yytext);
           yylval.charPtr = (char*)Malloc (yyleng);
           strncpy (yylval.charPtr, yytext+1, yyleng -1);   /* strip "'"s */
@@ -437,14 +437,14 @@ WHITESPC	[ \t\n\r]
           yylval.charPtr[yyleng-2] = '\0'; /* 2 quotes == quote in a quote */
           return CSTRING_SYM;}
 
-<INITIAL>[A-Z](-[a-zA-Z0-9]|[a-zA-Z0-9])* {
+<INITIAL>[A-Z][a-zA-Z0-9]*([-][a-zA-Z0-9]+)* {
           yylval.charPtr = (char*)Malloc (yyleng+1);
           strcpy (yylval.charPtr, yytext);
           yylval.charPtr[yyleng] = '\0';
           return UCASEFIRST_IDENT_SYM;}
 
 
-<INITIAL>[a-z](-[a-zA-Z0-9]|[a-zA-Z0-9])* {
+<INITIAL>[a-z][a-zA-Z0-9]*([-][a-zA-Z0-9]+)* {
           yylval.charPtr = (char*)Malloc (yyleng+1);
           strcpy (yylval.charPtr, yytext);
           yylval.charPtr[yyleng] = '\0';

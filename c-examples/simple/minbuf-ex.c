@@ -40,10 +40,12 @@
 #include <fcntl.h>
 #endif
 #include <stdio.h>
+#include <unistd.h>
 
 #include "p-rec.h"
+#include "min-buf.h"
 
-
+int
 main PARAMS ((argc, argv),
     int argc _AND_
     char *argv[])
@@ -52,7 +54,6 @@ main PARAMS ((argc, argv),
     GenBuf buf, encBuf;
     char *encData;
     int encBufSize;
-    AsnLen encodedLen;
     AsnLen decodedLen;
     int     val;
     PersonnelRecord pr;
@@ -61,7 +62,6 @@ main PARAMS ((argc, argv),
     struct stat sbuf;
     jmp_buf env;
     int  decodeErr;
-    AsnTag tag;
     char *filename;
 
     if (argc != 2) {
@@ -76,13 +76,12 @@ main PARAMS ((argc, argv),
         fprintf(stderr, "   Decodes the given PersonnelRecord BER data "
                 "file\n");
         fprintf(stderr, "   and re-encodes it to stdout\n");
-        perror("main: fopen");
         exit(1);
     }
 
-    if (fstat (fd, &sbuf) < 0) {
-        perror ("main: fstat");
-        exit (1);
+    if (fstat(fd, &sbuf) < 0) {
+        perror("main: fstat");
+        exit(1);
     }
 
     size = sbuf.st_size;
@@ -93,14 +92,6 @@ main PARAMS ((argc, argv),
     }
 
     close(fd);
-
-    /*
-     * the first argument (512) is the number of bytes to
-     * initially allocate for the decoder to allocate from.
-     * The second argument (512) is the size in bytes to
-     * enlarge the nibble memory by when it fills up
-     */
-    InitNibbleMem(512, 512);
 
     /* set up min buf  */
     GenBufFromMinBuf(&buf, origData);
@@ -135,15 +126,7 @@ main PARAMS ((argc, argv),
      * byte after last byte of the block
      */
     GenBufFromMinBuf(&encBuf, encData + encBufSize);
-    encodedLen = BEncPersonnelRecord(&encBuf, &pr);
-
-    /*
-     * free all of the decoded value since
-     * it has been encoded into the buffer.
-     * This is much more efficient than freeing
-     * each compontent of the value individually
-     */
-    ResetNibbleMem();
+    (void)BEncPersonnelRecord(&encBuf, &pr);
 
     free(encData);
     free(origData);

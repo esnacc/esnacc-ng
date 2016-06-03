@@ -296,7 +296,6 @@ int main PARAMS ((argc, argv),
 {
     int         semErr;
     SRC_FILE    *srcList = NULL, *tmpLst = NULL;
-    char        *parseFile;
     char        *file1, *file2;
     int         numSrcFiles;
     ModuleList      *allMods = NULL;
@@ -334,6 +333,7 @@ int main PARAMS ((argc, argv),
         return 1;
     }
 
+    errFileG = stderr;
     srcList = NULL;
 
     /*
@@ -712,10 +712,6 @@ error:
     /* Set the encoding rules to BER if not set */
     if (!encRulesSet)
         AddEncRules(BER);
-
-    /* Set the error log file to stderr if not specified */
-    if (errFileG == NULL)
-        errFileG = stderr;
 
     /*
      * STEP 1---parse each ASN.1 src file
