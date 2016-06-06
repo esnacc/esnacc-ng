@@ -53,3 +53,5 @@ ylwrap
 /rpm
 pr.ber
 test-suite.log
+*.info
+*-coverage/
