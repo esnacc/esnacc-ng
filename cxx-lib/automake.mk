@@ -73,3 +73,9 @@ cxx_lib_libcxxasn1_la_LIBADD = \
 
 cxx_lib_libcxxasn1_la_LDFLAGS = \
 	$(cxx_lib_libcxxasn1_la_WIN32_LDFLAGS)
+
+EXTRA_DIST += \
+	cxx-lib/libesnaccxx.pc.in
+
+pkgconfig_DATA += cxx-lib/libesnaccxx.pc
+DISTCLEANFILES += cxx-lib/libesnaccxx.pc

@@ -1,0 +1,14 @@
+# Enhanced SNACC pkg-config source file
+
+PREFIX=@prefix@
+EXEC_PREFIX=@exec_prefix@
+LIBDIR=@libdir@
+INCLUDEDIR=@includedir@
+
+Name: libesnaccxx
+Description: Enhanced SNACC Compiler development support and libs for C++
+Version: @VERSION@
+Requires:
+Conflicts:
+Libs: -L${LIBDIR} -lcxxasn1
+Cflags: -I${INCLUDEDIR}/cxx-lib/inc

@@ -89,3 +89,9 @@ c_lib_libcasn1_la_CFLAGS = \
 	-I$(top_srcdir)/c-lib \
 	-I$(top_srcdir)/c-lib/src \
 	-I$(top_srcdir)/c-lib/inc
+
+EXTRA_DIST += \
+	c-lib/libesnacc.pc.in
+
+pkgconfig_DATA += c-lib/libesnacc.pc
+DISTCLEANFILES += c-lib/libesnacc.pc

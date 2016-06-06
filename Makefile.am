@@ -103,6 +103,10 @@ SUFFIXES += .in
                -e 's,[@]sbindir[@],$(sbindir),g' \
                -e 's,[@]abs_builddir[@],$(abs_builddir),g' \
                -e 's,[@]abs_top_srcdir[@],$(abs_top_srcdir),g' \
+               -e 's,[@]prefix[@],$(prefix),g' \
+               -e 's,[@]exec_prefix[@],$(exec_prefix),g' \
+               -e 's,[@]libdir[@],$(libdir),g' \
+               -e 's,[@]includedir[@],$(includedir),g' \
                $< > $@
 
 include c-lib/automake.mk
