@@ -82,6 +82,8 @@ make DESTDIR=%{buildroot} install
 %_includedir/snacc.h
 %_libdir/lib*.a
 %_libdir/lib*.la
+%{_libdir}/pkgconfig/libesnacc.pc
+%{_libdir}/pkgconfig/libesnaccxx.pc
 
 %changelog
 * Tue Apr 26 2016 Aaron Conole <aconole@bytheb.org> - 1.80
