@@ -1,4 +1,4 @@
-TESTS = c-examples/simple/genber \
+TESTS += c-examples/simple/genber \
 	c-examples/simple/minbuf \
 	c-examples/simple/expbuf \
 	c-examples/simple/sbuf \

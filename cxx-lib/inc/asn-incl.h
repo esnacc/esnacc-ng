@@ -4,8 +4,8 @@
 //  NEW HISTORY started once all SNACC class definitions move to a single file.
 //
 
-#ifndef SNACC_ASN_INCL_H
-#define SNACC_ASN_INCL_H
+#ifndef SNACC_CXX_ASN_INCL_H
+#define SNACC_CXX_ASN_INCL_H
 
 
 #include "asn-config.h"

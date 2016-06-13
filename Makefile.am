@@ -25,6 +25,7 @@ BUILT_SOURCES =
 CLEANFILES =
 CLEAN_LOCAL =
 DISTCLEANFILES =
+TESTS =
 
 docs = \
 	README.md \
@@ -113,5 +114,6 @@ include c-lib/automake.mk
 include cxx-lib/automake.mk
 include compiler/automake.mk
 include c-examples/automake.mk
+include cxx-examples/automake.mk
 include debian/automake.mk
 include redhat/automake.mk
