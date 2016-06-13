@@ -41,6 +41,7 @@
 #include "float.h"
 #endif
 #include "asn-incl.h"
+#include "sbuf.h"
 
 int TestAsnBuffers();
 int TestAsnTag();
