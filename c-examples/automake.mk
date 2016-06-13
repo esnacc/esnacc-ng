@@ -1,11 +1,12 @@
 TESTS = c-examples/simple/genber \
 	c-examples/simple/minbuf \
-	c-examples/simple/expbuf
+	c-examples/simple/expbuf \
+	c-examples/simple/sbuf
 
 check_PROGRAMS += c-examples/simple/genber \
 	c-examples/simple/minbuf \
-	c-examples/simple/expbuf
-#	c-examples/simple/sbuf-ex 
+	c-examples/simple/expbuf \
+	c-examples/simple/sbuf
 
 c_examples_simple_CFLAGS = \
 	-I$(top_srcdir)/asn1specs \
@@ -40,6 +41,16 @@ c_examples_simple_expbuf_CFLAGS = \
 	$(c_examples_simple_CFLAGS)
 
 c_examples_simple_expbuf_LDADD = \
+	c-lib/libcasn1.la
+
+c_examples_simple_sbuf_SOURCES = \
+	asn1specs/p-rec.asn1 \
+	c-examples/simple/sbuf-ex.c
+
+c_examples_simple_sbuf_CFLAGS = \
+	$(c_examples_simple_CFLAGS)
+
+c_examples_simple_sbuf_LDADD = \
 	c-lib/libcasn1.la
 
 CLEANFILES += asn1specs/p-rec.h asn1specs/p-rec.c pr.ber

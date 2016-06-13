@@ -35,22 +35,23 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#if HAVE_FCNTL_H 
 #include <fcntl.h>
-#endif
+#include <unistd.h>
 #include <stdio.h>
-
+#include "sbuf.h"
 #include "p-rec.h"
 
+int
 main PARAMS ((argc, argv),
     int argc _AND_
     char *argv[])
 {
     int fd;
     SBuf  buf;
-    SBuf  encBuf;
+    SBuf  encBuf, *ebuf = &encBuf;
+    GenBuf *gbuf, *gebuf;
+    char *filename;
     char *encData;
-    AsnLen encodedLen;
     AsnLen decodedLen;
     int     val;
     PersonnelRecord pr;
@@ -59,38 +60,34 @@ main PARAMS ((argc, argv),
     struct stat sbuf;
     jmp_buf env;
     int  decodeErr;
-    AsnTag tag;
 
-    if (argc != 2)
-    {
-        fprintf (stderr, "Usage: %s <BER data file name>\n", argv[0]);
-        fprintf (stderr, "   Decodes the given PersonnelRecord BER data file\n");
-        fprintf (stderr, "   and re-encodes it to stdout\n");
-        exit (1);
+    if (argc != 2) {
+        filename = "pr.ber";
+    } else {
+        filename = argv[1];
     }
 
-    fd = open (argv[1], O_RDONLY, 0);
-    if (fd < 0)
-    {
-        perror ("main: fopen");
-        exit (1);
+    fd = open(filename, O_RDONLY, 0);
+    if (fd < 0) {
+        fprintf(stderr, "Usage: %s <BER data file name>\n", argv[0]);
+        fprintf(stderr, "   Decodes the given PersonnelRecord BER data "
+                "file\n");
+        fprintf(stderr, "   and re-encodes it to stdout\n");
+        exit(1);
     }
 
-    if (fstat (fd, &sbuf) < 0)
-    {
-        perror ("main: fstat");
-        exit (1);
+    if (fstat(fd, &sbuf) < 0) {
+        perror("main: fstat");
+        exit(1);
     }
 
     size = sbuf.st_size;
-    origData = (char*)malloc (size);
-    if (read (fd, origData, size) != size)
-    {
-        perror ("main: read");
-        exit (1);
+    origData = (char*)malloc(size);
+    if (read(fd, origData, size) != size) {
+        perror("main: read");
+        exit(1);
     }
-
-    close (fd);
+    close(fd);
 
     /*
      * puts the given data 'origData' of 'size' bytes
@@ -99,33 +96,22 @@ main PARAMS ((argc, argv),
      */
     SBufInstallData (&buf, origData, size);
 
-    /*
-     * the first argument (512) is the number of bytes to
-     * initially allocate for the decoder to allocate from.
-     * The second argument (512) is the size in bytes to
-     * enlarge the nibble memory by when it fills up
-     */
-    InitNibbleMem (512, 512);
-
-
     decodedLen = 0;
     decodeErr = FALSE;
-    if ((val = setjmp (env)) == 0)
-    {
-        BDecPersonnelRecord (&buf, &pr, &decodedLen, env);
-    }
-    else
-    {
+    if ((val = setjmp(env)) == 0) {
+        SBuftoGenBuf(&buf, &gbuf);
+        BDecPersonnelRecord(gbuf, &pr, &decodedLen, env);
+    } else {
         decodeErr = TRUE;
-        fprintf (stderr, "ERROR - Decode routines returned %d\n",val);
+        fprintf(stderr, "ERROR - Decode routines returned %d\n", val);
     }
 
     if (decodeErr)
         exit (1);
 
-    fprintf (stderr, "decodedValue PersonnelRecord ::= ");
-    PrintPersonnelRecord (stderr, &pr, 0);
-    fprintf (stderr, "\n\n");
+    fprintf(stderr, "decodedValue PersonnelRecord ::= ");
+    PrintPersonnelRecord(stderr, &pr, 0);
+    fprintf(stderr, "\n\n");
 
     /*
      * setup a new buffer set up for writing.
@@ -133,31 +119,30 @@ main PARAMS ((argc, argv),
      * value (may be larger than decoded value if encoding
      * with indef lengths - so add 512 slush bytes)
      */
-    encData = (char*) malloc (size + 512);
-    SBufInit (&encBuf, encData, size + 512);
-    SBufResetInWriteRvsMode (&encBuf);
+    encData = (char*) malloc(size + 512);
+    SBufInit(&encBuf, encData, size + 512);
+    SBufResetInWriteRvsMode(&encBuf);
+    SBuftoGenBuf(&encBuf, &gebuf);
+    (void) BEncPersonnelRecord(gebuf, &pr);
 
-    encodedLen =  BEncPersonnelRecord (&encBuf, &pr);
-
-    if (SBufWriteError (&encBuf))
-    {
-        fprintf (stderr, "ERROR - buffer to hold the encoded value was too small\n");
+    if (SBufWriteError(&ebuf)) {
+        fprintf (stderr,
+                 "ERROR - buffer to hold the encoded value was too small\n");
         exit (1);
     }
-
-    /*
-     * free all of the decoded value since
-     * it has been encoded into the buffer.
-     * This is much more efficient than freeing
-     * each compontent of the value individually
-     */
-    ResetNibbleMem();
 
     /*
      * write encoded value from encBuf
      * to stdout
      */
-    fwrite (SBufDataPtr (&encBuf), SBufDataLen (&encBuf), 1, stdout);
+    fwrite(SBufDataPtr (&encBuf), SBufDataLen (&encBuf), 1, stdout);
 
+    FreePersonnelRecord(&pr);
+    GenBufFree(gebuf);
+    GenBufFree(gbuf);
+    SBufInstallData(&encBuf, NULL, 0);
+    SBufInstallData(&buf, NULL, 0);
+    free(encData);
+    free(origData);
     return 0;
 }
