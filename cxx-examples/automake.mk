@@ -23,13 +23,15 @@ cxx_examples_main_SOURCES = \
 
 cxx_examples_main_CXXFLAGS = \
 	-I$(top_srcdir)/cxx-lib/inc \
-	-I$(builddir)/cxx-examples/src
+	-I$(builddir)/cxx-examples/src \
+	$(PTHREAD_CFLAGS)
 
 cxx_examples_main_LDADD = \
-	cxx-lib/libcxxasn1.la
+	cxx-lib/libcxxasn1.la \
+	$(PTHREAD_LIBS)
 
 cxx_examples_main_LDFLAGS = \
-	-lpthread
+	$(PTHREAD_CFLAGS)
 
 $(top_builddir)/cxx-examples/src/rfc1155-smi.cpp: \
  $(top_srcdir)/cxx-examples/src/rfc1155-smi.asn1 \

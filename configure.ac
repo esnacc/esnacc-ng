@@ -43,6 +43,7 @@ LT_INIT
 AC_DEFINE([__STDC_LIMIT_MACROS],[1],[C99 requires this define])
 AC_CHECK_LIB([m], [pow])
 AC_CHECK_FUNCS([strchr getchar memset memcmp memcpy])
+AX_PTHREAD
 ESNACC_CHECK_WIN32
 ESNACC_CHECK_WARNINGS
 AX_CODE_COVERAGE
