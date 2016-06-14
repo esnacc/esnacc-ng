@@ -50,8 +50,8 @@ PrintConditionalIncludeOpen PARAMS ((f, fileName),
            hdrFileDefSym[i] == '\\' || hdrFileDefSym[i] == '/')
             hdrFileDefSym[i] = '_';
 
-    fprintf (f, "#ifndef _%s_\n", hdrFileDefSym);
-    fprintf(f, "#define _%s_\n\n\n", hdrFileDefSym);
+    fprintf (f, "#ifndef %s_h\n", hdrFileDefSym);
+    fprintf(f, "#define %s_h\n\n\n", hdrFileDefSym);
 
     free(hdrFileDefSym);
 } /* PrintConditionalIncludeOpen */
