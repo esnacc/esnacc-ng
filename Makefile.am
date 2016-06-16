@@ -75,6 +75,9 @@ pkgconfig_DATA =
 FLAKE8_PYFILES =
 check_PROGRAMS =
 
+all_lib_LDFLAGS = \
+	-version-info $(LT_VERSION_INTF)
+
 scriptsdir = $(pkgdatadir)/scripts
 completiondir = $(sysconfdir)/bash_completion.d
 pkgconfigdir = $(libdir)/pkgconfig

@@ -73,7 +73,9 @@ cxx_lib_libcxxasn1_la_LIBADD = \
 	$(cxx_lib_libcxxasn1_la_WIN32_LIBADD)
 
 cxx_lib_libcxxasn1_la_LDFLAGS = \
+	$(LDFLAGS) \
 	$(PTHREAD_CFLAGS) \
+	$(all_lib_LDFLAGS) \
 	$(cxx_lib_libcxxasn1_la_WIN32_LDFLAGS)
 
 EXTRA_DIST += \
