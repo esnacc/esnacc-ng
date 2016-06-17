@@ -181,10 +181,17 @@ void AsnBuf::PutFileSeg(AsnFileSeg *pFs)
 
 char * AsnBuf::GetSeg(long segLen) const
 {
-   char *seg = new char[segLen];
-   // XXXX Make this a return version
-   GetSeg(seg, segLen);
-   return seg;
+    char *seg = new (std::nothrow) char[segLen];
+    if (!seg)
+        return NULL;
+
+    try {
+        GetSeg(seg, segLen);
+    } catch (BufferException) {
+        delete [] seg;
+        seg = NULL;
+    }
+    return seg;
 }
 
 
@@ -360,25 +367,20 @@ char AsnBuf::GetByte() const
 
    std::streambuf::int_type ch;
 
-   if (m_card != m_deck.end())
-   {
+   if (m_card != m_deck.end()) {
 #ifdef _DEBUG
-    Card *tmpCard = *m_card;
+       Card *tmpCard = *m_card;
 #endif
-	 while ((ch = (*m_card)->rdbuf()->sbumpc()) == EOF)
-    {
-         m_card++;
+       while ((ch = (*m_card)->rdbuf()->sbumpc()) == EOF)
+       {
+           m_card++;
 
-
-         if ( (m_card == m_deck.end()))
-         {
-              throw BufferException("Read past end of data", STACK_ENTRY);
-         }
-
-      }
-   }
-   else
-      throw BufferException("Read past end of data", STACK_ENTRY);
+           if ((m_card == m_deck.end())) {
+               throw BufferException("Read past end of data", STACK_ENTRY);
+           }
+       }
+   } else
+       throw BufferException("Read past end of data", STACK_ENTRY);
 
    return (char)ch;
 }
