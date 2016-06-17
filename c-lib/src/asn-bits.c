@@ -32,8 +32,8 @@
 
 static unsigned short unusedBitsG;
 
-char numToHexCharTblG[16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-  
+const char numToHexCharTblG[16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8',
+                                   '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
 
 /*
@@ -92,51 +92,20 @@ BEncAsnBitsContent PARAMS ((b, bits),
 {
     unsigned long unusedBits;
     unsigned long byteLen;
-	int i = 0;
-	/* Check for a dumb special case */
-	for (i=0; i <bits->bitLen/8 + 1; i++)
-	{
-		if (bits->bits[i] != 0)
-			break;
-	}
-	if (i == bits->bitLen/8 + 1)
-	{
-		bits->bitLen = 1;
-	}
 
-    /* Work out number of unused bits */
-    unusedBits = (bits->bitLen % 8);
+    if (!b || !bits)
+        return 0;
+
+    /* Calculate number of bytes and number of unused bits */
+    byteLen = (bits->bitLen + 7) / 8;
+    unusedBits = (unsigned char)(bits->bitLen % 8);
+
     if (unusedBits != 0)
         unusedBits = 8 - unusedBits;
 
-    /* Work out number of bytes */
-    if (bits->bitLen == 0) {
-        byteLen = 0;
-    }
-    else {
-      byteLen = ((bits->bitLen-1) / 8) + 1;
-      
-      /* Ensure last byte is zero padded */
-      if (unusedBits) {
-		  if ((byteLen == 1) && (bits->bits[0] != 0))
-		  {
-			bits->bits[byteLen-1] = (char)(bits->bits[byteLen-1] & 
-			(0xff << unusedBits));
-		  }
-      }
-    }
-
-    BufPutSegRvs (b, bits->bits, byteLen);
-   
-    /* check for special DER encoding rules to return 03 01 00 not
-       03 02 07 00    RWC */
-    if (((bits->bits[0] != 0) || (byteLen > 1)) && (unusedBits != 7))
-    {
-       BufPutByteRvs (b, (unsigned char)unusedBits);
-       return byteLen + 1;
-    }
-    else
-       return byteLen;
+    BufPutSegRvs(b, bits->bits, byteLen);
+    BufPutByteRvs(b, unusedBits);
+    return byteLen + 1;
 
 } /* BEncAsnBitsContent */
 
@@ -156,7 +125,6 @@ FillBitStringStk PARAMS ((b, elmtLen0, bytesDecoded, env),
     jmp_buf env)
 {
     unsigned long refdLen;
-    unsigned long totalRefdLen;
     char *strPtr;
     unsigned long totalElmtsLen1 = 0;
     unsigned long tagId1;
@@ -181,6 +149,12 @@ FillBitStringStk PARAMS ((b, elmtLen0, bytesDecoded, env),
              * str stack
              */
 
+            if (elmtLen1 == 0) {
+                Asn1Error("BDecAsnBitsContent: ERROR - invalid length on "
+                          "primitive BIT STRING\n");
+                longjmp(env, -6);
+            }
+
             /*
              * get unused bits octet
              */
@@ -194,34 +168,25 @@ FillBitStringStk PARAMS ((b, elmtLen0, bytesDecoded, env),
                 longjmp (env, -1);
             }
 
-            if (elmtLen1 != 0)
-                unusedBitsG = BufGetByte (b);
+            unusedBitsG = BufGetByte(b);
 
-            totalRefdLen = 0;
             lenToRef =elmtLen1-1; /* remove one octet for the unused bits oct*/
-            refdLen = lenToRef;
-            while (1)
+            while (lenToRef > 0)
             {
+                refdLen = lenToRef;
                 strPtr = (char *)BufGetSeg (b, &refdLen);
 
-                PUSH_STR (strPtr, refdLen, env);
-                totalRefdLen += refdLen;
-                if (totalRefdLen == lenToRef)
-                    break; /* exit this while loop */
-
-                if (refdLen == 0) /* end of data */
-                {
-                    Asn1Error ("FillBitStringStk: ERROR - expecting more data\n");
-                    longjmp (env, -2);
+                if (refdLen == 0) { /* end of data */
+                    Asn1Error(
+                        "FillBitStringStk: ERROR - expecting more data\n");
+                    longjmp(env, -2);
                 }
-                refdLen = lenToRef - totalRefdLen;
+
+                PUSH_STR (strPtr, refdLen, env);
+                lenToRef -= refdLen;
             }
             totalElmtsLen1 += elmtLen1;
-        }
-
-
-        else if (tagId1 == MAKE_TAG_ID (UNIV, CONS, BITSTRING_TAG_CODE))
-        {
+        } else if (tagId1 == MAKE_TAG_ID (UNIV, CONS, BITSTRING_TAG_CODE)) {
             /*
              * constructed octets string embedding in this constructed
              * octet string. decode it.
@@ -235,7 +200,7 @@ FillBitStringStk PARAMS ((b, elmtLen0, bytesDecoded, env),
         }
     } /* end of for */
 
-    (*bytesDecoded) += totalElmtsLen1;
+    *bytesDecoded += totalElmtsLen1;
 
 }  /* FillBitStringStk */
 
@@ -302,19 +267,25 @@ BDecAsnBitsContent PARAMS ((b, tagId, len, result, bytesDecoded, env),
     {
         if (len == INDEFINITE_LEN)
         {
-             Asn1Error ("BDecAsnBitsContent: ERROR - indefinite length on primitive\n");
-             longjmp (env, -65);
+            Asn1Error(
+                "BDecAsnBitsContent: ERROR - indefinite len on primitive\n");
+            longjmp(env, -5);
+        } else if (len == 0) {
+            Asn1Error(
+                "BDecAsnBitsContent: ERROR - invalid len on primitive BIT STRING\n");
+            longjmp(env, -6);
         }
+
         (*bytesDecoded) += len;
         len--;
         result->bitLen = (len * 8) - (unsigned int)BufGetByte (b);
         result->bits =  Asn1Alloc (len);
         CheckAsn1Alloc (result->bits, env);
         BufCopy (result->bits, b, len);
-        if (BufReadError (b))
-        {
-            Asn1Error ("BDecAsnBitsContent: ERROR - decoded past end of data\n");
-            longjmp (env, -4);
+        if (BufReadError (b)) {
+            Asn1Error(
+                "BDecAsnBitsContent: ERROR - decoded past end of data\n");
+            longjmp(env, -4);
         }
     }
 }  /* BDecAsnBitsContent */

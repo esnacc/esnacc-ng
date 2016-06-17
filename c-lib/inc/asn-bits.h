@@ -33,7 +33,7 @@ typedef struct AsnBits
   char	*bits;
 } AsnBits;
 
-extern char numToHexCharTblG[];
+extern const char numToHexCharTblG[];
 
 
 /* 
