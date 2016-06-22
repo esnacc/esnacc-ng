@@ -900,6 +900,10 @@ BuiltinType:
   {
 		SetupType (&$$, BASICTYPE_OCTETSTRING, myLineNoG);
   }
+  | OCTET_SYM STRING_SYM SizeConstraint
+  {
+		SetupType (&$$, BASICTYPE_OCTETSTRING, myLineNoG);
+  }
   | CharStrType
   | UsefulType
   | RelativeOIDType
@@ -1041,6 +1045,11 @@ RealType:
 
 BitStringType:
     BIT_SYM STRING_SYM
+    {
+        SetupType (&$$, BASICTYPE_BITSTRING, myLineNoG);
+        $$->basicType->a.bitString = NEWLIST(); /* empty list */
+    }
+  | BIT_SYM STRING_SYM SizeConstraint
     {
         SetupType (&$$, BASICTYPE_BITSTRING, myLineNoG);
         $$->basicType->a.bitString = NEWLIST(); /* empty list */
@@ -1618,6 +1627,11 @@ OctetContainingType:
         SetupType (&$$, BASICTYPE_OCTETCONTAINING, myLineNoG);
         $$->basicType->a.stringContaining = $4;
     }
+  | OCTET_SYM STRING_SYM LEFTPAREN_SYM CONTAINING_SYM Type RIGHTPAREN_SYM
+    {
+        SetupType (&$$, BASICTYPE_OCTETCONTAINING, myLineNoG);
+        $$->basicType->a.stringContaining = $5;
+    }
 ;
 
 BitContainingType:
@@ -1625,6 +1639,11 @@ BitContainingType:
     {
         SetupType (&$$, BASICTYPE_BITCONTAINING, myLineNoG);
         $$->basicType->a.stringContaining = $4;
+    }
+  | BIT_SYM STRING_SYM LEFTPAREN_SYM CONTAINING_SYM Type RIGHTPAREN_SYM
+    {
+        SetupType (&$$, BASICTYPE_BITCONTAINING, myLineNoG);
+        $$->basicType->a.stringContaining = $5;
     }
 ;
 
@@ -1897,6 +1916,12 @@ SizeConstraint:
         $$ = MT (SubtypeValue);
         $$->choiceId = SUBTYPEVALUE_SIZECONSTRAINT;
         $$->a.sizeConstraint = $2;
+    }
+  | LEFTPAREN_SYM SIZE_SYM SubtypeSpec RIGHTPAREN_SYM
+    {
+        $$ = MT (SubtypeValue);
+        $$->choiceId = SUBTYPEVALUE_SIZECONSTRAINT;
+        $$->a.sizeConstraint = $3;
     }
 ;
 
