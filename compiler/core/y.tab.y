@@ -248,7 +248,7 @@ int parseErrCountG = 0;
               GRAPHICSTRING_SYM GENERALSTRING_SYM BMPSTRING_SYM
 			  UNIVERSALSTRING_SYM UTF8STRING_SYM
               GENERALIZEDTIME_SYM UTCTIME_SYM EXTERNAL_SYM
-              OBJECTDESCRIPTOR_SYM
+              OBJECTDESCRIPTOR_SYM AUTOMATIC_SYM
               /* the following are used in macros */
               OPERATION_SYM ARGUMENT_SYM RESULT_SYM ERRORS_SYM LINKED_SYM
               ERROR_SYM PARAMETER_SYM
@@ -515,6 +515,13 @@ ModuleDefinition:
 TagDefault:
     EXPLICIT_SYM TAGS_SYM { $$ = EXPLICIT_TAGS; }
   | IMPLICIT_SYM TAGS_SYM { $$ = IMPLICIT_TAGS; }
+  | AUTOMATIC_SYM TAGS_SYM
+    {
+        printf("Automatic Tags are not properly supported.\n");
+        printf("%s(%ld). Using Explicit tags.\n", modulePtrG->asn1SrcFileName,
+               myLineNoG);
+        $$ = EXPLICIT_TAGS;
+    }
   | empty
     {
         /* default is EXPLICIT TAGS */

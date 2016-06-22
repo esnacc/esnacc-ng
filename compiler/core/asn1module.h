@@ -65,7 +65,8 @@ typedef enum
 typedef enum
     {
         EXPLICIT_TAGS = 0,
-        IMPLICIT_TAGS = 1
+        IMPLICIT_TAGS = 1,
+        AUTOMATIC_TAGS = 2,
     } ModuleEnum1; /* ENUMERATED { EXPLICIT_TAGS (0), IMPLICIT_TAGS (1) }  */
 
 typedef enum
