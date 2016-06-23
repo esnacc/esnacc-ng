@@ -10,6 +10,7 @@
 
 #include "asn-config.h"
 #include "asn-buf.h"
+#include "snaccexcept.h"
 
 #ifdef WIN32
 #if defined(_MSC_VER)
@@ -606,66 +607,97 @@ extern SNACCDLL_API char	numToHexCharTblG[];
 
 class SNACCDLL_API AsnInt : public AsnType, protected PERGeneral
 {
-protected:
+ protected:
 
-   unsigned char *m_bytes;
-   unsigned long  m_len;
+    unsigned char *m_bytes;
+    unsigned long  m_len;
    
-   void storeDERInteger(const unsigned char *pDataCopy, long dataLen, bool unsignedFlag);
+    void storeDERInteger(const unsigned char *pDataCopy, long dataLen,
+                         bool unsignedFlag);
+    void Clear() { delete [] m_bytes; m_bytes = NULL; m_len = 0; }
+    long lEncLen() const { return length(); }
+    char getByte(long offset) const { return m_bytes[offset]; }
+    void putByte(long offset, unsigned char cByte);
 
-   void		Clear(){if(m_bytes) delete[] m_bytes; /*RWC*/ m_bytes = NULL; m_len = 0;}
-   long		lEncLen()const{return length();}
-   char		getByte(long offset)const{return m_bytes[offset];}
-   void		putByte(long offset, unsigned char cByte);
-
-   virtual AsnLen	Interpret(AsnBufBits &b,long offset)const;
-   virtual void		Deterpret(AsnBufBits &b, AsnLen &bitsDecoded, long offset);
-   virtual void		Allocate(long size);
+    virtual AsnLen Interpret(AsnBufBits &b,long offset)const;
+    virtual void Deterpret(AsnBufBits &b, AsnLen &bitsDecoded, long offset);
+    virtual void Allocate(long size);
 
 public:
    AsnInt (AsnIntType val=0);
    AsnInt (const char *str, bool unsignedFlag = true);
    AsnInt (const AsnOcts &o, bool unsignedFlag = true);
    AsnInt (const char *str, const size_t len, bool unsignedFlag = true);
-   AsnInt (const AsnInt &that);//generate this
+   AsnInt (const AsnInt &that);
    virtual ~AsnInt ();
 
-   virtual  const ValueRange* ValueRanges(int &sizeVRList)const { sizeVRList = 0; return NULL;}
+   virtual const ValueRange* ValueRanges(int &sizeVRList) const
+   { sizeVRList = 0; return NULL; }
       
-   virtual AsnType* Clone() const				{ return new AsnInt(*this); }
-   virtual const char* typeName() const			{ return "AsnInt"; }
-    
-   operator AsnIntType() const;
-   bool        operator == (AsnIntType o) const;
-   bool        operator != (AsnIntType o) const		{ return !operator==(o);}
-   bool        operator == (const AsnInt &o) const;
-   bool        operator != (const AsnInt &o) const;
-   bool        operator < (const AsnInt &o) const;
-   AsnInt &    operator = (const AsnInt &o);//generate this
-   //unsigned char*  Append_m_bytes(const unsigned char* AppendBytes, unsigned long templen);    
-  
-   long		length()const{ return m_len; }
-   long		length(void){ return m_len; }
-   const unsigned char * c_str(void) const { return m_bytes; }
-   void		getPadded(unsigned char *&data, size_t &len, const size_t padToSize=0) const;
+   virtual AsnType* Clone() const { return new AsnInt(*this); }
+   virtual const char* typeName() const { return "AsnInt"; }
 
-   int		checkConstraints (ConstraintFailList* pConstraintFails)const;
+   template <typename int_t>
+   int_t toInteger() const
+   {
+       //FUNC("AsnInt::toInteger");
 
-   void        Set(const unsigned char *str, size_t len, bool unsignedFlag=true);
-   void        Set(AsnIntType i);
+       if (!m_bytes || m_len <= 0)
+           return 0;
+
+       int_t iResult = 0;
+
+       if (m_len > sizeof(int_t)) {
+           throw SNACCDLL_API
+               SnaccException("integer is too big for conversion to type",
+                              DECODE_ERROR);
+       }
+
+       // If big int is negative initialize result to -1
+       if ((m_bytes[0] >> 7 == 1)) {
+           iResult = -1;
+       }
+
+       for (unsigned int i = 0; i < m_len; i++)
+           iResult = (iResult << 8) | (AsnUIntType)(m_bytes[i]);
+       return iResult;
+   }
+
+   operator AsnIntType() const { return toInteger<AsnIntType>(); }
+   bool operator == (AsnIntType o) const;
+   bool operator != (AsnIntType o) const { return !operator==(o);}
+   bool operator == (const AsnInt &o) const;
+   bool operator != (const AsnInt &o) const;
+   bool operator < (const AsnInt &o) const;
+   AsnInt &operator = (const AsnInt &o);
+
+   long length() const { return m_len; }
+   long length(void) { return m_len; }
+   const unsigned char *c_str(void) const { return m_bytes; }
+   void getPadded(unsigned char *&data, size_t &len,
+                  const size_t padToSize=0) const;
+
+   int checkConstraints (ConstraintFailList* pConstraintFails) const;
+
+   void Set(const unsigned char *str, size_t len, bool unsignedFlag=true);
+   void Set(AsnIntType i);
 
    AsnLen         BEnc (AsnBuf &b) const;
    void           BDec (const AsnBuf &b, AsnLen &bytesDecoded);
    AsnLen         BEncContent (AsnBuf &b) const;
-   void           BDecContent (const AsnBuf &b, AsnTag tagId, AsnLen elmtLen, AsnLen &bytesDecoded);
+   void           BDecContent (const AsnBuf &b, AsnTag tagId, AsnLen elmtLen,
+                               AsnLen &bytesDecoded);
 
-   virtual AsnLen PEnc (AsnBufBits &b)const;
-   AsnLen         PEncSemiConstrained (AsnBufBits &b, long lowerBound )const;
-   AsnLen		  PEncFullyConstrained (AsnBufBits &b, long lowerBound, long upperBound)const;
-   
-   void			  PDecSemiConstrained(AsnBufBits &b, long lowerBound, AsnLen &bitsDecoded);
-   void 		  PDecFullyConstrained (AsnBufBits &b, long lowerBound, long upperBound, AsnLen &bitsDecoded);
-   void			  PDec (AsnBufBits &b, AsnLen &bitsDecoded);
+   virtual AsnLen PEnc (AsnBufBits &b) const;
+   AsnLen         PEncSemiConstrained(AsnBufBits &b, long lowerBound ) const;
+   AsnLen         PEncFullyConstrained(AsnBufBits &b, long lowerBound,
+                                       long upperBound) const;
+
+   void           PDecSemiConstrained(AsnBufBits &b, long lowerBound,
+                                      AsnLen &bitsDecoded);
+   void           PDecFullyConstrained(AsnBufBits &b, long lowerBound,
+                                       long upperBound, AsnLen &bitsDecoded);
+   void	          PDec(AsnBufBits &b, AsnLen &bitsDecoded);
 
 
    void      Print(std::ostream& os, unsigned short indent = 0) const;

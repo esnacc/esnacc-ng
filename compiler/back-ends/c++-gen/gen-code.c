@@ -527,7 +527,6 @@ PrintCxxTagAndLenList PARAMS ((src, t, tagList, lenVarName, bufVarName),
     char *classStr;
     char *formStr;
     Tag *tg;
-    Tag *last;
     int tagLen;
     int isShort;
 
@@ -544,7 +543,6 @@ PrintCxxTagAndLenList PARAMS ((src, t, tagList, lenVarName, bufVarName),
     /*
      * since encoding backward encode tags backwards
      */
-    last = (Tag*)LAST_LIST_ELMT (tagList);
     FOR_EACH_LIST_ELMT_RVS (tg, tagList)
     {
         classStr = Class2ClassStr (tg->tclass);
@@ -1163,40 +1161,42 @@ PrintCxxChoiceDefCode (FILE *src, FILE *hdr, ModuleList *mods, Module *m, CxxRul
     /* print clone routine for ANY mgmt */
     PrintCloneMethod (hdr, src, td);
 
-    fprintf (hdr, "  %s		&operator = (const %s &that);\n", td->cxxTypeDefInfo->className, td->cxxTypeDefInfo->className);
-    fprintf (src, "%s &%s::operator = (const %s &that)\n", td->cxxTypeDefInfo->className, td->cxxTypeDefInfo->className, td->cxxTypeDefInfo->className);
+    fprintf (hdr, "  %s		&operator = (const %s &that);\n",
+             td->cxxTypeDefInfo->className, td->cxxTypeDefInfo->className);
+    fprintf (src, "%s &%s::operator = (const %s &that)\n",
+             td->cxxTypeDefInfo->className,
+             td->cxxTypeDefInfo->className,
+             td->cxxTypeDefInfo->className);
     fprintf (src, "{\n");
-    fprintf (src, "  if (this != &that)\n");
-    fprintf (src, "  {\n");
-    fprintf (src, "    Clear();\n");
+    fprintf (src, "    if (this != &that) {\n");
+    fprintf (src, "        Clear();\n");
    
     e = FIRST_LIST_ELMT (choice->basicType->a.choice);
-    fprintf (src, "    // Check first type in choice to determine if choice is empty\n");
-    fprintf (src, "    if (that.%s != NULL)\n", e->type->cxxTypeRefInfo->fieldName);
-    fprintf (src, "    {\n");
-    fprintf (src, "       switch (choiceId = that.choiceId)\n");
-    fprintf (src, "       {\n");
+    fprintf (src, "        if (that.%s != NULL) {\n",
+             e->type->cxxTypeRefInfo->fieldName);
+        fprintf (src, "            switch (choiceId = that.choiceId) {\n");
 
-    FOR_EACH_LIST_ELMT (e, choice->basicType->a.choice)
-    {
-	   fprintf (src, "         case %s:\n", e->type->cxxTypeRefInfo->choiceIdSymbol);
-	   if (e->type->cxxTypeRefInfo->isPtr)
-	   {
-           fprintf (src, "           %s = new %s(*that.%s);\n", e->type->cxxTypeRefInfo->fieldName, e->type->cxxTypeRefInfo->className,
-                    e->type->cxxTypeRefInfo->fieldName);
-       }
-	   else
-       {
-         fprintf (src, "           %s = that.%s;\n", e->type->cxxTypeRefInfo->fieldName, e->type->cxxTypeRefInfo->fieldName);
-       }
-	   fprintf (src, "           break;\n");
+    FOR_EACH_LIST_ELMT (e, choice->basicType->a.choice) {
+        fprintf (src, "                case %s:\n",
+                 e->type->cxxTypeRefInfo->choiceIdSymbol);
+        if (e->type->cxxTypeRefInfo->isPtr) {
+            fprintf (src, "                    %s = new %s(*that.%s);\n",
+                     e->type->cxxTypeRefInfo->fieldName,
+                     e->type->cxxTypeRefInfo->className,
+                     e->type->cxxTypeRefInfo->fieldName);
+        } else {
+            fprintf (src, "                    %s = that.%s;\n",
+                     e->type->cxxTypeRefInfo->fieldName,
+                     e->type->cxxTypeRefInfo->fieldName);
+        }
+        fprintf (src, "                break;\n");
     }
 
-    fprintf (src, "       }// end of switch\n");
-    fprintf (src, "     }// end of if\n");
-    fprintf (src, "  }\n");
+    fprintf (src, "            }\n");
+    fprintf (src, "        }\n");
+    fprintf (src, "    }\n");
     fprintf (src, "\n");
-    fprintf (src, "  return *this;\n");
+    fprintf (src, "    return *this;\n");
     fprintf (src, "}\n\n");
 
     /* BerEncodeContent */
@@ -1889,65 +1889,42 @@ PrintCxxChoiceDefCode (FILE *src, FILE *hdr, ModuleList *mods, Module *m, CxxRul
         fprintf (src, "\t} // end of switch\n");
 
         fprintf (src, "} // end of %s::Print()\n\n", td->cxxTypeDefInfo->className);
-        /* ################################################################## */
-         
-        /* RWC;1/12/00; ADDED XML output capability. */
-        fprintf (hdr, "  void			PrintXML (std::ostream &os, const char *lpszTitle=NULL) const;\n");
 
-        fprintf (src, "void %s::PrintXML (std::ostream &os, const char *lpszTitle) const\n", td->cxxTypeDefInfo->className);
-        fprintf (src, "{\n");
-        fprintf (src, "  if (lpszTitle)\n");
-        fprintf (src, "  {\n");
-        fprintf (src, "     os << \"<\" << lpszTitle;\n");
-        fprintf (src, "        os << \" typeName=\\\"%s\\\" type=\\\"CHOICE\\\">\";\n", td->cxxTypeDefInfo->className);
-        fprintf (src, "  }\n");
-        fprintf (src, "  else\n");
-        fprintf (src, "        os << \"<%s type=\\\"CHOICE\\\">\";\n", td->cxxTypeDefInfo->className);
-        fprintf (src, "  switch (choiceId)\n");
-        fprintf (src, "  {\n");
+        fprintf(hdr, "  void			PrintXML (std::ostream &os, const char *lpszTitle=NULL) const;\n");
+
+        fprintf(src, "void %s::PrintXML (std::ostream &os, const char *lpszTitle) const\n", td->cxxTypeDefInfo->className);
+        fprintf(src, "{\n");
+        fprintf(src, "    const char *tagName = typeName();\n");
+        fprintf(src, "    if (lpszTitle)\n");
+        fprintf(src, "        tagName = lpszTitle;");
+        fprintf(src, "    os << \"<\" << tagName << \">\";\n");
+        fprintf(src, "    switch (choiceId) {\n");
 
         FOR_EACH_LIST_ELMT (e, choice->basicType->a.choice)
         {
-            fprintf (src, "    case %s:\n", e->type->cxxTypeRefInfo->choiceIdSymbol);
+            fprintf(src, "    case %s:\n",
+                     e->type->cxxTypeRefInfo->choiceIdSymbol);
 
             /* value notation so print the choice elmts field name */
             if (e->type->cxxTypeRefInfo->isPtr)
             {
-                fprintf (src, "      if (%s)\n", e->type->cxxTypeRefInfo->fieldName);
-                fprintf (src, "        %s->PrintXML(os", e->type->cxxTypeRefInfo->fieldName);
+                fprintf(src, "       if (%s) {\n",
+                        e->type->cxxTypeRefInfo->fieldName);
+                fprintf(src, "           %s->PrintXML(os", e->type->cxxTypeRefInfo->fieldName);
                 if (e->fieldName != NULL)
-                   fprintf (src, ",\"%s\");\n", e->fieldName);
+                   fprintf(src, ",\"%s\");\n", e->fieldName);
                 else
-                   fprintf (src, ");\n");
-                fprintf (src, "      else\n");
-                fprintf (src, "      {\n");
+                   fprintf(src, ");\n");
+                fprintf(src, "      }\n");
+            } else
+                fprintf(src, "      %s.PrintXML(os, \"%s\");\n",
+                        e->type->cxxTypeRefInfo->fieldName, e->fieldName);
 
-                if (e->fieldName != NULL)
-                {
-                    fprintf (src, "        os << \"<%s -- void3 -- /%s>\" << std::endl;\n", e->fieldName, e->fieldName);
-                }
-                else
-                {
-                    fprintf (src, "        os << \"<%s -- void3 -- /%s>\" << std::endl;\n", 
-                             e->type->cxxTypeRefInfo->fieldName, e->type->cxxTypeRefInfo->fieldName);
-                }
-                
-                fprintf (src, "      }\n");
-            }
-            else
-                fprintf (src, "      %s.PrintXML(os, \"%s\");\n", e->type->cxxTypeRefInfo->fieldName, e->fieldName);
-
-            fprintf (src, "      break;\n\n");
+            fprintf(src, "      break;\n\n");
         }
-        fprintf (src, "  } // end of switch\n");
-        fprintf (src, "  if (lpszTitle)\n");
-        fprintf (src, "     os << \"</\" << lpszTitle << \">\";\n");
-        fprintf (src, "  else\n");
-        fprintf (src, "        os << \"</%s>\";\n", td->cxxTypeDefInfo->className);
+        fprintf (src, "    } // end of switch\n");
+        fprintf (src, "    os << \"</\" << tagName << \">\";\n");
         fprintf (src, "} // %s::PrintXML\n\n", td->cxxTypeDefInfo->className);
-        
-        /* END XML Print capability. */
-        /* ################################################################## */
     }
     /* end of Print Method code */
 
@@ -1961,7 +1938,8 @@ PrintCxxChoiceDefCode (FILE *src, FILE *hdr, ModuleList *mods, Module *m, CxxRul
 
 static void
 PrintCxxSeqDefCode (FILE *src, FILE *hdr, ModuleList *mods, Module *m,
-    CxxRules *r ,TypeDef *td, Type *parent, Type *seq, int novolatilefuncs)
+                    CxxRules *r ,TypeDef *td, Type *parent ESNACC_UNUSED,
+                    Type *seq, int novolatilefuncs ESNACC_UNUSED)
 {
     NamedType *e;
     char *classStr;
@@ -1979,7 +1957,6 @@ PrintCxxSeqDefCode (FILE *src, FILE *hdr, ModuleList *mods, Module *m,
     enum BasicTypeChoiceId tmpTypeId;
     NamedType *defByNamedType;
     NamedType *tmpElmt;
-    int allOpt;
 
     // DEFINE PER encode/decode tmp vars.
     NamedType **pSeqElementNamedType=NULL;
@@ -2939,87 +2916,50 @@ PrintCxxSeqDefCode (FILE *src, FILE *hdr, ModuleList *mods, Module *m,
     if (printPrintersG)
 	{
 		PrintCxxSeqSetPrintFunction(src, hdr, td->cxxTypeDefInfo->className,
-			seq->basicType);
+                                    seq->basicType);
 
-        /* ##################################################################
-          RWC;1/12/00; ADDED XML output capability. */
+        fprintf(hdr, "  void		PrintXML (std::ostream &os, const char *lpszTitle=NULL) const;\n");
+        fprintf(src, "void %s::PrintXML (std::ostream &os, const char *lpszTitle) const\n",
+                 td->cxxTypeDefInfo->className);
+        fprintf(src, "{\n");
+        fprintf(src, "    const char *tagName = typeName();\n");
+        fprintf(src, "    if (lpszTitle)\n");
+        fprintf(src, "        tagName = lpszTitle;\n");
+        fprintf(src, "    os << \"<\" << tagName << \">\";\n");
 
-        fprintf (hdr, "  void		PrintXML (std::ostream &os, const char *lpszTitle=NULL) const;\n");
-        fprintf (src,"void %s::PrintXML (std::ostream &os, \n", td->cxxTypeDefInfo->className);
-        fprintf (src,"                   const char *lpszTitle) const\n");
-        fprintf (src, "{\n");
-        allOpt = AllElmtsOptional (seq->basicType->a.sequence);
-        fprintf (src, "  if (lpszTitle)\n");
-        fprintf (src, "  {\n");
-        fprintf (src, "     os << \"<\" << lpszTitle;\n");
-        fprintf (src, "     if (typeName() && strlen(typeName()))\n");
-        fprintf (src, "     {\n");
-        fprintf (src, "        os << \" typeName=\\\"\" << typeName() << \"\\\"\";\n");
-        fprintf (src, "     }\n");
-        fprintf (src, "  }\n");
-        fprintf (src, "  else\n");
-        fprintf (src, "  {\n");
-        fprintf (src, "     os << \"<NONE\";\n");
-        fprintf (src, "  }\n");
-        fprintf (src, "  if (typeName() && strlen(typeName()))\n");
-        fprintf (src, "  {\n");
-        fprintf (src, "     if (typeName() && strlen(typeName()))\n");
-        fprintf (src, "     {\n");
-        fprintf (src, "        os << \"<\" << typeName();\n");
-        fprintf (src, "     }\n");
-        fprintf (src, "  }\n");
-        fprintf (src, " os << \" type=\\\"SEQUENCE\\\">\" << std::endl;\n");
-        FOR_EACH_LIST_ELMT (e, seq->basicType->a.sequence)
-        {
-          inTailOptElmts = IsTailOptional (seq->basicType->a.sequence);
-          if (e->type->cxxTypeRefInfo->isPtr)
-          {
-             fprintf (src, "  if (%s (%s))\n", cxxtri->optTestRoutineName, 
-                      e->type->cxxTypeRefInfo->fieldName);
-             fprintf (src, "  {\n");
-             fprintf (src, "    %s->PrintXML(os", 
-                      e->type->cxxTypeRefInfo->fieldName);
-
-             if (e->fieldName != NULL)
-                 fprintf (src, ", \"%s\"", e->fieldName);
-                   
-             fprintf (src, ");\n");
-             fprintf (src, "  }\n");
-          }
-          else
-          {
-             fprintf (src, "    %s.PrintXML(os", e->type->cxxTypeRefInfo->fieldName);
-             if (e->fieldName != NULL)
-                fprintf (src, ", \"%s\"", e->fieldName);
-             fprintf (src, ");\n");
-          }
-          fprintf (src, "\n");
+        FOR_EACH_LIST_ELMT (e, seq->basicType->a.sequence) {
+            inTailOptElmts = IsTailOptional(seq->basicType->a.sequence);
+            if (e->type->cxxTypeRefInfo->isPtr) {
+                fprintf(src, "    if (%s (%s)) {\n",
+                        cxxtri->optTestRoutineName,
+                        e->type->cxxTypeRefInfo->fieldName);
+                fprintf(src, "        %s->",
+                        e->type->cxxTypeRefInfo->fieldName);
+            } else {
+                fprintf(src, "    %s.", e->type->cxxTypeRefInfo->fieldName);
+            }
+            fprintf(src, "PrintXML(os");
+            if (e->fieldName != NULL)
+                fprintf(src, ", \"%s\"", e->fieldName);
+            fprintf(src, ");\n");
+            if (e->type->cxxTypeRefInfo->isPtr)
+                fprintf(src, "    }\n");
+            fprintf(src, "\n");
         }
-        fprintf (src, "  if (lpszTitle)\n");
-        fprintf (src, "  {\n");
-        fprintf (src, "     os << \"</\" << lpszTitle << \">\" << std::endl;\n");
-        fprintf (src, "  }\n");
-        fprintf (src, "  else\n");
-        fprintf (src, "     if (typeName() && strlen(typeName()))\n");
-        fprintf (src, "     {\n");
-        fprintf (src, "        os << \"</\" << typeName() << \">\" << std::endl;\n");
-        fprintf (src, "     }\n");
-        fprintf (src, "} // %s::PrintXML\n\n\n", td->cxxTypeDefInfo->className);
-       /* END XML Print capability.
-       ################################################################## */
+        fprintf(src, "    os << \"</\" << tagName << \">\";\n");
+        fprintf(src, "} // %s::PrintXML\n\n\n", td->cxxTypeDefInfo->className);
     }
     /* end of print method code printer */
 
     /* close class definition */
     fprintf (hdr, "};\n\n\n");
-	novolatilefuncs = novolatilefuncs;
-    parent=parent; /*AVOIDS warning.*/
 } /* PrintCxxSeqDefCode */
 
 
 static void
 PrintCxxSetDefCode (FILE *src, FILE *hdr, ModuleList *mods, Module *m,
-    CxxRules *r, TypeDef *td, Type *parent, Type *set, int novolatilefuncs)
+                    CxxRules *r, TypeDef *td, Type *parent ESNACC_UNUSED,
+                    Type *set, int novolatilefuncs ESNACC_UNUSED)
 {
     NamedType *e;
     char *classStr;
@@ -3034,11 +2974,9 @@ PrintCxxSetDefCode (FILE *src, FILE *hdr, ModuleList *mods, Module *m,
     int elmtLevel=0;
     int varCount, tmpVarCount;
     int stoleChoiceTags;
-    int inTailOptElmts;
     int mandatoryElmtCount;
     enum BasicTypeChoiceId tmpTypeId;
     NamedType *defByNamedType;
-    int allOpt;
 
     // DEFINE PER encode/decode tmp vars.
     int *pSetElementTag=NULL;
@@ -3057,7 +2995,7 @@ PrintCxxSetDefCode (FILE *src, FILE *hdr, ModuleList *mods, Module *m,
     /* write out the set elmts */
     FOR_EACH_LIST_ELMT (e, set->basicType->a.set)
     {		
-        fprintf (hdr, "  ");
+        fprintf (hdr, "    ");
     
 		/* JKG 7/31/03 */
 		/*The following code enclosed in this if/else statement */
@@ -3105,11 +3043,11 @@ PrintCxxSetDefCode (FILE *src, FILE *hdr, ModuleList *mods, Module *m,
 
     /* Default constructor
 	*/
-    fprintf (hdr, "   %s(){Init();}\n", td->cxxTypeDefInfo->className);
+    fprintf (hdr, "     %s() { Init(); }\n", td->cxxTypeDefInfo->className);
 
 	/* Init() member function
 	 */
-	fprintf (hdr, "   void Init(void);\n");
+	fprintf (hdr, "     void Init(void);\n");
     fprintf (src, "void %s::Init(void)\n", td->cxxTypeDefInfo->className);
     fprintf (src, "{\n");
     FOR_EACH_LIST_ELMT (e, set->basicType->a.set)
@@ -3810,66 +3748,42 @@ PrintCxxSetDefCode (FILE *src, FILE *hdr, ModuleList *mods, Module *m,
 		PrintCxxSeqSetPrintFunction(src, hdr, td->cxxTypeDefInfo->className,
 			set->basicType);
 
-         /* ##################################################################
-           RWC;1/12/00; ADDED XML output capability. */
-        fprintf (hdr, "  void PrintXML (std::ostream &os, const char *lpszTitle=NULL) const;\n");
-        fprintf (src, "void %s::PrintXML (std::ostream &os, const char *lpszTitle) const\n", td->cxxTypeDefInfo->className);
-        fprintf (src, "{\n");
-
-        allOpt = AllElmtsOptional (set->basicType->a.set);
-        fprintf (src, "  if (lpszTitle)\n");
-        fprintf (src, "  {\n");
-        fprintf (src, "     os << \"<\" << lpszTitle;\n");
-        fprintf (src, "     os << \" typeName=\\\"%s\\\" type=\\\"SET\\\">\" << std::endl;\n", td->cxxTypeDefInfo->className);
-        fprintf (src, "  }\n");
-        fprintf (src, "  else\n");
-        fprintf (src, "     os << \"<%s type=\\\"SET\\\">\" << std::endl;\n", td->cxxTypeDefInfo->className);
-        FOR_EACH_LIST_ELMT (e, set->basicType->a.set)
-        {
-            inTailOptElmts = IsTailOptional (set->basicType->a.set);
-            if (e->type->cxxTypeRefInfo->isPtr)
-                fprintf (src, "  if (%s (%s))\n", cxxtri->optTestRoutineName, e->type->cxxTypeRefInfo->fieldName);
-            fprintf (src, "  {\n");
-            if (e->type->cxxTypeRefInfo->isPtr)
-            {
-                fprintf (src, "    (*%s).PrintXML(os", e->type->cxxTypeRefInfo->fieldName);
-                if (e->fieldName != NULL)
-                   fprintf (src, ", \"%s\"", e->fieldName);
-                fprintf (src, ");\n");
+        fprintf(hdr, "    void PrintXML (std::ostream &os, const char *lpszTitle=NULL) const;\n");
+        fprintf(src,
+                "void %s::PrintXML (std::ostream &os, const char *lpszTitle) const\n",
+                td->cxxTypeDefInfo->className);
+        fprintf(src, "{\n");
+        fprintf(src, "    const char *tagName = typeName();\n");
+        fprintf(src, "    if (lpszTitle) {\n");
+        fprintf(src, "        tagName = lpszTitle;\n");
+        fprintf(src, "    os << \"<\" << tagName << \">\";\n",
+                td->cxxTypeDefInfo->className);
+        FOR_EACH_LIST_ELMT (e, set->basicType->a.set) {
+            const char *fieldString = "%s";
+            if (e->type->cxxTypeRefInfo->isPtr) {
+                fprintf(src, "    if (%s (%s)) {\n",
+                        cxxtri->optTestRoutineName,
+                        e->type->cxxTypeRefInfo->fieldName);
+                fprintf(src, "        %s->",
+                        e->type->cxxTypeRefInfo->fieldName);
+            } else {
+                fprintf(src, "    %s.",
+                        e->type->cxxTypeRefInfo->fieldName);
             }
-            else
-            {
-                fprintf (src, "    %s.PrintXML(os", e->type->cxxTypeRefInfo->fieldName);
-                if (e->fieldName != NULL)
-                   fprintf (src, ", \"%s\"", e->fieldName);
-                fprintf (src, ");\n");
-            }
-            fprintf (src, "  }\n");
+            fprintf(src, "PrintXML(os");
+            if (e->fieldName != NULL)
+                fprintf(src, ", \"%s\"", e->fieldName);
+            fprintf (src, ");\n");
             if (e->type->cxxTypeRefInfo->isPtr)
-            {
-               fprintf (src, "  else\n");
-               if (e->fieldName)
-                  fprintf (src, "        os << \"<%s -- void2 -- />\" << std::endl;\n", e->fieldName);
-               else
-                  fprintf (src, "        os << \"<%s -- void2 -- />\" << std::endl;\n", e->type->cxxTypeRefInfo->fieldName);
-            }
-            fprintf (src, "\n");
-
+                fprintf(src, "    }\n");
         }      /* END For each set element */
-        fprintf (src, "  if (lpszTitle)\n");
-        fprintf (src, "     os << \"</\" << lpszTitle << \">\" << std::endl;\n");
-        fprintf (src, "  else\n");
-        fprintf (src, "     os << \"</%s>\" << std::endl;\n", td->cxxTypeDefInfo->className);
-        fprintf (src, "} // %s::PrintXML\n\n\n", td->cxxTypeDefInfo->className);
-        /* END XML Print capability.
-        ################################################################## */
+        fprintf(src, "    os << \"</\" << tagName << \">\";\n");
+        fprintf(src, "} // %s::PrintXML\n\n\n", td->cxxTypeDefInfo->className);
     }
     /* end of print method code */
 
     /* close class definition */
-    fprintf (hdr, "};\n\n\n");
-	novolatilefuncs = novolatilefuncs;
-    parent=parent; /*AVOIDS warning.*/
+    fprintf(hdr, "};\n\n\n");
 } /* PrintCxxSetDefCode */
 
 

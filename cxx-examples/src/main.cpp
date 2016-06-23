@@ -131,7 +131,7 @@ void fillTest(void)
 
         std::cout << std::endl;
 
-        octs.Print(std::cout);
+        octs.PrintXML(std::cout);
 
         std::cout << std::endl; 
         std::cout << len;

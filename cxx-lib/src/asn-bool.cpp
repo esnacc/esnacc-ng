@@ -123,15 +123,18 @@ AsnLen AsnBool::BEncContent (AsnBuf &b) const
 // print the BOOLEAN's value in ASN.1 value notation to the given ostream
 void AsnBool::Print (std::ostream& os, unsigned short /*indent*/) const
 {
-	os << (value ? "TRUE" : "FALSE");
+	os << (value ? "true" : "false");
 }
 
 void AsnBool::PrintXML (std::ostream &os, const char *lpszTitle) const 
 {
-   os << "<BOOLEAN>"; 
-   if (lpszTitle) os << lpszTitle; 
-   os << "-"; 
-   Print(os); os << "</BOOLEAN>\n"; 
+    const char *tagName = typeName();
+    if (lpszTitle) {
+        tagName = lpszTitle;
+    }
+    os << "<" << tagName << ">";
+    Print(os);
+    os << "</" << tagName << ">";
 }
 
 char* AsnBool::checkBoolSingleVal(const bool m_SingleVal) const

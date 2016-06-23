@@ -151,15 +151,17 @@ void AsnNull::BDec (const AsnBuf &b, AsnLen &bytesDecoded)
 
 void AsnNull::Print(std::ostream& os, unsigned short /*indent*/) const
 {
-	os << "NULL";
+	os << "null";
 }
 
 void AsnNull::PrintXML (std::ostream &os, const char *lpszTitle) const
 {
-   os << "<NULL>"; 
-   if (lpszTitle) os << lpszTitle; 
-   os << "-"; 
-   Print(os); os << "</NULL>\n"; 
+    const char *tagName = typeName();
+    if (lpszTitle) tagName = lpszTitle;
+
+    os << "<" << tagName << ">";
+    Print(os);
+    os << "</" << tagName << ">\n";
 }
 
 #if META

@@ -543,15 +543,13 @@ void AsnAny::Print(std::ostream& os, unsigned short indent) const
 
 void AsnAny::PrintXML (std::ostream &os, const char *lpszTitle) const 
 {
-   if (lpszTitle) 
-       os << "<" << lpszTitle << " type=\"ANY\">"; 
-   else
-       os << "<ANY>"; 
-   Print(os);
-   if (lpszTitle) 
-       os << "</" << lpszTitle << ">\n"; 
-   else
-       os << "</ANY>\n"; 
+    const char *tagName = typeName();
+
+    if (lpszTitle) tagName = lpszTitle;
+
+    os << "<" << tagName << ">";
+    Print(os);
+    os << "</" << tagName << ">\n";
 }
 
 AsnAny::~AsnAny()

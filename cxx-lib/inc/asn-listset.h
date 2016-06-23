@@ -8,6 +8,8 @@
 #ifndef SNACC_ASN_LISTSET_H
 #define SNACC_ASN_LISTSET_H
 
+#include "snacc.h"
+
 #ifdef _MSC_VER
 	#pragma warning(disable: 4786)		// Disable symbols truncated warning
 #endif
@@ -50,7 +52,7 @@ public:
 	virtual SNACC::SizeConstraint* SizeConstraints() const	{ return NULL; }
 //	virtual SNACC::SizeConstraint* SizeConstraints()		{ return NULL; }
 	
-	virtual void Allocate(long size)						{}
+	virtual void Allocate(long size ESNACC_UNUSED) {}
 	virtual void Clear()									{ this->clear(); }
 	virtual SNACC::AsnLen Interpret(SNACC::AsnBufBits& b, long offset) const;
 	virtual void Deterpret(SNACC::AsnBufBits& b, SNACC::AsnLen& bitsDecoded,

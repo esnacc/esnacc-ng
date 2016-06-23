@@ -997,15 +997,16 @@ void AsnReal::BDec (const AsnBuf &b, AsnLen &bytesDecoded)
 
 void AsnReal::Print(std::ostream& os, unsigned short /*indent*/) const
 {
-	os << value;
+    os << value;
 }
 
 void AsnReal::PrintXML (std::ostream &os, const char *lpszTitle) const 
 {
-   os << "<REAL>"; 
-   if (lpszTitle) os << lpszTitle; 
-   os << "-"; 
-   Print(os); os << "</REAL>\n"; 
+    const char *tagName = typeName();
+    if (lpszTitle) tagName = lpszTitle;
+    os << "<" << tagName << ">\n";
+    Print(os);
+    os << "</" << tagName << ">\n";
 }
 
 
