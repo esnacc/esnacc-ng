@@ -36,13 +36,17 @@ AC_USE_SYSTEM_EXTENSIONS
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 AC_PROG_LN_S
 AC_PROG_LEX
+test "$LEX" == ":" && AC_MSG_ERROR([Please install lex/flex])
 if test "x$LEX" != xflex; then
   LEX="$SHELL $missing_dir/missing flex"
   AC_SUBST([LEX_OUTPUT_ROOT], [lex.yy])
   AC_SUBST([LEXLIB], [''])
 fi
+
+AC_CHECK_PROGS(YACC,'bison -y' byacc yacc,no)
+test x"$YACC" == xno && AC_MSG_ERROR([Please install yacc/bison])
+
 AC_PROG_SED
-AC_PROG_YACC
 AC_PROG_INSTALL
 AC_C_CONST
 AC_C_INLINE
