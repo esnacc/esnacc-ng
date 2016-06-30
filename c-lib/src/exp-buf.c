@@ -351,6 +351,8 @@ int
 ExpBufWriteError PARAMS ((b),
     ExpBuf **b)
 {
+    if (b == NULL || *b == NULL)
+        return -1;
     return (*b)->writeError;
 } /* ExpBufWriteError */
 

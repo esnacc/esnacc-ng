@@ -15,7 +15,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-AC_INIT([esnacc], [1.80])
+m4_define([esnacc_major], [1])
+m4_define([esnacc_minor], [8])
+m4_define([esnacc_micro], [99])
+m4_define([esnacc_interface_age], [0])
+m4_define([esnacc_binary_age], [m4_eval(100 * esnacc_minor + esnacc_micro)])
+m4_define([esnacc_binary_compat], [1.7.4])
+
+m4_define([esnacc_version], [esnacc_major.esnacc_minor.esnacc_micro])
+
+AC_INIT([esnacc], [esnacc_version])
 AC_PREREQ([2.60])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
@@ -27,13 +36,17 @@ AC_USE_SYSTEM_EXTENSIONS
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 AC_PROG_LN_S
 AC_PROG_LEX
+test "$LEX" == ":" && AC_MSG_ERROR([Please install lex/flex])
 if test "x$LEX" != xflex; then
   LEX="$SHELL $missing_dir/missing flex"
   AC_SUBST([LEX_OUTPUT_ROOT], [lex.yy])
   AC_SUBST([LEXLIB], [''])
 fi
+
+AC_CHECK_PROGS(YACC,'bison -y' byacc yacc,no)
+test x"$YACC" == xno && AC_MSG_ERROR([Please install yacc/bison])
+
 AC_PROG_SED
-AC_PROG_YACC
 AC_PROG_INSTALL
 AC_C_CONST
 AC_C_INLINE
@@ -53,6 +66,14 @@ AS_IF([ test "$enable_code_coverage" = "yes"], [
     LDFLAGS=$CODE_COVERAGE_LDFLAGS
 ])
 AC_CHECK_XSLTPROC
+
+#libtool version interface
+m4_define([lt_current],
+          [m4_eval(100 * esnacc_minor + esnacc_micro - esnacc_interface_age)])
+m4_define([lt_revision], [esnacc_interface_age])
+m4_define([lt_age], [m4_eval(esnacc_binary_age - esnacc_interface_age)])
+LT_VERSION_INTF="lt_current:lt_revision:lt_age"
+AC_SUBST(LT_VERSION_INTF)
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
 

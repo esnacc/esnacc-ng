@@ -248,7 +248,7 @@ int parseErrCountG = 0;
               GRAPHICSTRING_SYM GENERALSTRING_SYM BMPSTRING_SYM
 			  UNIVERSALSTRING_SYM UTF8STRING_SYM
               GENERALIZEDTIME_SYM UTCTIME_SYM EXTERNAL_SYM
-              OBJECTDESCRIPTOR_SYM
+              OBJECTDESCRIPTOR_SYM AUTOMATIC_SYM
               /* the following are used in macros */
               OPERATION_SYM ARGUMENT_SYM RESULT_SYM ERRORS_SYM LINKED_SYM
               ERROR_SYM PARAMETER_SYM
@@ -515,6 +515,13 @@ ModuleDefinition:
 TagDefault:
     EXPLICIT_SYM TAGS_SYM { $$ = EXPLICIT_TAGS; }
   | IMPLICIT_SYM TAGS_SYM { $$ = IMPLICIT_TAGS; }
+  | AUTOMATIC_SYM TAGS_SYM
+    {
+        printf("Automatic Tags are not properly supported.\n");
+        printf("%s(%ld). Using Explicit tags.\n", modulePtrG->asn1SrcFileName,
+               myLineNoG);
+        $$ = EXPLICIT_TAGS;
+    }
   | empty
     {
         /* default is EXPLICIT TAGS */
@@ -893,6 +900,10 @@ BuiltinType:
   {
 		SetupType (&$$, BASICTYPE_OCTETSTRING, myLineNoG);
   }
+  | OCTET_SYM STRING_SYM SizeConstraint
+  {
+		SetupType (&$$, BASICTYPE_OCTETSTRING, myLineNoG);
+  }
   | CharStrType
   | UsefulType
   | RelativeOIDType
@@ -1034,6 +1045,11 @@ RealType:
 
 BitStringType:
     BIT_SYM STRING_SYM
+    {
+        SetupType (&$$, BASICTYPE_BITSTRING, myLineNoG);
+        $$->basicType->a.bitString = NEWLIST(); /* empty list */
+    }
+  | BIT_SYM STRING_SYM SizeConstraint
     {
         SetupType (&$$, BASICTYPE_BITSTRING, myLineNoG);
         $$->basicType->a.bitString = NEWLIST(); /* empty list */
@@ -1611,6 +1627,11 @@ OctetContainingType:
         SetupType (&$$, BASICTYPE_OCTETCONTAINING, myLineNoG);
         $$->basicType->a.stringContaining = $4;
     }
+  | OCTET_SYM STRING_SYM LEFTPAREN_SYM CONTAINING_SYM Type RIGHTPAREN_SYM
+    {
+        SetupType (&$$, BASICTYPE_OCTETCONTAINING, myLineNoG);
+        $$->basicType->a.stringContaining = $5;
+    }
 ;
 
 BitContainingType:
@@ -1618,6 +1639,11 @@ BitContainingType:
     {
         SetupType (&$$, BASICTYPE_BITCONTAINING, myLineNoG);
         $$->basicType->a.stringContaining = $4;
+    }
+  | BIT_SYM STRING_SYM LEFTPAREN_SYM CONTAINING_SYM Type RIGHTPAREN_SYM
+    {
+        SetupType (&$$, BASICTYPE_BITCONTAINING, myLineNoG);
+        $$->basicType->a.stringContaining = $5;
     }
 ;
 
@@ -1890,6 +1916,12 @@ SizeConstraint:
         $$ = MT (SubtypeValue);
         $$->choiceId = SUBTYPEVALUE_SIZECONSTRAINT;
         $$->a.sizeConstraint = $2;
+    }
+  | LEFTPAREN_SYM SIZE_SYM SubtypeSpec RIGHTPAREN_SYM
+    {
+        $$ = MT (SubtypeValue);
+        $$->choiceId = SUBTYPEVALUE_SIZECONSTRAINT;
+        $$->a.sizeConstraint = $3;
     }
 ;
 

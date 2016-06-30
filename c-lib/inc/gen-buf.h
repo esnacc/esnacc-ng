@@ -171,7 +171,7 @@ static inline
 int
 GenBufSetWriteError(GenBuf *b, unsigned short value)
 {
-    return b->setWriteError(b, value);
+    return b->setWriteError(b->bufInfo, value);
 }
 
 static inline

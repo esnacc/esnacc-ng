@@ -90,6 +90,11 @@ c_lib_libcasn1_la_CFLAGS = \
 	-I$(top_srcdir)/c-lib/src \
 	-I$(top_srcdir)/c-lib/inc
 
+c_lib_libcasn1_la_LDFLAGS = \
+	$(LDFLAGS) \
+	$(PTHREAD_CFLAGS) \
+	$(all_lib_LDFLAGS)
+
 EXTRA_DIST += \
 	c-lib/libesnacc.pc.in
 
