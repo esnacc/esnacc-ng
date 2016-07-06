@@ -1436,10 +1436,9 @@ IsTailOptional PARAMS ((e),
         return TRUE;
 
     retVal = TRUE;
-    FOR_REST_LIST_ELMT (elmt, e)
-    {
-        if ((!elmt->type->optional) && (elmt->type->defaultVal == NULL))
-        {
+    FOR_REST_LIST_ELMT (elmt, e) {
+        if ((!elmt->type->optional) && (elmt->type->defaultVal == NULL) &&
+            (!elmt->type->extensionAddition)) {
             retVal = FALSE;
             break;
         }
@@ -1481,10 +1480,9 @@ NextIsTailOptional PARAMS ((e),
     SET_CURR_LIST_NODE (e, tmp2);
 
     retVal = TRUE;
-    FOR_REST_LIST_ELMT (elmt, e)
-    {
-        if ((!elmt->type->optional) && (elmt->type->defaultVal == NULL))
-        {
+    FOR_REST_LIST_ELMT (elmt, e) {
+        if ((!elmt->type->optional) && (elmt->type->defaultVal == NULL) &&
+            (!elmt->type->extensionAddition)) {
             retVal = FALSE;
             break;
         }
@@ -1513,10 +1511,9 @@ AllElmtsOptional PARAMS ((e),
     SET_CURR_LIST_NODE (e, FIRST_LIST_NODE (e));
 
     retVal = TRUE;
-    FOR_REST_LIST_ELMT (elmt, e)
-    {
-        if ((!elmt->type->optional) && (elmt->type->defaultVal == NULL))
-        {
+    FOR_REST_LIST_ELMT (elmt, e) {
+        if ((!elmt->type->optional) && (elmt->type->defaultVal == NULL) &&
+            (!elmt->type->extensionAddition)) {
             retVal = FALSE;
             break;
         }
