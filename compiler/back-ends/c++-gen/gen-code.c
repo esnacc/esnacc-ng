@@ -2241,73 +2241,67 @@ PrintCxxSeqDefCode (FILE *src, FILE *hdr, ModuleList *mods, Module *m,
     fprintf (src, "}\n\n");
 
     /* BerEncodeContent method */
-    if (printEncodersG)
-    {
-        fprintf (hdr, "  %s		B%s (%s &_b) const;\n", lenTypeNameG, r->encodeContentBaseName, bufTypeNameG);
-        fprintf (src, "%s\n", lenTypeNameG);
-        fprintf (src, "%s::B%s (%s &_b) const\n", td->cxxTypeDefInfo->className, r->encodeContentBaseName, bufTypeNameG);
-        fprintf (src, "{\n");
+    if (printEncodersG) {
+        fprintf(hdr, "  %s		B%s (%s &_b) const;\n", lenTypeNameG,
+                r->encodeContentBaseName, bufTypeNameG);
+        fprintf(src, "%s\n", lenTypeNameG);
+        fprintf(src, "%s::B%s (%s &_b) const\n", td->cxxTypeDefInfo->className,
+                r->encodeContentBaseName, bufTypeNameG);
+        fprintf(src, "{\n");
 
         /* print local vars */
-        fprintf (src, "  %s totalLen = 0;\n", lenTypeNameG);
-        fprintf (src, "  %s l=0;\n\n", lenTypeNameG);
+        fprintf(src, "  %s totalLen = 0;\n", lenTypeNameG);
+        fprintf(src, "  %s l=0;\n\n", lenTypeNameG);
 
-        FOR_EACH_LIST_ELMT_RVS (e, seq->basicType->a.sequence)
-        {
+        FOR_EACH_LIST_ELMT_RVS (e, seq->basicType->a.sequence) {
             cxxtri =  e->type->cxxTypeRefInfo;
             varName = cxxtri->fieldName;
 
             /* print optional test if nec */
-            if (e->type->defaultVal != NULL)
-            {
-               Value *defVal = GetValue(e->type->defaultVal->value);
-               /** PIERCE added DER DEFAULT encoding rules 8-16-2000 
-                **/
+            if (e->type->defaultVal != NULL) {
+                Value *defVal = GetValue(e->type->defaultVal->value);
 
-               /* HANDLE DEFAULT VALUE ENCODING FOR DER
-                */
-               switch(ParanoidGetBuiltinType(e->type))
-               {
-                  case BASICTYPE_INTEGER:
-                  case BASICTYPE_ENUMERATED:
-                     fprintf(src,"  if ( %s(%s) && *%s != %d )\n  {\n", 
-                        cxxtri->optTestRoutineName,
-                        varName, varName, defVal->basicValue->a.integer);
-                     break;
-                  case BASICTYPE_BITSTRING:
-                     {
-                        if (defVal->basicValue->choiceId == BASICVALUE_VALUENOTATION)
-                        {
-                           char *defBitStr;
-                           normalizeValue(&defBitStr, defVal->basicValue->a.valueNotation->octs);
-                           fprintf(src,"  if ( %s(%s) && (! %s->soloBitCheck(%s::%s)) ) \n  {\n",
-                               cxxtri->optTestRoutineName, varName, varName, cxxtri->className, defBitStr);
-                           //RWC;ALLOW "}" alignment using editor...
-                           free(defBitStr);
+                /* HANDLE DEFAULT VALUE ENCODING FOR DER */
+                switch(ParanoidGetBuiltinType(e->type)) {
+                case BASICTYPE_INTEGER:
+                case BASICTYPE_ENUMERATED:
+                    fprintf(src,"  if ( %s(%s) && *%s != %d )\n  {\n",
+                            cxxtri->optTestRoutineName,
+                            varName, varName, defVal->basicValue->a.integer);
+                    break;
+                case BASICTYPE_BITSTRING:
+                    {
+                        if (defVal->basicValue->choiceId ==
+                            BASICVALUE_VALUENOTATION) {
+                            char *defBitStr;
+                            normalizeValue(&defBitStr,
+                                           defVal->basicValue->a.valueNotation->octs);
+                            fprintf(src, "    if (%s(%s) && (!%s->soloBitCheck(%s::%s))) {\n",
+                                    cxxtri->optTestRoutineName, varName, varName,
+                                    cxxtri->className, defBitStr);
+
+                            free(defBitStr);
+                        } else {
+                            fprintf(errFileG,
+                                    "WARNING: unsupported use of default BIT STRING\n");
                         }
-                        else
-                           printf("\nWARNING: unsupported use of default BIT STRING\n");
-                     }
-                     break;
-                  case BASICTYPE_BOOLEAN:
-                     fprintf(src,"  if ( %s(%s) && *%s != %s )\n  {\n", 
-                        cxxtri->optTestRoutineName, varName, varName, defVal->basicValue->a.boolean ? "true" : "false");
-                     //RWC;ALLOW "}" alignment using editor...
-                     break;
-					   default:
-							/* TBD print error? */
-							break;
+                    }
+                    break;
+                case BASICTYPE_BOOLEAN:
+                    fprintf(src, "    if (%s(%s) && *%s != %s ) {\n",
+                            cxxtri->optTestRoutineName, varName, varName,
+                            defVal->basicValue->a.boolean ? "true" : "false");
+                    break;
+                default:
+                    fprintf(src, "    if (%s) {\n", varName);
+                    break;
                }
+            } else if (e->type->optional) {
+                fprintf(src, "    if (%s(%s)) {\n", cxxtri->optTestRoutineName,
+                        varName);
             }
-            else if (e->type->optional)            
-	         {
-                fprintf (src, "  if (%s (%s))\n", cxxtri->optTestRoutineName, varName);
-                fprintf (src, "  {\n");
-                //RWC;ALLOW "}" alignment using editor...
-	         }
-            
 
-            /* eSNACC 1.5 does not encode indefinite length
+            /* eSNACC does not encode indefinite length
              *
              * PrintCxxEocEncoders (src, td, e->type, "_b");
              */
