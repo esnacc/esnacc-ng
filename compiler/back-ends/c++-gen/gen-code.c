@@ -4231,147 +4231,135 @@ PrintCxxCode PARAMS ((src, hdr, if_META (printMeta COMMA meta COMMA meta_pdus CO
      */
     if (gNO_NAMESPACE == 0)
     {
-       fprintf(hdr,"#ifndef NO_NAMESPACE\n");
-       if (gAlternateNamespaceString)
-       {
-          fprintf(hdr,"using namespace SNACC;\n");
-          fprintf(src,"using namespace SNACC;\n");
-          fprintf(hdr,"namespace %s {\n", gAlternateNamespaceString);
-          fprintf(src,"namespace %s {\n", gAlternateNamespaceString);
+       fprintf(hdr, "#ifndef NO_NAMESPACE\n");
+       fprintf(src, "#ifndef NO_NAMESPACE\n");
+       if (gAlternateNamespaceString) {
+          fprintf(hdr, "using namespace SNACC;\n");
+          fprintf(src, "using namespace SNACC;\n");
+          fprintf(hdr, "namespace %s {\n", gAlternateNamespaceString);
+          fprintf(src, "namespace %s {\n", gAlternateNamespaceString);
+       } else if (m->namespaceToUse) {
+          fprintf(hdr, "using namespace SNACC;\n");
+          fprintf(src, "using namespace SNACC;\n");
+          fprintf(hdr, "namespace %s {\n", m->namespaceToUse);
+          fprintf(src, "namespace %s {\n", m->namespaceToUse);
+       } else {
+          fprintf(hdr, "namespace SNACC {\n");
+          fprintf(src, "namespace SNACC {\n");
        }
-       else if (m->namespaceToUse)
-       {            // PRINT namespace designated in .asn1 file for this module.
-          fprintf(hdr,"using namespace SNACC;\n");
-          fprintf(src,"using namespace SNACC;\n");
-          fprintf(hdr,"namespace %s {\n", m->namespaceToUse);
-          fprintf(src,"namespace %s {\n", m->namespaceToUse);
-       }
-       else
-       {
-          fprintf(hdr,"namespace SNACC {\n"); 
-	      fprintf(src,"namespace SNACC{\n"); 
-       }
-       fprintf(hdr,"#endif\n");
+       fprintf(hdr, "#endif\n");
+       fprintf(src, "#endif\n");
     }
 
-    if (bVDAGlobalDLLExport)
-    {
-       /* RWC; VDA Enhanced to allow produced files to be DLLs exporting 
-        * SNACC classes.
-        */
-        fprintf (hdr, 
-         "// RWC; IF static refs to this class set, compiler define %s=""""\n", 
-        bVDAGlobalDLLExport);
-
-        fprintf (hdr, "#ifndef %s\n", bVDAGlobalDLLExport);
-        fprintf (hdr, "#if defined(WIN32)\n");
-        fprintf (hdr, "#pragma warning( disable : 4251)\n");
-        if (strcmp(bVDAGlobalDLLExport, "SNACCDLL_API") == 0)
-        {
+    if (bVDAGlobalDLLExport) {
+        fprintf(hdr, "#ifndef %s\n", bVDAGlobalDLLExport);
+        fprintf(hdr, "#if defined(WIN32)\n");
+        fprintf(hdr, "#pragma warning( disable : 4251)\n");
+        if (strcmp(bVDAGlobalDLLExport, "SNACCDLL_API") == 0) {
            /* Special case for compatibility */
-           fprintf (hdr, "#ifdef SNACCDLL_EXPORTS\n");
-        }
-        else
-        {
-           fprintf (hdr, "#ifdef %s_EXPORTS\n", bVDAGlobalDLLExport);
+           fprintf(hdr, "#ifdef SNACCDLL_EXPORTS\n");
+        } else {
+           fprintf(hdr, "#ifdef %s_EXPORTS\n", bVDAGlobalDLLExport);
         }
 
-       fprintf (hdr, "#define %s __declspec(dllexport)\n", bVDAGlobalDLLExport);
-       fprintf (hdr, "#else\n");
-       fprintf (hdr, "#define %s __declspec(dllimport)\n", bVDAGlobalDLLExport);
-       fprintf (hdr, "#endif      // %s\n", bVDAGlobalDLLExport);
-       fprintf (hdr, "#else       // Handle Unix...\n");
-       fprintf (hdr, "#define %s \n", bVDAGlobalDLLExport);
-       fprintf (hdr, "#endif      // WIN32\n");
-       fprintf (hdr, "#endif      // %s\n", bVDAGlobalDLLExport);
-    }       /* RWC;VDA; END Additional support for DLLs. */
+        fprintf(hdr, "#define %s __declspec(dllexport)\n", bVDAGlobalDLLExport);
+        fprintf(hdr, "#else\n");
+        fprintf(hdr, "#define %s __declspec(dllimport)\n", bVDAGlobalDLLExport);
+        fprintf(hdr, "#endif      // %s\n", bVDAGlobalDLLExport);
+        fprintf(hdr, "#else       // Handle Unix...\n");
+        fprintf(hdr, "#define %s \n", bVDAGlobalDLLExport);
+        fprintf(hdr, "#endif      // WIN32\n");
+        fprintf(hdr, "#endif      // %s\n", bVDAGlobalDLLExport);
+    }
 
-    fprintf (hdr, "//------------------------------------------------------------------------------\n");
+    fprintf (hdr,
+             "//------------------------------------------------------------------------------\n");
     fprintf (hdr, "// class declarations:\n\n");
-    FOR_EACH_LIST_ELMT (td, m->typeDefs)
+    FOR_EACH_LIST_ELMT (td, m->typeDefs) {
         PrintTypeDecl (hdr, td);
+    }
+
     fprintf (hdr, "\n");
 
-    #if META
-        if (printMeta)
-        {
+#if META
+    if (printMeta) {
 	    fprintf (hdr, "#if META\n");
 	    fprintf (src, "#if META\n\n");
 
-	    fprintf (hdr, "//------------------------------------------------------------------------------\n");
+        fprintf (hdr, "//------------------------------------------------------------------------------\n");
 
-       char *ptr="";   /* NOT DLL Exported, or ignored on Unix. */
-       if (bVDAGlobalDLLExport != NULL) 
-          ptr = bVDAGlobalDLLExport;
-	    
-       fprintf (hdr, "extern const %s AsnModuleDesc %sModuleDesc;\n", ptr, m->cxxname);
+        char *ptr="";   /* NOT DLL Exported, or ignored on Unix. */
 
-	    fprintf (src, "//------------------------------------------------------------------------------\n");
-	    fprintf (src, "static const AsnTypeDesc *%sModuleTypes[] =\n", m->cxxname);
-	    fprintf (src, "{\n");
-	    FOR_EACH_LIST_ELMT (td, m->typeDefs)
-	        fprintf (src, "  &%s::_desc,\n", td->cxxTypeDefInfo->className);
-	    fprintf (src, "  NULL\n");
-	    fprintf (src, "};\n\n");
-
-    #if 0 /* yet unused: */
-	    if (printMetaG == META_backend_names)
-	    else /* META_asn1_names */
-    #endif
-
-	    fprintf (src, "const AsnModuleDesc %sModuleDesc = { \"%s\", %sModuleTypes };\n\n", m->cxxname, m->modId->name, m->cxxname);
-
-	    fprintf (hdr, "#endif // META\n\n");
-	    fprintf (src, "#endif // META\n\n");
+        if (bVDAGlobalDLLExport != NULL) {
+            ptr = bVDAGlobalDLLExport;
         }
-    #endif /* META */
+
+        fprintf(hdr, "extern const %s AsnModuleDesc %sModuleDesc;\n",
+                ptr, m->cxxname);
+
+	    fprintf(src, "//------------------------------------------------------------------------------\n");
+	    fprintf(src, "static const AsnTypeDesc *%sModuleTypes[] = {\n", m->cxxname);
+	    FOR_EACH_LIST_ELMT(td, m->typeDefs) {
+	        fprintf(src, "    &%s::_desc,\n", td->cxxTypeDefInfo->className);
+        }
+
+	    fprintf(src, "    NULL\n");
+	    fprintf(src, "};\n");
+
+	    fprintf(src,
+                "const AsnModuleDesc %sModuleDesc = { \"%s\", %sModuleTypes };\n\n",
+                m->cxxname, m->modId->name, m->cxxname);
+
+        fprintf(hdr, "#endif // META\n\n");
+        fprintf(src, "#endif // META\n\n");
+    }
+#endif /* META */
 
     /* REMOVE PIERCE changed to print the Value definitions to the header file
      * 10-25-2001
      */
-    if (printValues)
-    {
-	     fprintf (src, "//------------------------------------------------------------------------------\n");
-        fprintf (src, "// value defs\n\n");
-        FOR_EACH_LIST_ELMT (vd, m->valueDefs)
-            PrintCxxValueDef (src, r, vd);
-        fprintf (src, "\n");
+    if (printValues) {
+        fprintf(src, "//------------------------------------------------------------------------------\n");
+        fprintf(src, "// value defs\n\n");
+        FOR_EACH_LIST_ELMT (vd, m->valueDefs) {
+            PrintCxxValueDef(src, r, vd);
+        }
+        fprintf(src, "\n");
     }
+
     /* REMOVE PIERCE changed const values to print to the header file only.  This negates the 
      * need to extern or export the const values.
      * 10-25-2001
      */
-    if (printValues)
-    {
-	    fprintf (hdr, "//------------------------------------------------------------------------------\n");
-       fprintf (hdr, "// externs for value defs\n\n");
+    if (printValues) {
+        fprintf(hdr, "//------------------------------------------------------------------------------\n");
+        fprintf(hdr, "// externs for value defs\n\n");
        FOR_EACH_LIST_ELMT (vd, m->valueDefs)
             PrintCxxValueExtern (hdr, r, vd);
+       fprintf(hdr, "//------------------------------------------------------------------------------\n");
     }
 
-    fprintf (hdr, "//------------------------------------------------------------------------------\n");
-
-    fprintf (hdr, "//------------------------------------------------------------------------------\n");
-    fprintf (hdr, "// class definitions:\n\n");
-    fprintf (src, "//------------------------------------------------------------------------------\n");
-    fprintf (src, "// class member definitions:\n\n");
+    fprintf(hdr, "//------------------------------------------------------------------------------\n");
+    fprintf(hdr, "// class definitions:\n\n");
+    fprintf(src, "//------------------------------------------------------------------------------\n");
+    fprintf(src, "// class member definitions:\n\n");
 
     PrintCxxAnyCode (src, hdr, r, mods, m);
 
-    FOR_EACH_LIST_ELMT (td, m->typeDefs)
+    FOR_EACH_LIST_ELMT (td, m->typeDefs) {
         PrintCxxTypeDefCode (src, hdr, mods, m, r, td, novolatilefuncs);
+    }
 
-   /* 7-09-2001 Pierce Leonberger
-    */
-   if (gNO_NAMESPACE == 0)
-   {
-      fprintf(hdr, "#ifndef NO_NAMESPACE\n");
-      fprintf(hdr, "} // namespace close\n");
-      fprintf(hdr, "#endif\n");
-      fprintf(src, "#ifndef NO_NAMESPACE\n");
-      fprintf(src, "} // namespace close\n");
-      fprintf(src, "#endif\n");
-   }
+    /* 7-09-2001 Pierce Leonberger
+     */
+    if (gNO_NAMESPACE == 0) {
+        fprintf(hdr, "#ifndef NO_NAMESPACE\n");
+        fprintf(hdr, "} // namespace close\n");
+        fprintf(hdr, "#endif\n");
+        fprintf(src, "#ifndef NO_NAMESPACE\n");
+        fprintf(src, "} // namespace close\n");
+        fprintf(src, "#endif\n");
+    }
 
     PrintConditionalIncludeClose (hdr, m->cxxHdrFileName);
 
