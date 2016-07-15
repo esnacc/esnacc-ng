@@ -108,6 +108,8 @@ BasicValue * GetLastNamedNumberValue PROTO ((NamedNumberList *valueList));
 
 void SetupType PROTO ((Type **t, enum BasicTypeChoiceId typeId, unsigned long lineNum));
 
+void AutomaticTagNamed PROTO ((NamedTypeList *l));
+
 void SetupMacroType PROTO ((Type **t, enum MacroTypeChoiceId macroTypeId, unsigned long lineNum));
 
 void SetupValue PROTO ((Value **v, enum BasicValueChoiceId valId, unsigned long lineNum));

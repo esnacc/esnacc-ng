@@ -1622,5 +1622,76 @@ AppendSubtype PARAMS ((s, newSubtype, op),
 
 }  /* AppendSubtype */
 
+static int
+TagCodeFound(AsnList *tags, AsnInt startingTag)
+{
+    Tag *tag;
+    FOR_EACH_LIST_ELMT(tag, tags) {
+        if (tag->code == startingTag)
+            return 1;
+    }
+    return 0;
+}
 
+void
+AutomaticTagNamed PARAMS ((l, all),
+    NamedTypeList *l)
+{
+    AsnList *used_tag;
+    NamedType *e;
+    void *lcurr;
+    AsnInt startingTag = 0;
 
+    if (l == NULL) {
+        fprintf(errFileG, "AutomaticTagNamed - NULL tag list.\n");
+    }
+
+    /* Two passes */
+    used_tag = AsnListNew(sizeof(void*));
+    /* First pass, identify all the tags, and all the elements which
+       need tags */
+    lcurr = l->curr;
+    FOR_EACH_LIST_ELMT(e, l) {
+        if (e->type->tags != NULL) {
+            Tag *t;
+            void *curr = e->type->tags->curr;
+            FOR_EACH_LIST_ELMT(t, e->type->tags) {
+                if (t->tclass == CNTX) {
+                    APPEND(t, used_tag);
+                    break;
+                }
+            }
+            e->type->tags->curr = curr;
+        }
+    }
+    FOR_EACH_LIST_ELMT(e, l) {
+        int found = 0;
+        Tag *t;
+        FOR_EACH_LIST_ELMT(t, e->type->tags) {
+            if (t->tclass == CNTX) {
+                fprintf(errFileG, "CNTX tag exists\n");
+                found = 1;
+            }
+        }
+        if (!found) {
+            Tag *newTag = Malloc(sizeof(Tag));
+            newTag->tclass = CNTX;
+            newTag->form = PRIM;
+            newTag->valueRef = NULL;
+            /* It seems strange to only use context tagging; however, after
+             * some brief interop testing, that seems like the right thing to
+             * do */
+            if (!(e->type->tags))
+                AsnListFree(e->type->tags);
+            e->type->tags = AsnListNew(sizeof(void *));
+            while(TagCodeFound(used_tag, startingTag))
+                startingTag++;
+            newTag->code = startingTag++;
+            newTag->explicit = FALSE;
+            PREPEND(newTag, e->type->tags);
+        }
+    }
+    l->curr = lcurr;
+
+    AsnListFree(used_tag);
+}
