@@ -517,10 +517,8 @@ TagDefault:
   | IMPLICIT_SYM TAGS_SYM { $$ = IMPLICIT_TAGS; }
   | AUTOMATIC_SYM TAGS_SYM
     {
-        printf("Automatic Tags are not properly supported.\n");
-        printf("%s(%ld). Using Explicit tags.\n", modulePtrG->asn1SrcFileName,
-               myLineNoG);
-        $$ = EXPLICIT_TAGS;
+        $$ = AUTOMATIC_TAGS;
+        fprintf(errFileG, "WARNING: AUTOMATIC tags are still experimental.\n");
     }
   | empty
     {
@@ -1093,14 +1091,16 @@ SequenceType:
 
         SetupType (&$$, BASICTYPE_SEQUENCE, $1);
 
-        if (AsnListCount ((AsnList*)$2) != 0)
-        {
+        if (AsnListCount ((AsnList*)$2) != 0) {
             n = (NamedType*) FIRST_LIST_ELMT ((AsnList*)$2);
             n->type->lineNo = $1;
         }
 
         $$->basicType->a.sequence = $2;
 
+        if (modulePtrG->tagDefault == AUTOMATIC_TAGS) {
+            AutomaticTagNamed($$->basicType->a.sequence);
+        }
     }
   | SequenceOpening RIGHTBRACE_SYM
     {
@@ -1318,12 +1318,16 @@ SetType:
         SetupType (&$$, BASICTYPE_SET, $1);
 
         /* reset first elmt's line number */
-        if (AsnListCount ((AsnList*)$2) != 0)
-        {
+        if (AsnListCount ((AsnList*)$2) != 0) {
             n = (NamedType*)FIRST_LIST_ELMT ((AsnList*)$2);
             n->type->lineNo = $1;
         }
+
         $$->basicType->a.set = $2;
+
+        if (modulePtrG->tagDefault == AUTOMATIC_TAGS) {
+            AutomaticTagNamed($$->basicType->a.set);
+        }
     }
   | SetOpening RIGHTBRACE_SYM
     {
@@ -1361,12 +1365,15 @@ ChoiceType:
 
         SetupType (&$$, BASICTYPE_CHOICE, $2);
 
-        $$->basicType->a.choice = $4;
-
-        if (AsnListCount ($4) != 0)
-        {
+        if (AsnListCount ($4) != 0) {
             n = (NamedType*)FIRST_LIST_ELMT ($4);
             n->type->lineNo = $2;
+        }
+
+        $$->basicType->a.choice = $4;
+
+        if (modulePtrG->tagDefault == AUTOMATIC_TAGS) {
+            AutomaticTagNamed($$->basicType->a.choice);
         }
     }
 ;

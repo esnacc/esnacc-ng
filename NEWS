@@ -7,6 +7,9 @@
 * Fixed minbuf to follow the GenBuf abstraction
 * Fixed GenBuf prototype
 * Moved GenBuf macros to static inline functions
+* Added support for modern style CONTAINs/SIZEs
+* Fixed default value generation code for the C++ backend.
+* Added experimental AUTOMATIC tags support
 
 =======================================================================
 

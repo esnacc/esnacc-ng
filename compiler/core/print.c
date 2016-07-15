@@ -94,29 +94,27 @@ PrintModule PARAMS ((f, mod),
     Module *mod)
 {
 
-   if (mod->status == MOD_ERROR)
-   {
-       fprintf (f, "WARNING: this module contains errors\n");
-       fprintf (f,"(probably some type/value is referenced but is not defined or imported)\n");
-       fprintf (f,"The prog. may croak, cross your fingers!\n");
+   if (mod->status == MOD_ERROR) {
+       fprintf(f, "WARNING: this module contains errors\n");
+       fprintf(f,"(probably some type/value is referenced but is not defined or imported)\n");
+       fprintf(f,"The prog. may croak, cross your fingers!\n");
    }
 
+   fprintf(f, "%s ",mod->modId->name);
+   PrintOid(f, mod->modId->oid);
 
-   fprintf (f, "%s ",mod->modId->name);
-   PrintOid (f, mod->modId->oid);
-
-   fprintf (f, "\nDEFINITIONS ");
+   fprintf(f, "\nDEFINITIONS ");
 
    if (mod->tagDefault == EXPLICIT_TAGS)
-       fprintf (f, "EXPLICIT TAGS");
-
+       fprintf(f, "EXPLICIT TAGS");
    else if (mod->tagDefault == IMPLICIT_TAGS)
-       fprintf (f, "IMPLICIT TAGS");
+       fprintf(f, "IMPLICIT TAGS");
+   else if (mod->tagDefault == AUTOMATIC_TAGS)
+       fprintf(f, "AUTOMATIC TAGS");
    else
-       fprintf (f, "\n\n -- compiler error unknown tag default");
+       fprintf(f, "\n\n -- compiler error unknown tag default");
 
-
-   fprintf (f, " ::=\nBEGIN\n\n");
+   fprintf(f, " ::=\nBEGIN\n\n");
 
 
 
