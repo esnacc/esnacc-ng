@@ -5,6 +5,8 @@ check_PROGRAMS += cxx-examples/main
 cxx_examples_main_SOURCES = \
 	cxx-examples/src/asnutil.cpp \
 	cxx-examples/src/asnutil.h \
+	cxx-examples/src/autotags.cpp \
+	cxx-examples/src/automatic.cpp \
 	cxx-examples/src/bitstest.cpp \
 	cxx-examples/src/gfsi.cpp \
 	cxx-examples/src/inttest.cpp \
@@ -44,12 +46,21 @@ $(top_builddir)/cxx-examples/src/rfc1157-snmp.cpp: \
 	$(top_builddir)/compiler/esnacc -C -mo `dirname $@` \
 	$< -I $(top_srcdir)/cxx-examples/src
 
+$(top_builddir)/cxx-examples/src/autotags.cpp: \
+ $(top_srcdir)/cxx-examples/src/autotags.asn1 \
+ $(top_builddir)/compiler/esnacc
+	$(top_builddir)/compiler/esnacc -C -mo `dirname $@` \
+	$<
+
 EXTRA_DIST+= \
+	cxx-examples/src/autotags.asn1 \
 	cxx-examples/src/rfc1155-smi.asn1 \
 	cxx-examples/src/rfc1157-snmp.asn1
 
 CLEANFILES+= \
 	test.txt \
+	cxx-examples/src/autotags.cpp \
+	cxx-examples/src/autotags.h \
 	cxx-examples/src/rfc1157-snmp.cpp \
 	cxx-examples/src/rfc1157-snmp.h \
 	cxx-examples/src/rfc1155-smi.cpp \

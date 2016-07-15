@@ -4,6 +4,8 @@
 *.log
 *.trs
 main
+src/autotags.cpp
+src/autotags.h
 src/rfc1157-snmp.cpp
 src/rfc1157-snmp.h
 src/rfc1155-smi.cpp

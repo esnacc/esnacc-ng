@@ -6,6 +6,7 @@
 #endif
 
 void newBufTest();
+int automaticTests();
 
 using namespace SNACC;
 
@@ -180,6 +181,9 @@ int main(int argc, char *argv[])
        }
 
        fillTest();
+       if (automaticTests()) {
+           std::cout << "Automatic test failure." << std::endl;
+       }
    } catch (SnaccException &e) {
        std::cout << "\n**** Caught SnaccException ****\n";
        std::cout << "What: " << e.what() << std::endl;
