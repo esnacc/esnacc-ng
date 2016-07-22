@@ -2742,7 +2742,9 @@ PrintCxxSeqDefCode (FILE *src, FILE *hdr, ModuleList *mods, Module *m,
                     }
                     else
                     {
-                        fprintf (src, "      throw EXCEPT(\"SEQUENCE is missing non-optional root elmt\", DECODE_ERROR);\n");
+                        fprintf (src,
+                                 "      throw EXCEPT(\"SEQUENCE is missing non-optional root elmt (%s)\", DECODE_ERROR);\n",
+                                 e->fieldName);
                     }
                     fprintf (src, "  }\n\n");
                 }
