@@ -1,2 +1,2 @@
-#define RELDATE		"UNRELEASED"
-#define BUGREPADDR	"aconole@bytheb.org"
+#define RELDATE		"2016-07-26"
+#define BUGREPADDR	"http://esnacc.org"
