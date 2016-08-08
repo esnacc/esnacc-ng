@@ -1,0 +1,75 @@
+This file attempts to recognize those folks who have contributed software,
+issue reports, or other feedback to the esnacc-ng project.
+
+CONTRIBUTORS
+============
+
+This list represents folks who actively contributed code.  If your name is
+missing, please submit a patch to add it, along with the contribution.  It
+is maintained in alphabetical (by first name) order.
+
+Name                                  Email
+---------------------------------     ------------------------------------
+Aaron Conole                          aconole@bytheb.org
+Bob Colestock
+C McPherson
+Charles Wright                        charles_wright@azimuthsystems.com
+colestor
+DAD
+Dean Povey                            povey@wedgetail.com
+John Pawling                          John.Pawling@GetronicsGov.com
+Joseph Grone
+Matthew J. Bertapelle
+Michael Sample
+Murray Goldberg
+Neeraj Sharma                         neeraj.sharma@alumni.iitg.ernet.in
+Pierce Leonberger
+Richard Nicholas
+Robert Joop                           yaph-070708@timesink.de
+rwc
+Sagara Wickramasekara                 sagaraw@gmail.com
+Scott Rankin
+Tom Horvath
+Uri Blumenthal                        uri@mit.edu
+Vladislav Evgeniev
+
+
+REPORTERS
+=========
+
+This list represents folks who contributed issue reports, bug reports, etc.
+If your name is missing, please let someone know by filing an issue.
+
+Name                                  Email
+---------------------------------     ------------------------------------
+Aftab Alam
+Angel Dimitrov
+Angus Comber
+David O'Farrell
+Dennis Lim
+Dianne Marsh
+Duane Mohney                          dpmohne@gmail.com
+Ekbal Bahri
+Eric Boudreault
+Fernando Poza
+Francois Zeller
+Jaap de Wolff
+John D Nord
+Larry Simmers
+Manju C Shekhar
+Mateo Anderson
+Michael Stevens                       mike.stevens@alum.dartmouth.org
+Mimmo Di Ianni
+Paul Gogarty
+Reetesh Ranjan
+Sameer Mastek
+Sebastian Wangnick
+Shashi Kumar
+Soyab Kapadia
+Stephen N. Henson                     shenson@drh-consultancy.demon.co.uk
+Suresh Shelvapille
+Vadim Slep
+Vasil Velichkov
+Vikaas BV
+Vivek Gupta
+Zhihong Yang
