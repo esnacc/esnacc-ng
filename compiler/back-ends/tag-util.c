@@ -191,7 +191,9 @@ GetTags PARAMS ((t, stoleChoiceTags),
 
                 if (tl == NULL)
                     break;
-
+		if(e->type->basicType->choiceId == BASICTYPE_EXTENSION)
+			continue;
+			
 		          AsnListFirst (tl);
                 if (stoleChoicesAgain)
                 {
