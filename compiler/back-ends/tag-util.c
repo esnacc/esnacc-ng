@@ -10,8 +10,11 @@
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
  *
- * $Header: /baseline/SNACC/compiler/back-ends/tag-util.c,v 1.7 2003/07/28 11:13:51 colestor Exp $
+ * $Header: /baseline/SNACC/compiler/back-ends/tag-util.c,v1.8  2016/08/22  Si Peng Exp $
  * $Log: tag-util.c,v $
+ * Revision 1.8  2016/08/22  Si Peng
+ * Fix a crash when implicit tags are used and child top level tag contains "...".
+ * 
  * Revision 1.7  2003/07/28 11:13:51  colestor
  * Changes to complete handing of the "--snacc namespace" compiler directive.
  * Also, updates to handle ASN.1 constant integer tag designations for C++/C.
@@ -85,7 +88,7 @@
  *   {                                          {
  *         foo [0] INTEGER,                          [0] INTEGER,
  *         bar SomeChoice,                           [1] BOOLEAN,
- *         bell [1] IMPLICIT BOOLEAN,                [2] IA5String
+ *         bell [1] IMPLICIT BOOLEAN,                [2] IA5String,
  *         gumby [2] SomeChoice,                }
            poki SomeOtherChoice
  *   }
