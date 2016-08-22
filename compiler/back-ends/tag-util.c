@@ -10,7 +10,7 @@
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
  *
- * $Header: /baseline/SNACC/compiler/back-ends/tag-util.c,v1.8  2016/08/22  Si Peng Exp $
+ * $Header: /baseline/SNACC/compiler/back-ends/tag-util.c,v 1.8  2016/08/22  Si Peng Exp $
  * $Log: tag-util.c,v $
  * Revision 1.8  2016/08/22  Si Peng
  * Fix a crash when implicit tags are used and child top level tag contains "...".
@@ -89,8 +89,8 @@
  *         foo [0] INTEGER,                          [0] INTEGER,
  *         bar SomeChoice,                           [1] BOOLEAN,
  *         bell [1] IMPLICIT BOOLEAN,                [2] IA5String,
- *         gumby [2] SomeChoice,                }
-           poki SomeOtherChoice
+ *	   gumby [2] SomeChoice,                     ...
+ *         poki SomeOtherChoice			}
  *   }
  *
  *  SomeOtherChoice ::= [APPLICATION 99] CHOICE { ....}
