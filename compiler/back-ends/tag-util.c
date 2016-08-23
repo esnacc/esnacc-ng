@@ -124,19 +124,16 @@ GetTags PARAMS ((t, stoleChoiceTags),
     implicitRef = FALSE;
     *stoleChoiceTags = FALSE;
 
-    for (;;)
-    {
+    for (;;) {
          /*
           * go through tag list local to this type if any
           */
 
-        FOR_REST_LIST_ELMT (tag, tl)
-        {
+        FOR_REST_LIST_ELMT (tag, tl) {
             tagCopy = (Tag*)Malloc (sizeof (Tag));
             memcpy (tagCopy, tag, sizeof (Tag));
             tagHndl = (Tag**)AsnListAppend (retVal);
             *tagHndl = tagCopy;
-
         }
 
         /*
@@ -144,92 +141,74 @@ GetTags PARAMS ((t, stoleChoiceTags),
          */
 
         if ((t->basicType->choiceId == BASICTYPE_LOCALTYPEREF) ||
-             (t->basicType->choiceId == BASICTYPE_IMPORTTYPEREF))
-        {
+             (t->basicType->choiceId == BASICTYPE_IMPORTTYPEREF)) {
             if (!implicitRef)
                 implicitRef = t->implicit;
 
-
-            if (t->basicType->a.localTypeRef->link == NULL)
-            {
-                fprintf (errFileG,"ERROR - unresolved type ref, cannot get tags for decoding>\n");
+            if (t->basicType->a.localTypeRef->link == NULL) {
+                fprintf(errFileG,
+                        "ERROR - unresolved type ref, cannot get tags for decoding>\n");
                 break;
             }
+
             t = t->basicType->a.localTypeRef->link->type;
             tl = t->tags;
 
-            if (tl != NULL)
-            {
+            if (tl != NULL) {
                 AsnListFirst (tl); /* set curr ptr to first node */
-                if ((!LIST_EMPTY (tl)) && implicitRef)
-                {
+                if ((!LIST_EMPTY (tl)) && implicitRef) {
                     AsnListNext (tl);
                     implicitRef = FALSE;
                 }
             }
+        } else if ((t->basicType->choiceId == BASICTYPE_CHOICE) &&
+                   (LIST_EMPTY (retVal))) {
+            /* untagged choice and no tags found yet */
 
-        }
-
-        /*
-         * if untagged choice and no tags found yet
-         */
-        else if ((t->basicType->choiceId == BASICTYPE_CHOICE) && (LIST_EMPTY (retVal)))
-        {
             /*
              * Return list of top level tags from this choice
              * and set "stoleChoiceTags" bool param
              */
             if (implicitRef)
-                fprintf (errFileG,"ERROR - IMPLICITLY Tagged CHOICE\n");
+                fprintf(errFileG, "ERROR - IMPLICITLY Tagged CHOICE\n");
 
             *stoleChoiceTags = TRUE;
 
-            FOR_EACH_LIST_ELMT (e, t->basicType->a.choice)
-            {
+            FOR_EACH_LIST_ELMT (e, t->basicType->a.choice) {
                 stoleChoicesAgain = FALSE;
                 tl = GetTags (e->type, &stoleChoicesAgain);
 
                 if (tl == NULL)
                     break;
 
-		          AsnListFirst (tl);
-                if (stoleChoicesAgain)
-                {
-                    FOR_EACH_LIST_ELMT (tag, tl)
-                    {
                 if (e->type->basicType->choiceId == BASICTYPE_EXTENSION)
                     continue;
 
+                AsnListFirst (tl);
+                if (stoleChoicesAgain) {
+                    FOR_EACH_LIST_ELMT (tag, tl) {
                         tagCopy = (Tag*)Malloc (sizeof (Tag));
                         memcpy (tagCopy, tag, sizeof (Tag));
 			               tagHndl = (Tag**)AsnListAppend (retVal);
 		               	*tagHndl = tagCopy;
                     }
-                }
-                else
-                {
-		              tag = (Tag*)FIRST_LIST_ELMT (tl);
-		              tagCopy = (Tag*)Malloc (sizeof (Tag));
-		              memcpy (tagCopy, tag, sizeof (Tag));
-		              tagHndl = (Tag**)AsnListAppend (retVal);
-		              *tagHndl = tagCopy;
+                } else {
+                    tag = (Tag*)FIRST_LIST_ELMT (tl);
+                    tagCopy = (Tag*)Malloc (sizeof (Tag));
+                    memcpy (tagCopy, tag, sizeof (Tag));
+                    tagHndl = (Tag**)AsnListAppend (retVal);
+                    *tagHndl = tagCopy;
                 }
                 FreeTags (tl);
             }
-
             break;  /* exit for loop */
-        }
-
-        else
+        } else
             break; /* exit for loop */
     }
 
-
-    if (!*stoleChoiceTags && (retVal != NULL) && !LIST_EMPTY (retVal))
-    {
+    if (!*stoleChoiceTags && (retVal != NULL) && !LIST_EMPTY (retVal)) {
         last = (Tag*)LAST_LIST_ELMT (retVal);
-        FOR_EACH_LIST_ELMT (tag, retVal)
-        {
+        FOR_EACH_LIST_ELMT (tag, retVal) {
             tag->form = CONS;
         }
         last->form = LIBTYPE_GET_TAG_FORM (GetBuiltinType (t));
