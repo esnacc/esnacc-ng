@@ -197,6 +197,9 @@ GetTags PARAMS ((t, stoleChoiceTags),
                 {
                     FOR_EACH_LIST_ELMT (tag, tl)
                     {
+                if (e->type->basicType->choiceId == BASICTYPE_EXTENSION)
+                    continue;
+
                         tagCopy = (Tag*)Malloc (sizeof (Tag));
                         memcpy (tagCopy, tag, sizeof (Tag));
 			               tagHndl = (Tag**)AsnListAppend (retVal);
