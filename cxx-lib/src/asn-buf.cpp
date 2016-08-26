@@ -1,10 +1,21 @@
+#include <config.h>
+
+#include <fcntl.h>
+#include <stdio.h>
+#include <sys/types.h>
+
+#ifndef WIN32
+#include <sys/socket.h>
+#include <unistd.h>
+#else
+#include "winsock2.h"
+#include "windows.h"
+#ifndef MSG_NOSIGNAL
+#define MSG_NOSIGNAL 0
+#endif
+#endif
 
 #include "asn-incl.h"
-
-
-#ifdef _MSC_VER
-	#pragma warning(disable: 4189)	// Disable local variable not referenced warning
-#endif
 
 using namespace SNACC;
 
@@ -781,6 +792,93 @@ const char * Card::bufTypeStr()
    }
    return NULL;
 }
-
-
 #endif
+
+std::streambuf::int_type
+AsnFDBuf::underflow()
+{
+    if (fd == -1)
+        return std::streambuf::traits_type::eof();
+
+    if (gptr() < egptr())
+        return std::streambuf::traits_type::to_int_type(*gptr());
+
+    char *base = &buffer.front();
+    char *start = base;
+
+    if (eback() == base) {
+        // Make arrangements for putback characters
+        ::memmove(base, egptr() - putsz, putsz);
+        start += putsz;
+    }
+
+    int n = 0;
+    if (sock)
+        n = recv(fd, start, buffer.size() - (start - base), 0);
+    else
+        n = ::read(fd, start, buffer.size() - (start - base));
+
+    if(n == 0 || n < 0) {
+        extra_reset();
+        return std::streambuf::traits_type::eof();
+    }
+
+    setg(base, start, start+n);
+    return std::streambuf::traits_type::to_int_type(*gptr());
+}
+
+std::streambuf::int_type
+AsnFDBuf::overflow(std::streambuf::int_type c)
+{
+    if( fd == -1 || c == std::streambuf::traits_type::eof() )
+        return std::streambuf::traits_type::eof();
+
+    char a = c;
+    int n = 0;
+    if (sock)
+        n = send(fd, &a, 1, MSG_NOSIGNAL);
+    else
+        n = ::write(fd, &a, 1);
+
+    if (n != 1) {
+        extra_reset();
+        return std::streambuf::traits_type::eof();
+    }
+    return n;
+}
+
+std::streamsize
+AsnFDBuf::xsputn(const char* s, std::streamsize num)
+{
+    if( fd == -1 )
+        return std::streambuf::traits_type::eof();
+
+    int result;
+    if (sock)
+        result = send(fd, s, num, MSG_NOSIGNAL);
+    else
+        result = ::write(fd, s, num);
+
+    if (result < 0) {
+        extra_reset();
+        return std::streambuf::traits_type::eof();
+    }
+    return result;
+}
+
+void
+AsnFDBuf::extra_reset()
+{
+    if (close_on_fail) {
+        if (!sock) {
+            close(fd);
+        } else {
+#ifndef WIN32
+            ::close(fd);
+#else
+            ::closesocket(fd);
+#endif
+        }
+        fd = -1;
+    }
+}

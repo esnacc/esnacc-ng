@@ -2,34 +2,25 @@
 #define _ASN_BUF_H 1
 
 
-#if defined(WIN32)
 #if defined(_MSC_VER)
 #pragma warning(disable: 4100 4702 4710 4514 4786 4251 4018 4146 4284)
 #pragma warning(push,3)
 #endif
 
-#include <ostream>
-#include <streambuf>
 #include <deque>
-#include <list>
 #include <fstream>
+#include <list>
+#include <ostream>
 #include <sstream>
-//#include <strstream>
+#include <streambuf>
+#include <vector>
+
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif
 
-#else // WIN32
-
-#include <ostream>
-#include <streambuf>
-#include <deque>
-#include <list>
-#include <fstream>
+#if !defined(WIN32)
 #include <utility>
-#include <sstream>
-//#include <strstream>
-
 #endif // WIN32
 
 
@@ -65,12 +56,36 @@ typedef unsigned long      AsnLen;
 
 typedef std::deque<Card *> Deck;
 
+class SNACCDLL_API AsnFDBuf : public std::streambuf
+{
+    int fd;
+    const bool sock;
+    const size_t putsz;
+    const bool close_on_fail;
+    std::vector<char> buffer;
+
+protected:
+    virtual void extra_reset();
+    std::streambuf::int_type underflow();
+    std::streambuf::int_type overflow(std::streambuf::int_type c);
+    std::streamsize xsputn (const char* s, std::streamsize num);
+
+public:
+    explicit AsnFDBuf(int descriptor, bool socket = false, bool failure = true,
+                      size_t buffersz = 256, size_t putsize = 8)
+        : fd(descriptor), sock(socket), putsz(std::max<int>(putsize,1)),
+        close_on_fail(failure), buffer(std::max<int>(buffersz,putsz) + putsz)
+    {
+        char *end = &buffer.front() + buffer.size();
+        setg(end, end, end);
+    }
+};
+
 struct SNACCDLL_API AsnBufLoc
 {
    Deck::iterator m_card;
    long           m_offset;
 };
-
 
 class SNACCDLL_API AsnBuf
 {
