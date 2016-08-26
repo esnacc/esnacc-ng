@@ -7,9 +7,11 @@
 #pragma warning(push,3)
 #endif
 
+#include <algorithm>
 #include <deque>
 #include <fstream>
 #include <list>
+#include <map>
 #include <ostream>
 #include <sstream>
 #include <streambuf>
@@ -411,6 +413,103 @@ private:
 	char m_cDataW;
 	char m_cDataR;
 
+};
+
+
+class StreambufCallback
+{
+public:
+    enum Streambuf_CB_RESULT {
+        CB_NONE,
+        CB_DROP_STREAM
+    };
+
+    enum Streambuf_CB_STATUS {
+        CB_READ_OK,
+        CB_WRITE_OK,
+        CB_OPENED,
+        CB_CLOSED
+    };
+
+    StreambufCallback(){}
+    virtual ~StreambufCallback(){}
+    virtual Streambuf_CB_RESULT callback(Streambuf_CB_STATUS status,
+                                         std::streambuf *stream) = 0;
+};
+
+class StreambufMonitor
+{
+public:
+    typedef std::map<std::streambuf*,StreambufCallback&> callbackMap;
+
+private:
+    callbackMap                 callbacks;
+    std::list<std::streambuf*>  toDrop;
+
+    static void check_buffer(callbackMap::value_type t,
+                             std::list<std::streambuf*> &StreamDropList)
+    {
+        std::streambuf *Stream = t.first;
+        std::streamsize Bytes = Stream->in_avail();
+        StreambufCallback::Streambuf_CB_RESULT result =
+            StreambufCallback::CB_NONE;
+
+        if (Bytes == -1) {
+            result = (t.second).callback(StreambufCallback::CB_CLOSED, Stream);
+        } else if (Bytes > 0) {
+            result = (t.second).callback(StreambufCallback::CB_READ_OK,
+                                         Stream);
+        }
+
+        if (result == StreambufCallback::CB_DROP_STREAM) {
+            StreamDropList.push_back(Stream);
+        }
+    }
+
+    struct buffer_checker
+    {
+        StreambufMonitor *Mon;
+        void operator()(callbackMap::value_type t)
+        {
+            StreambufMonitor::check_buffer(t, Mon->toDrop);
+        }
+    };
+
+public:
+    StreambufMonitor() {}
+    ~StreambufMonitor() {}
+
+    /**
+     * Adds a streambuf to be monitored, with a specific callback instance. */
+    bool push(std::streambuf *Stream, StreambufCallback &CB, bool callOpen)
+    {
+        if (callOpen) {
+            StreambufCallback::Streambuf_CB_RESULT result =
+                CB.callback(StreambufCallback::CB_OPENED, Stream);
+            if (result == StreambufCallback::CB_DROP_STREAM)
+                return false;
+        }
+        callbacks.insert(
+            std::pair<std::streambuf*,StreambufCallback&>(Stream,CB));
+        return true;
+    }
+
+    /**
+     * Removes a streambuf from the monitor. */
+    bool pop(std::streambuf *Stream)
+    {
+        if (callbacks.erase(Stream))
+            return true;
+        return false;
+    }
+
+    void operator()()
+    {
+        buffer_checker bc;
+        bc.Mon = this;
+        std::for_each(callbacks.begin(), callbacks.end(), bc);
+        toDrop.clear();
+    }
 };
 
 } // end namespace SNACC
