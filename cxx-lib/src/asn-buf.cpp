@@ -17,6 +17,14 @@
 #endif
 #endif
 
+// MSG_NOSIGNAL does not exist under OS X
+#if defined(__APPLE__) || defined(__MACH__)
+# ifndef MSG_NOSIGNAL
+#  define MSG_NOSIGNAL SO_NOSIGPIPE
+# endif
+#endif
+
+
 #include "asn-incl.h"
 
 using namespace SNACC;
