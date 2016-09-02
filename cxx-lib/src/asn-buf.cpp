@@ -8,8 +8,10 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #else
-#include "winsock2.h"
-#include "windows.h"
+#define _POSIX_
+#include <io.h>
+#include <winsock2.h>
+#include <windows.h>
 #ifndef MSG_NOSIGNAL
 #define MSG_NOSIGNAL 0
 #endif
