@@ -5,7 +5,7 @@ using namespace SNACC;
 typedef struct test_table
 {
    char *input;
-   char result[20];
+   unsigned char result[20];
    bool unsignedFlag;
 } AsnIntTestTable;
 
@@ -131,8 +131,8 @@ void inttests(void)
 
          AsnInt asnInt (gIntTestTable[testIndex].input,
             gIntTestTable[testIndex].unsignedFlag);
-         AsnBuf expectedResult(gIntTestTable[testIndex].result,
-            DecTagLen((unsigned char *)gIntTestTable[testIndex].result + 1) + 2);
+         AsnBuf expectedResult((const char *)gIntTestTable[testIndex].result,
+            DecTagLen(gIntTestTable[testIndex].result + 1) + 2);
          AsnBuf result;
       
          try
