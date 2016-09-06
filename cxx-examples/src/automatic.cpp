@@ -22,7 +22,7 @@ getHuman(const char *name, int age, bool isBiblical,
 int automaticTests()
 {
     struct Tests {
-        const char bytes[256];
+        const unsigned char bytes[256];
         size_t byte_len;
         const char *enc_bytes;
         SNACC::Human *h;
@@ -66,7 +66,7 @@ int automaticTests()
         bool fail_name = false;
         bool fail_age = false;
         bool fail_firstwords = false;
-        SNACC::AsnBuf b(t[i].bytes, t[i].byte_len);
+        SNACC::AsnBuf b((const char *)(t[i].bytes), t[i].byte_len);
         SNACC::AsnLen l;
         SNACC::Human h;
         try {
@@ -103,7 +103,7 @@ int automaticTests()
         }
 
         SNACC::AsnBuf benc;
-        SNACC::AsnBuf expected(t[i].bytes, t[i].byte_len);
+        SNACC::AsnBuf expected((const char *)(t[i].bytes), t[i].byte_len);
         try {
             h.BEnc(benc);
             if (!(benc == expected)) {

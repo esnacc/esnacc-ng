@@ -5,7 +5,7 @@ using namespace SNACC;
 typedef struct test_table
 {
    char *input;
-   char result[20];
+   unsigned char result[20];
    bool nblFlag;
 } AsnBitTestTable;
 
@@ -93,8 +93,8 @@ void bittests(void)
    {
       AsnBits asnBits(gBitTestTable[index].input);
       asnBits.UseNamedBitListRules(gBitTestTable[index].nblFlag);
-      AsnBuf expectedResult(&gBitTestTable[index].result[0], 
-         DecTagLen((unsigned char *)gBitTestTable[index].result+1) + 2);
+      AsnBuf expectedResult((const char *)&gBitTestTable[index].result[0],
+         DecTagLen(gBitTestTable[index].result+1) + 2);
       AsnBuf result;
       AsnLen bytesEncoded;
 
