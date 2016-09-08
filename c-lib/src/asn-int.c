@@ -206,7 +206,7 @@ BDecAsnIntContent PARAMS ((b, tagId, len, result, bytesDecoded, env),
     byte = (unsigned long ) BufGetByte (b);
 
     if (byte & 0x80)   /* top bit of first byte is sign bit */
-        retVal = (-1 << 8) | byte;
+        retVal = (~0U << 8) | byte;
     else
         retVal = byte;
 
