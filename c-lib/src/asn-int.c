@@ -183,7 +183,7 @@ BEncAsnIntContent PARAMS ((b, data),
 void
 BDecAsnIntContent PARAMS ((b, tagId, len, result, bytesDecoded, env),
     GenBuf *b _AND_
-    AsnTag     tagId _AND_
+    AsnTag     tagId ESNACC_UNUSED _AND_
     AsnLen     len _AND_
     AsnInt    *result _AND_
     AsnLen *bytesDecoded _AND_
@@ -224,8 +224,6 @@ BDecAsnIntContent PARAMS ((b, tagId, len, result, bytesDecoded, env),
     (*bytesDecoded) += len;
 
     *result = retVal;
-    tagId=tagId;  /* referenced to avoid compiler warning. */
-
 }  /* BDecAsnIntContent */
 
 
@@ -237,10 +235,9 @@ void
 PrintAsnInt PARAMS ((f, v, indent),
     FILE *f _AND_
     AsnInt *v _AND_
-    unsigned int indent)
+    unsigned int indent ESNACC_UNUSED)
 {
     fprintf (f,"%d", *v);
-    indent=indent; /* referenced to avoid compiler warning. */
 }
 
 
@@ -364,7 +361,7 @@ BEncUAsnIntContent PARAMS ((b, data),
 void
 BDecUAsnIntContent PARAMS ((b, tag, len, result, bytesDecoded, env),
     GenBuf *b _AND_
-    AsnTag   tag _AND_
+    AsnTag   tag ESNACC_UNUSED _AND_
     AsnLen   len _AND_
     UAsnInt *result _AND_
     AsnLen  *bytesDecoded _AND_
@@ -410,8 +407,6 @@ BDecUAsnIntContent PARAMS ((b, tag, len, result, bytesDecoded, env),
     (*bytesDecoded) += len;
 
     *result = retVal;
-    tag=tag; /* referenced to avoid compiler warning. */
-
 }  /* BDecUAsnIntContent */
 
 

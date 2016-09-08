@@ -312,7 +312,7 @@ void
 PrintAsnBits PARAMS ((f,v, indent),
     FILE *f _AND_
     AsnBits *v _AND_
-    unsigned int indent)
+    unsigned int indent ESNACC_UNUSED)
 {
     int i;
     unsigned long octetLen;
@@ -326,8 +326,6 @@ PrintAsnBits PARAMS ((f,v, indent),
     for (i = 0; i < (int)octetLen; i++)
         fprintf (f,"%c%c", TO_HEX (v->bits[i] >> 4), TO_HEX (v->bits[i]));
     fprintf (f,"'H");
-    indent=indent;  /* referenced to avoid compiler warning. */
-
 } /* PrintAsnBits  */
 
 /*

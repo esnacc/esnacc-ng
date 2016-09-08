@@ -319,7 +319,7 @@ void
 PrintAsnOcts PARAMS ((f,v, indent),
     FILE *f _AND_
     AsnOcts *v _AND_
-    unsigned int indent)
+    unsigned int indent ESNACC_UNUSED)
 {
     int i;
 
@@ -343,7 +343,6 @@ PrintAsnOcts PARAMS ((f,v, indent),
 	  fprintf (f,".");
     }
     fprintf (f,"\" --");
-    indent=indent; /* referenced to avoid compiler warning. */
 }
 
 

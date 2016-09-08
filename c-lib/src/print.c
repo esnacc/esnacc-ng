@@ -31,12 +31,10 @@ Indent PARAMS ((f, i),
 }
 
 void Asn1DefaultErrorHandler PARAMS ((str, severity),
-    char* str _AND_
-    int severity)
+    char* str ESNACC_UNUSED _AND_
+    int severity ESNACC_UNUSED)
 {
   /*  fprintf(stderr,"%s",str); DAD - temp removing for now*/
-   severity=severity;   /* referenced  */
-   str=str;
 }
 
 static Asn1ErrorHandler asn1CurrentErrorHandler = Asn1DefaultErrorHandler;
