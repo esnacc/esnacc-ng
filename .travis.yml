@@ -27,6 +27,8 @@ addons:
     build_command:   "make"
     branch_pattern: coverity
 
+before_script: ./travis-prepare.sh
+
 script:
    - ./boot.sh
    - ./configure 
