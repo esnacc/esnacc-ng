@@ -1,4 +1,5 @@
 #include "autotags.h"
+#include <sstream>
 
 static SNACC::Human *
 getHuman(const char *name, int age, bool isBiblical,
@@ -102,10 +103,13 @@ int automaticTests()
             return 1;
         }
 
-        SNACC::AsnBuf benc;
         SNACC::AsnBuf expected((const char *)(t[i].bytes), t[i].byte_len);
         try {
-            h.BEnc(benc);
+            std::stringstream s;
+            s << SNACC::EncodeBER;
+            s << h;
+            SNACC::AsnBuf benc(s.str().c_str(), s.str().length());
+
             if (!(benc == expected)) {
                 fail_enc = true;
             }

@@ -17,7 +17,7 @@
 //
 
 #include "asn-incl.h"
-
+#include "asn-iomanip.h"
 
 void SNACC::Indent(std::ostream& os, unsigned short i)
 {
@@ -27,6 +27,23 @@ void SNACC::Indent(std::ostream& os, unsigned short i)
 
 std::ostream& operator<<(std::ostream& os, const SNACC::AsnType& v)
 {
-	v.Print(os);
-	return os;
+    switch (SNACC::SNACC_getiosencodetype(os)) {
+    default:
+    case SNACC::SNACC_ASCII:
+        v.Print(os);
+        break;
+    case SNACC::BER:
+        {
+            SNACC::AsnBuf b(os.rdbuf());
+            b.ResetMode(std::ios_base::out);
+            v.BEnc(b);
+        }
+        break;
+    case SNACC::PER:
+        throw SNACC::SnaccException(__FILE__, __LINE__,
+                                    "operator<<",
+                                    "No Proper PER Support at this time");
+        break;
+    }
+    return os;
 }

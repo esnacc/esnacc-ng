@@ -1404,18 +1404,19 @@ extern "C" {
 void SNACCDLL_API SNACC_CleanupMemory();
 }
 
+//########################################################################
+//########################################################################
 
-//########################################################################
-//########################################################################
+
+enum SNACCEncodeDecodeRules {
+    SNACC_ASCII,
+    BER,
+    PER
+};
 
 _END_SNACC_NAMESPACE
 
-
-// Overload of operator<< to stream out an AsnType
-SNACCDLL_API std::ostream& operator<<(std::ostream& os,
-									  const SNACC::AsnType& a);
-
-
+#include "asn-iomanip.h"
 #include "snaccexcept.h"
 #include "asn-usefultypes.h"
 

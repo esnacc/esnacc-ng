@@ -183,6 +183,7 @@ int main(int argc, char *argv[])
        fillTest();
        if (automaticTests()) {
            std::cout << "Automatic test failure." << std::endl;
+           return 1;
        }
    } catch (SnaccException &e) {
        std::cout << "\n**** Caught SnaccException ****\n";
