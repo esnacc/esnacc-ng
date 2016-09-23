@@ -32,7 +32,8 @@ docs = \
 	INSTALL.md \
 	NEWS \
 	COPYING \
-	COPYING.epl
+	COPYING.epl \
+	FAQ.md
 
 EXTRA_DIST = \
 	$(docs) \
