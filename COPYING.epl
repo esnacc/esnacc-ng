@@ -1,0 +1,96 @@
+21 February 2003
+
+           	    ENHANCED SNACC SOFTWARE PUBLIC LICENSE
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Original SNACC Software:
+
+The SNACC software is composed of the SNACC Compiler and the SNACC
+Library.  Michael Sample and the University of British Columbia 
+developed the original SNACC Compiler and Library.  According to 
+Michael Sample, the original SNACC Compiler is covered by the 
+attached GNU General Public License (GPL), Version 2, June 1991.
+According to Michael Sample, the original SNACC Library 
+software is completely unencumbered.  None of the GNU public 
+licenses apply to the original SNACC Library software.  Each 
+SNACC Library source code file includes the following text:
+
+"// Copyright (C) 1992 Michael Sample and the University of British Columbia
+//
+// This library is free software; you can redistribute it and/or
+// modify it provided that this copyright/license information is retained
+// in original form.
+//
+// If you modify this file, you must clearly indicate your changes.
+//
+// This source code is distributed in the hope that it will be
+// useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Enhanced SNACC Software:
+
+Under contract to the U.S. Government, DigitalNet Government Solutions
+has enhanced the original SNACC Compiler and Library to
+produce the Enhanced SNACC Compiler and Library. 
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Enhanced SNACC Compiler License Information:
+
+The Enhanced SNACC Compiler is covered by the attached GNU GPL.  DigitalNet
+has clearly marked all enhancements made to the original SNACC Compiler
+as required by the GNU GPL.  DigitalNet has met the requirements of the GNU GPL 
+including: providing all source code for the Enhanced SNACC Compiler;
+freely distributing the Enhanced SNACC Compiler; and providing a copy
+of the GPL along with the Enhanced SNACC Compiler.  
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Enhanced SNACC Library License Information:
+
+DigitalNet has clearly marked all enhancements made to the original SNACC
+Library as required by the license information included in each source code 
+file.  DigitalNet has retained the license information in original form in 
+each source code file.  None of the GNU public licenses apply to the Enhanced 
+SNACC Library software.  
+
+The United States Government/Department of Defense/National Security 
+Agency/Office of Network Security (collectively "the U.S. Government") 
+hereby grants permission to any person obtaining a copy of the Enhanced
+SNACC Library source and object files (the "Enhanced SNACC Library
+Software"), or any portions thereof, to do the following, subject to the 
+following license conditions:
+
+1. You may, free of charge and without additional permission from the 
+U.S. Government, use, copy, modify, sublicense and otherwise distribute the
+Enhanced SNACC Library Software or components of the Enhanced SNACC Library
+Software, with or without modifications developed by you and/or by others.
+
+2. Furthermore, if you distribute the Enhanced SNACC Library Software or
+parts of the Enhanced SNACC Library Software, with or without modifications 
+developed by you and/or others, then you must either make available the 
+source code to all portions of the Enhanced SNACC Library Software (exclusive
+of any modifications made by you and/or by others) upon request, or instead
+you may notify anyone requesting the Enhanced SNACC Library Software source 
+code that it is freely available from the U.S. Government.
+
+3. Transmission of this Enhanced SNACC Software Public License must accompany
+whatever portions of the Enhanced SNACC Library Software you redistribute.  
+If you do not redistribute the Enhanced SNACC Compiler Software, or any
+portion thereof, you do not need to include the GNU General Public License.
+
+4. The Enhanced SNACC Library Software is provided without warranty or 
+guarantee of any nature, express or implied, including without limitation
+the warranties of merchantability and fitness for a particular purpose.
+
+5. The U.S. Government cannot be held liable for any damages either 
+directly or indirectly caused by the use of the Enhanced SNACC Library 
+Software.
+
+6. It is not permitted to copy, sublicense, distribute or transfer any of 
+the Enhanced SNACC Library Software except as expressly indicated herein. 
+Any attempts to do otherwise will be considered a violation of this 
+License and your rights to the Enhanced SNACC Library Software will be voided.

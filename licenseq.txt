@@ -1,9 +1,0 @@
-See discussion @ http://www.imc.org/imc-sfl/mail-archive/msg00498.html
-
-Summary here:
-
-The SNACC compiler is GPLv2
-The SNACC library is public domain
-
-Therefore, any compiler enhancements MUST be GPL
-Any library enhancements SHOULD be public domain

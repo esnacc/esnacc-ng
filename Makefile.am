@@ -29,10 +29,10 @@ TESTS =
 
 docs = \
 	README.md \
-	licenseq.txt \
 	INSTALL.md \
 	NEWS \
-	copying
+	COPYING \
+	COPYING.epl
 
 EXTRA_DIST = \
 	$(docs) \
