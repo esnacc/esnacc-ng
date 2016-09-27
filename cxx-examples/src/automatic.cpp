@@ -67,11 +67,11 @@ int automaticTests()
         bool fail_name = false;
         bool fail_age = false;
         bool fail_firstwords = false;
-        SNACC::AsnBuf b((const char *)(t[i].bytes), t[i].byte_len);
-        SNACC::AsnLen l;
+        std::stringstream s;
         SNACC::Human h;
         try {
-            h.BDec(b, l);
+            s.str(std::string((const char *)t[i].bytes, t[i].byte_len));
+            s >> SNACC::EncodeBER >> h;
             if (h.name != t[i].h->name) {
                 fail_name = true;
             }

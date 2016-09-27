@@ -47,3 +47,22 @@ std::ostream& operator<<(std::ostream& os, const SNACC::AsnType& v)
     }
     return os;
 }
+
+std::istream& operator>>(std::istream& is, SNACC::AsnType& v)
+{
+    switch (SNACC::SNACC_getiosencodetype(is)) {
+    case SNACC::BER:
+        {
+            SNACC::AsnBuf b(is.rdbuf());
+            SNACC::AsnLen l;
+            v.BDec(b, l);
+        }
+        break;
+    default:
+        throw SNACC::SnaccException(__FILE__, __LINE__,
+                                    "operator>>",
+                                    "No IN support at this time");
+        break;
+    }
+    return is;
+}

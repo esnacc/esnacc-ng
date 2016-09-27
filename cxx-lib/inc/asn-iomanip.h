@@ -47,6 +47,7 @@ _END_SNACC_NAMESPACE
 std::ostream& SNACCDLL_API operator<<(std::ostream& os,
                                       const SNACC::AsnType& a);
 
-
+// Overload of operator>> to stream into an AsnType
+std::istream& SNACCDLL_API operator>>(std::istream& is, SNACC::AsnType& a);
 
 #endif
