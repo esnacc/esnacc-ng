@@ -87,7 +87,7 @@ DISTCLEANFILES += compiler/esnacc.1
 endif
 
 compiler/esnacc.1: compiler/esnacc.xml
-	$(XSLTPROC) --novalid -o $@ http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl $<
+	$(XSLTPROC) --novalid -o $@ $(DOCBOOK_LOCATION) $<
 
 CLEANFILES += compiler/core/lex-asn1.c \
 	compiler/core/y.output \

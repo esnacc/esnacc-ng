@@ -24,4 +24,15 @@ AC_DEFUN([AC_CHECK_XSLTPROC],
             fi
         fi
     fi
+    if test "$XSLTPROC" != ""; then
+       DOCBOOK_XSL_LOCATION=http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl
+       AC_MSG_CHECKING(for manpage docbook)
+       for i in /usr/share/sgml/docbook/xsl-stylesheets/manpages/docbook.xsl /usr/share/xml/docbook/stylesheet/current/manpages/docbook.xsl /usr/share/xml/docbook/stylesheet/nwalsh/current/manpages/docbook.xsl /usr/share/xml/docbook/stylesheet/nwalsh5/current/manpages/docbook.xsl /usr/share/xml/docbook/stylesheet/docbook-xsl/manpages/docbook.xsl /usr/share/xml/docbook/xsl-stylesheets-*/manpages/docbook.xsl; do
+           if test -r $i; then
+              DOCBOOK_XSL_LOCATION=$i
+           fi
+       done
+       AC_MSG_RESULT($DOCBOOK_XSL_LOCATION)
+       AC_SUBST(DOCBOOK_XSL_LOCATION, $DOCBOOK_XSL_LOCATION)
+   fi
 ])

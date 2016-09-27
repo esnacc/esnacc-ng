@@ -75,6 +75,7 @@ check_SCRIPTS =
 pkgconfig_DATA =
 FLAKE8_PYFILES =
 check_PROGRAMS =
+DOCBOOK_LOCATION = @DOCBOOK_XSL_LOCATION@
 
 all_lib_LDFLAGS = \
 	-version-info $(LT_VERSION_INTF)

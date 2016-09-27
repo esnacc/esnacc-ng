@@ -18,6 +18,7 @@ addons:
   apt:
     packages:
       - xsltproc
+      - docbook-xsl
   coverity_scan:
     project:
       name: "orgcandman/esnacc-ng"
