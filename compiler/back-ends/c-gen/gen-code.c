@@ -485,7 +485,7 @@ PrintCSrcComment PARAMS ((src, m),
     FILE *src _AND_
     Module *m)
 {
-    long int t;
+    time_t t;
 
     t = time (0);
     fprintf (src, "/*\n");
@@ -589,7 +589,7 @@ PrintCHdrComment PARAMS ((f, m),
     FILE *f _AND_
     Module *m)
 {
-    long int t;
+    time_t t;
 
     t = time (0);
     fprintf (f, "/*\n");
