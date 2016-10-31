@@ -1291,10 +1291,11 @@ GenCxxCode PARAMS ((allMods, longJmpVal, genTypes, genValues, genEncoders, genDe
         {
 			saveMods = allMods->curr;
             PrintCxxCode (srcFilePtr, hdrFilePtr,
-			if_META (genMeta COMMA &meta COMMA meta_pdus COMMA)
-			allMods, currMod, &cxxRulesG, longJmpVal,
-			genTypes, genValues, genEncoders, genDecoders, genPrinters, genFree,
-			if_TCL (genTcl COMMA) novolatilefuncs);
+                          if_META (genMeta COMMA &meta COMMA meta_pdus COMMA)
+                          allMods, currMod, &cxxRulesG, longJmpVal,
+                          genTypes, genValues, genEncoders, genDecoders,
+                          genPrinters, genFree,
+                          if_TCL (genTcl COMMA) novolatilefuncs);
 			allMods->curr = saveMods;
             fclose (hdrFilePtr);
             fclose (srcFilePtr);

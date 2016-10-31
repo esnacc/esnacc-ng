@@ -4145,115 +4145,95 @@ PrintCxxCode PARAMS ((src, hdr, if_META (printMeta COMMA meta COMMA meta_pdus CO
     printPrintersG = printPrinters;
     printFreeG = printFree;
 
-    #if META
-        printMetaG = printMeta;
-        meta_pdus_G = meta_pdus;
-    #if TCL
-        printTclG = printTcl;
-    #endif /* TCL */
-    #endif /* META */
+#if META
+    printMetaG = printMeta;
+    meta_pdus_G = meta_pdus;
+#if TCL
+    printTclG = printTcl;
+#endif /* TCL */
+#endif /* META */
 
-    PrintSrcComment (src, m);
-    PrintHdrComment (hdr, m);
-    PrintConditionalIncludeOpen (hdr, m->cxxHdrFileName);
+    PrintSrcComment(src, m);
+    PrintHdrComment(hdr, m);
+    PrintConditionalIncludeOpen(hdr, m->cxxHdrFileName);
 
-    #if META
-        if (printMetaG)
-        {
-	    fprintf (src, "\n");
-	    fprintf (src, "#ifndef META\n");
-	    fprintf (src, "#define META	1\n");
-	    fprintf (src, "#endif\n");
-    #if TCL
-	    if (printTclG)
-	    {
-	        fprintf (src, "#ifndef TCL\n");
-	        fprintf (src, "#define TCL	META\n");
-	        fprintf (src, "#endif\n");
-	    }
-    #endif /* TCL */
+#if META
+    if (printMetaG) {
+	    fprintf(src, "\n");
+	    fprintf(src, "#ifndef META\n");
+	    fprintf(src, "#define META	1\n");
+	    fprintf(src, "#endif\n");
+#if TCL
+	    if (printTclG) {
+            fprintf(src, "#ifndef TCL\n");
+            fprintf(src, "#define TCL	META\n");
+            fprintf(src, "#endif\n");
         }
-    #endif /* META */
+#endif /* TCL */
+    }
+#endif /* META */
 
-    fprintf (hdr, "#include \"asn-incl.h\"\n");
-	fprintf (hdr, "#include \"asn-listset.h\"\n");
-    fprintf (src, "\n");    //RWC; PRINT before possible "namespace" designations.
+    fprintf(hdr, "#include \"asn-incl.h\"\n");
+    fprintf(hdr, "#include \"asn-listset.h\"\n");
+    fprintf(src, "\n");
 
-    PrintSrcIncludes (src, mods, m);
+    PrintSrcIncludes(src, mods, m);
 
-    FOR_EACH_LIST_ELMT (currMod, mods)
-	{
-		if ((strcmp(m->cxxHdrFileName, currMod->cxxHdrFileName) == 0))
-		{
-            // Code to see the import module list AND load possible "namespace" refs.
-			ImportModuleList *ModLists;
-			ImportModule *impMod;
-			char *ImpFile = NULL;
-			ModLists = currMod->imports;
-            currModTmp = mods->curr;    //RWC;
-			FOR_EACH_LIST_ELMT(impMod, ModLists)
-			{
-				ImpFile = GetImportFileName (impMod->modId->name, mods);
-				if (ImpFile != NULL)
-					fprintf (hdr, "#include \"%s\"\n", ImpFile);
-                if (impMod->moduleRef == NULL)  // RWC; attempt to update...
+    FOR_EACH_LIST_ELMT (currMod, mods) {
+		if (!strcmp(m->cxxHdrFileName, currMod->cxxHdrFileName)) {
+            ImportModuleList *ModLists;
+            ImportModule *impMod;
+            char *ImpFile = NULL;
+            ModLists = currMod->imports;
+            currModTmp = mods->curr;
+            FOR_EACH_LIST_ELMT(impMod, ModLists) {
+                ImpFile = GetImportFileName(impMod->modId->name, mods);
+                if (ImpFile != NULL)
+                    fprintf(hdr, "#include \"%s\"\n", ImpFile);
+                if (impMod->moduleRef == NULL)
                     impMod->moduleRef = GetImportModuleRef(impMod->modId->name, mods);
-                if (impMod->moduleRef &&
-                    impMod->moduleRef->namespaceToUse)
-                {
-                  fprintf(src,"using namespace %s;\n", impMod->moduleRef->namespaceToUse);
+                if (impMod->moduleRef && impMod->moduleRef->namespaceToUse) {
+                    fprintf(src,"using namespace %s;\n",
+                            impMod->moduleRef->namespaceToUse);
                 }
-			}
-            mods->curr = currModTmp;    // RWC;RESET loop control
-		}
-		// Don't duplicate header file referenced in source
-        //		if ((strcmp(m->cxxHdrFileName, currMod->cxxHdrFileName) != 0))
-        //		{
-        //			if ((ImportedFilesG == FALSE) || (currMod->ImportedFlag == TRUE))
-        //				fprintf (hdr, "#include \"%s\"\n", currMod->cxxHdrFileName);
-        //		}
-	}
+            }
+            mods->curr = currModTmp;
+        }
+    }
 
-    fprintf (hdr, "\n");
-    fprintf (src, "\n");
+    fprintf(hdr, "\n");
+    fprintf(src, "\n");
 
-    /* 7-09-2001 Pierce Leonberger
-     *   Added code to include all SNACC generated code in the SNACC namespace.
-     *   If the namespace name was overridden with the '-ns' switch then
-     *   use the name specified.  If the '-nons' switch was used then don't
-     *   use namespaces for SNACC generated code.
-     */
-    if (gNO_NAMESPACE == 0)
-    {
-       fprintf(hdr, "#ifndef NO_NAMESPACE\n");
-       fprintf(src, "#ifndef NO_NAMESPACE\n");
-       if (gAlternateNamespaceString) {
-          fprintf(hdr, "using namespace SNACC;\n");
-          fprintf(src, "using namespace SNACC;\n");
-          fprintf(hdr, "namespace %s {\n", gAlternateNamespaceString);
-          fprintf(src, "namespace %s {\n", gAlternateNamespaceString);
-       } else if (m->namespaceToUse) {
-          fprintf(hdr, "using namespace SNACC;\n");
-          fprintf(src, "using namespace SNACC;\n");
-          fprintf(hdr, "namespace %s {\n", m->namespaceToUse);
-          fprintf(src, "namespace %s {\n", m->namespaceToUse);
-       } else {
-          fprintf(hdr, "namespace SNACC {\n");
-          fprintf(src, "namespace SNACC {\n");
-       }
-       fprintf(hdr, "#endif\n");
-       fprintf(src, "#endif\n");
+    if (gNO_NAMESPACE == 0) {
+        fprintf(hdr, "#ifndef NO_NAMESPACE\n");
+        fprintf(src, "#ifndef NO_NAMESPACE\n");
+        if (gAlternateNamespaceString) {
+            fprintf(hdr, "using namespace SNACC;\n");
+            fprintf(src, "using namespace SNACC;\n");
+            fprintf(hdr, "namespace %s {\n", gAlternateNamespaceString);
+            fprintf(src, "namespace %s {\n", gAlternateNamespaceString);
+        } else if (m->namespaceToUse) {
+            fprintf(hdr, "using namespace SNACC;\n");
+            fprintf(src, "using namespace SNACC;\n");
+            fprintf(hdr, "namespace %s {\n", m->namespaceToUse);
+            fprintf(src, "namespace %s {\n", m->namespaceToUse);
+        } else {
+            fprintf(hdr, "namespace SNACC {\n");
+            fprintf(src, "namespace SNACC {\n");
+        }
+        fprintf(hdr, "#endif\n");
+        fprintf(src, "#endif\n");
     }
 
     if (bVDAGlobalDLLExport) {
         fprintf(hdr, "#ifndef %s\n", bVDAGlobalDLLExport);
         fprintf(hdr, "#if defined(WIN32)\n");
         fprintf(hdr, "#pragma warning( disable : 4251)\n");
-        if (strcmp(bVDAGlobalDLLExport, "SNACCDLL_API") == 0) {
-           /* Special case for compatibility */
-           fprintf(hdr, "#ifdef SNACCDLL_EXPORTS\n");
+        if (!strcmp(bVDAGlobalDLLExport, "SNACCDLL_API")) {
+            /* Special case for compatibility */
+            fprintf(hdr, "#ifdef SNACCDLL_EXPORTS\n");
         } else {
-           fprintf(hdr, "#ifdef %s_EXPORTS\n", bVDAGlobalDLLExport);
+            fprintf(hdr, "#ifdef %s_EXPORTS\n", bVDAGlobalDLLExport);
         }
 
         fprintf(hdr, "#define %s __declspec(dllexport)\n", bVDAGlobalDLLExport);
@@ -4291,14 +4271,14 @@ PrintCxxCode PARAMS ((src, hdr, if_META (printMeta COMMA meta COMMA meta_pdus CO
         fprintf(hdr, "extern const %s AsnModuleDesc %sModuleDesc;\n",
                 ptr, m->cxxname);
 
-	    fprintf(src, "//------------------------------------------------------------------------------\n");
-	    fprintf(src, "static const AsnTypeDesc *%sModuleTypes[] = {\n", m->cxxname);
-	    FOR_EACH_LIST_ELMT(td, m->typeDefs) {
-	        fprintf(src, "    &%s::_desc,\n", td->cxxTypeDefInfo->className);
+        fprintf(src, "//------------------------------------------------------------------------------\n");
+        fprintf(src, "static const AsnTypeDesc *%sModuleTypes[] = {\n", m->cxxname);
+        FOR_EACH_LIST_ELMT(td, m->typeDefs) {
+            fprintf(src, "    &%s::_desc,\n", td->cxxTypeDefInfo->className);
         }
 
-	    fprintf(src, "    NULL\n");
-	    fprintf(src, "};\n");
+        fprintf(src, "    NULL\n");
+        fprintf(src, "};\n");
 
 	    fprintf(src,
                 "const AsnModuleDesc %sModuleDesc = { \"%s\", %sModuleTypes };\n\n",
@@ -4309,9 +4289,6 @@ PrintCxxCode PARAMS ((src, hdr, if_META (printMeta COMMA meta COMMA meta_pdus CO
     }
 #endif /* META */
 
-    /* REMOVE PIERCE changed to print the Value definitions to the header file
-     * 10-25-2001
-     */
     if (printValues) {
         fprintf(src, "//------------------------------------------------------------------------------\n");
         fprintf(src, "// value defs\n\n");
@@ -4321,16 +4298,13 @@ PrintCxxCode PARAMS ((src, hdr, if_META (printMeta COMMA meta COMMA meta_pdus CO
         fprintf(src, "\n");
     }
 
-    /* REMOVE PIERCE changed const values to print to the header file only.  This negates the 
-     * need to extern or export the const values.
-     * 10-25-2001
-     */
     if (printValues) {
         fprintf(hdr, "//------------------------------------------------------------------------------\n");
         fprintf(hdr, "// externs for value defs\n\n");
-       FOR_EACH_LIST_ELMT (vd, m->valueDefs)
+        FOR_EACH_LIST_ELMT (vd, m->valueDefs) {
             PrintCxxValueExtern (hdr, r, vd);
-       fprintf(hdr, "//------------------------------------------------------------------------------\n");
+        }
+        fprintf(hdr, "//------------------------------------------------------------------------------\n");
     }
 
     fprintf(hdr, "//------------------------------------------------------------------------------\n");
@@ -4344,8 +4318,6 @@ PrintCxxCode PARAMS ((src, hdr, if_META (printMeta COMMA meta COMMA meta_pdus CO
         PrintCxxTypeDefCode (src, hdr, mods, m, r, td, novolatilefuncs);
     }
 
-    /* 7-09-2001 Pierce Leonberger
-     */
     if (gNO_NAMESPACE == 0) {
         fprintf(hdr, "#ifndef NO_NAMESPACE\n");
         fprintf(hdr, "} // namespace close\n");
