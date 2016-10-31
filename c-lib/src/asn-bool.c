@@ -121,27 +121,24 @@ BEncAsnBoolContent PARAMS ((b, data),
 void
 BDecAsnBoolContent PARAMS ((b, tagId, len, result, bytesDecoded, env),
     GenBuf *b _AND_
-    AsnTag tagId _AND_
+    AsnTag tagId ESNACC_UNUSED _AND_
     AsnLen len _AND_
     AsnBool  *result _AND_
     AsnLen  *bytesDecoded _AND_
     jmp_buf env)
 {
-    if (len != 1)
-    {
-        Asn1Error ("BDecAsnBoolContent: ERROR - BOOLEAN length must be 1\n");
-        longjmp (env,-5);
+    if (len != 1) {
+        Asn1Error("BDecAsnBoolContent: ERROR - BOOLEAN length must be 1\n");
+        longjmp(env,-5);
     }
 
     (*bytesDecoded)++;
     *result = (unsigned char)(BufGetByte (b) != 0);
 
-    if (BufReadError (b))
-    {
-         Asn1Error ("BDecAsnBoolContent: ERROR - decoded past end of data\n");
-         longjmp (env, -6);
+    if (BufReadError(b)) {
+        Asn1Error("BDecAsnBoolContent: ERROR - decoded past end of data\n");
+        longjmp(env, -6);
     }
-    tagId = tagId;  /* referenced to avoid compiler warning. */
 }  /* BDecAsnBoolContent */
 
 /*
@@ -152,18 +149,15 @@ void
 PrintAsnBool PARAMS ((f, v, indent),
     FILE *f _AND_
     AsnBool *v _AND_
-    unsigned int indent)
+    unsigned int indent ESNACC_UNUSED)
 {
     if (*v)
-        fprintf (f, "TRUE");
+        fprintf(f, "TRUE");
     else
-        fprintf (f, "FALSE");
-    indent = indent ; /* referenced to avoid compiler warning. */
+        fprintf(f, "FALSE");
 }
 
-void FreeAsnBool PARAMS ((b), AsnBool* b) 
+void FreeAsnBool PARAMS ((b), AsnBool* b ESNACC_UNUSED)
 {
-    b=b;
+
 }
-
-

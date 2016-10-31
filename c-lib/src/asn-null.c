@@ -73,14 +73,13 @@
 AsnLen
 BEncAsnNull PARAMS ((b, data),
     GenBuf *b _AND_
-    AsnNull *data)
+    AsnNull *data ESNACC_UNUSED)
 {
     AsnLen len;
 
-    len =  BEncAsnNullContent (b, data);
-    len += BEncDefLen (b, len);
-    len += BEncTag1 (b, UNIV, PRIM, NULLTYPE_TAG_CODE);
-    data=data;   /* referenced to avoid compiler warning. */
+    len =  BEncAsnNullContent(b, data);
+    len += BEncDefLen(b, len);
+    len += BEncTag1(b, UNIV, PRIM, NULLTYPE_TAG_CODE);
     return len;
 }  /* BEncAsnNull */
 
@@ -112,11 +111,11 @@ BDecAsnNull PARAMS ((b, result, bytesDecoded, env),
 
 void
 BDecAsnNullContent PARAMS ((b, tagId, len, result, bytesDecoded, env),
-    GenBuf *b _AND_
-    AsnTag tagId _AND_
+    GenBuf *b ESNACC_UNUSED _AND_
+    AsnTag tagId ESNACC_UNUSED _AND_
     AsnLen len _AND_
-    AsnNull *result _AND_
-    AsnLen *bytesDecoded _AND_
+    AsnNull *result ESNACC_UNUSED _AND_
+    AsnLen *bytesDecoded ESNACC_UNUSED _AND_
     jmp_buf env)
 {
     if (len != 0)
@@ -124,10 +123,6 @@ BDecAsnNullContent PARAMS ((b, tagId, len, result, bytesDecoded, env),
         Asn1Error ("BDecAsnNullContent: ERROR - NULL type's len must be 0\n");
         longjmp (env, -17);
     }
-    bytesDecoded=bytesDecoded;  /* referenced to avoid compiler warning. */
-    result=result;
-    tagId=tagId;
-    b=b;
 }  /* BDecAsnNullContent */
 
 /*
@@ -137,18 +132,14 @@ BDecAsnNullContent PARAMS ((b, tagId, len, result, bytesDecoded, env),
 void
 PrintAsnNull PARAMS ((f,v, indent),
     FILE *f _AND_
-    AsnNull *v _AND_
-    unsigned int indent)
+    AsnNull *v ESNACC_UNUSED _AND_
+    unsigned int indent ESNACC_UNUSED)
 {
-    fprintf (f, "NULL");
-    indent=indent;  /* referenced to avoid compiler warning. */
-    v=v;
+    fprintf(f, "NULL");
 }
 
 
-void FreeAsnNull PARAMS ((b), AsnNull *b) 
+void FreeAsnNull PARAMS ((b), AsnNull *b ESNACC_UNUSED)
 {
-    b=b;
+
 }
-
-

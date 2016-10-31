@@ -770,7 +770,7 @@ BEncAsnRealContent PARAMS ((b, value),
 void
 BDecAsnRealContent PARAMS ((b, tagId, len, result, bytesDecoded, env),
     GenBuf *b _AND_
-    AsnTag    tagId _AND_
+    AsnTag    tagId ESNACC_UNUSED _AND_
     AsnLen    len _AND_
     AsnReal  *result _AND_
     AsnLen *bytesDecoded _AND_
@@ -895,8 +895,6 @@ BDecAsnRealContent PARAMS ((b, tagId, len, result, bytesDecoded, env),
             longjmp (env, -24);
         }
     }
-    tagId = tagId;  /* referenced to avoid compiler warning. */
-
 }  /* BDecAsnRealContent */
 
 
@@ -908,8 +906,7 @@ void
 PrintAsnReal PARAMS ((f, v, indent),
     FILE *f _AND_
     AsnReal *v _AND_
-    unsigned int indent)
+    unsigned int indent ESNACC_UNUSED)
 {
-    fprintf (f, "%.17E", *v);
-    indent = indent; /* referenced to avoid compiler warning. */
+    fprintf(f, "%.17E", *v);
 }

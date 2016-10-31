@@ -115,7 +115,7 @@ BDecAsnOid PARAMS ((b, result, bytesDecoded, env),
 void
 BDecAsnOidContent PARAMS ((b, tagId, len, result, bytesDecoded, env),
     GenBuf *b _AND_
-    AsnTag tagId _AND_
+    AsnTag tagId ESNACC_UNUSED _AND_
     AsnLen len _AND_
     AsnOid *result _AND_
     AsnLen *bytesDecoded _AND_
@@ -136,7 +136,6 @@ BDecAsnOidContent PARAMS ((b, tagId, len, result, bytesDecoded, env),
          longjmp (env, -21);
     }
     (*bytesDecoded) += len;
-    tagId=tagId;  /* referenced to avoid compiler warning. */
 }  /* BDecAsnOidContent */
 
 
@@ -150,7 +149,7 @@ void
 PrintAsnOid PARAMS ((f,v, indent),
     FILE *f _AND_
     AsnOid *v _AND_
-    unsigned int indent)
+    unsigned int indent ESNACC_UNUSED)
 {
     unsigned int firstArcNum;
     unsigned int arcNum;
@@ -170,8 +169,7 @@ PrintAsnOid PARAMS ((f,v, indent),
 
     fprintf (f,"%u %u", (unsigned int)firstArcNum, arcNum - (firstArcNum * 40));
 
-    for (; i < (int)(v->octetLen); )
-    {
+    for (; i < (int)(v->octetLen);) {
         for (arcNum = 0; (i < (int)(v->octetLen)) && (v->octs[i] & 0x80);i++)
             arcNum = (arcNum << 7) + (v->octs[i] & 0x7f);
 
@@ -180,8 +178,6 @@ PrintAsnOid PARAMS ((f,v, indent),
         fprintf (f," %u", arcNum);
     }
     fprintf (f,"}");
-    indent=indent; /* referenced to avoid compiler warning. */
-
 } /* PrintAsnOid */
 
 

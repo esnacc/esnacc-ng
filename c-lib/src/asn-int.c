@@ -414,10 +414,9 @@ void
 PrintUAsnInt PARAMS ((f, v, indent),
     FILE *f _AND_
     UAsnInt *v _AND_
-    unsigned int indent)
+    unsigned int indent ESNACC_UNUSED)
 {
-    fprintf (f, "%u", *v);
-    indent=indent;
+    fprintf(f, "%u", *v);
 }
 
 
