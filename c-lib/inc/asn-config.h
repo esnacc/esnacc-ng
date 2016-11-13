@@ -102,7 +102,6 @@
 /* for pow() used in asn_real.c - must include to avoid casting err on pow */
 /* #include <math.h> */
 
-#include "config.h"
 #include "snacc.h"
 
 
