@@ -35,6 +35,7 @@
  *
  */
 
+#include "config.h"
 #include "snacc.h"
 
 #if STDC_HEADERS || HAVE_STRING_H

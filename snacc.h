@@ -72,25 +72,7 @@
 #define GLASS	1
 #define KHO	1
 
-#include "config.h"
-
-#ifndef NULL
-#define NULL	0
-#endif
-
-#if HAVE_MEMCMP /* memcmp(3) returns <0, 0 and 0, bcmp(3) returns only 0 and !0 */
-#define memcmpeq( a, b, len)	memcmp (a, b, len)
-#else
-#define memcmpeq( a, b, len)	bcmp (a, b, len)
-#endif
-#if HAVE_MEMSET
-#define memzero( p, len)	memset (p, 0, len)
-#else
-#define memzero( p, len)	bzero (p, len)
-#endif
-#if !HAVE_MEMCPY
-#define memcpy( dst, src, len)	bcopy (src, dst, len)
-#endif
+#define memzero(p, len)   memset(p, 0, len)
 
 #ifdef __cplusplus
 
