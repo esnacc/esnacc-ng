@@ -175,3 +175,4 @@ case SNACC::HeartbeatResponses::heartbeatReplyProcessesCid:
 The whole application will get compiled and linked with `-lcxxasn1` and will then
 be ready to execute.
 
+A more complete C++ tutorial can be found [here](developer-guide-sample-app.md).
