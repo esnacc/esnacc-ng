@@ -72,6 +72,8 @@ protected:
     std::streambuf::int_type overflow(std::streambuf::int_type c);
     std::streamsize xsputn (const char* s, std::streamsize num);
 
+    std::streamsize showmanyc();
+
 public:
     explicit AsnFDBuf(int descriptor, bool socket = false, bool failure = true,
                       size_t buffersz = 256, size_t putsize = 8)

@@ -892,3 +892,56 @@ AsnFDBuf::extra_reset()
         fd = -1;
     }
 }
+
+#ifndef WIN32
+#include <sys/ioctl.h>
+#else
+#include <winsock2.h>
+#include <windows.h>
+#include <ws2tcpip.h>
+#endif
+
+#ifndef WIN32
+static int ioctlsocket(int fd, long request, void *data )
+{
+	return ioctl(fd, request, data);
+}
+#endif
+
+std::streamsize
+AsnFDBuf::showmanyc()
+{
+    if (sock) {
+        fd_set fds;
+        struct timeval tv;
+
+        tv.tv_sec = 0;
+        tv.tv_usec = 0;
+
+        FD_ZERO(&fds);
+        FD_SET(
+#ifdef WIN32 
+            (unsigned int)
+#endif
+            fd, &fds);
+
+        if (select(fd+1, &fds, NULL, NULL, &tv) > 0) {
+            return 1; // at least 1 available...
+        }
+
+        // black arts... try an ioctl
+        size_t numBytes = 0;
+        int i = ioctlsocket(fd, FIONREAD, &numBytes);
+        if (i > 0) {
+            return i;
+        }
+    } else {
+        // we can check for file length
+        size_t numBytes = 0;
+        int i = ioctl(fd, FIONREAD, &numBytes);
+        if (i > 0) {
+            return i;
+        }
+    }
+    return 0;
+}
