@@ -157,6 +157,15 @@ Building the Sources
 Packages
 ========
 
+You can install the esnacc Debian package from Debian on Stretch and later
+releases:
+
+   `apt-get install esnacc libesnacc-dev`
+
+All binary packages generated from esnacc source are listed here:
+
+   https://tracker.debian.org/pkg/esnacc
+
 esnacc includes a Debian compatible rules set, which can be used to generate
 appropriate .deb files for installation on any Debian or Debian-derived system
 (such as Ubuntu).  In order to build these packages, it is required that all
