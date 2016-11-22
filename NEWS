@@ -1,3 +1,12 @@
+Future
+------
+
+* c++-lib: File Descriptor streambuffer
+* c++-lib: streambuf monitor
+* c++-lib: IOManipulator based encoding/decoding
+* documentation: Developer's guides
+
+
 1.80
 ----
 
