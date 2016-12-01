@@ -118,5 +118,6 @@ include cxx-lib/automake.mk
 include compiler/automake.mk
 include c-examples/automake.mk
 include cxx-examples/automake.mk
-include debian/automake.mk
+# This file is excluded from distribution on releases.
+# include debian/automake.mk
 include redhat/automake.mk

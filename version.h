@@ -1,2 +1,2 @@
-#define RELDATE		"2016-07-26"
+#define RELDATE		"2016-12-01"
 #define BUGREPADDR	"http://esnacc.org"
