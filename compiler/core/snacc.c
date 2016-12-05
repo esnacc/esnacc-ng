@@ -61,12 +61,7 @@ char *bVDAGlobalDLLExport=(char *)0;
 #include <stdarg.h>
 
 #include "asn-incl.h"
-#if STDC_HEADERS || HAVE_STRING_H
 #include <string.h>
-#else
-#include <strings.h>
-#endif
-
 
 #include "version.h"
 #include "mem.h"

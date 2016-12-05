@@ -34,11 +34,7 @@
 # endif
 #endif
 
-#if STDC_HEADERS || HAVE_STRING_H
 #include <string.h>
-#else
-#include <strings.h>
-#endif
 
 #include "asn-incl.h"
 #include "asn1module.h"

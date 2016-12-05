@@ -69,18 +69,14 @@
  * first check-in. for a list of changes to the snacc-1.1 distribution please refer to the ChangeLog.
  *
  */
-
+#include "config.h"
 #include "asn-incl.h"
 
 #include <ctype.h>
 #if HAVE_UNISTD_H
 #include <unistd.h>  /* for pathconf (..) */
 #endif
-#if STDC_HEADERS || HAVE_STRING_H
 #include <string.h>
-#else
-#include <strings.h>
-#endif
 #include <stdio.h>
 
 #include "asn1module.h"
