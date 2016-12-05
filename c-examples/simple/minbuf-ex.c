@@ -34,13 +34,17 @@
 #include "snacc.h"
 #include "asn-incl.h"
 
+#ifndef WIN32
 #include <sys/file.h>
 #include <sys/stat.h>
 #if HAVE_FCNTL_H 
 #include <fcntl.h>
 #endif
-#include <stdio.h>
 #include <unistd.h>
+#else
+#include <windows.h>
+#endif
+#include <stdio.h>
 
 #include "p-rec.h"
 #include "min-buf.h"

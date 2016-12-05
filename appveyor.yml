@@ -27,3 +27,4 @@ build_script:
 - C:\MinGW\msys\1.0\bin\bash -lc "cd /c/esnacc-ng && ./boot.sh"
 - C:\MinGW\msys\1.0\bin\bash -lc "cd /c/esnacc-ng && ./configure CC=build-aux/cccl CXX=build-aux/cccl LD=\"`which link`\" --with-pthread=C:/pthreads-win32/Pre-built.2"
 - C:\MinGW\msys\1.0\bin\bash -lc "cd /c/esnacc-ng && make "
+- C:\MinGW\msys\1.0\bin\bash -lc "cd /c/esnacc-ng && ./compiler/.libs/esnacc.exe -c -mo `dirname asn1specs/p-rec.c` asn1specs/p-rec.asn1 && make check"

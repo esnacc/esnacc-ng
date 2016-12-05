@@ -93,10 +93,10 @@ pkgconfigdir = $(libdir)/pkgconfig
 noinst_HEADERS += $(EXTRA_DIST)
 
 .asn1.c:
-	compiler/esnacc -c -mo `dirname $@` $<
+	compiler/esnacc$(EXEEXT) -c -mo `dirname $@` $<
 
 .asn1.cpp:
-	compiler/esnacc -C -mo `dirname $@` $<
+	compiler/esnacc$(EXEEXT) -C -mo `dirname $@` $<
 
 SUFFIXES += .in
 .in:
