@@ -906,6 +906,9 @@ static int ioctlsocket(int fd, long request, void *data )
 {
 	return ioctl(fd, request, data);
 }
+#define CAST void *
+#else
+#define CAST u_long *
 #endif
 
 std::streamsize
@@ -919,11 +922,11 @@ AsnFDBuf::showmanyc()
         tv.tv_usec = 0;
 
         FD_ZERO(&fds);
-        FD_SET(
 #ifdef WIN32 
-            (unsigned int)
+        FD_SET((unsigned int) fd, &fds);
+#else
+        FD_SET(fd, &fds);
 #endif
-            fd, &fds);
 
         if (select(fd+1, &fds, NULL, NULL, &tv) > 0) {
             return 1; // at least 1 available...
@@ -931,17 +934,21 @@ AsnFDBuf::showmanyc()
 
         // black arts... try an ioctl
         size_t numBytes = 0;
-        int i = ioctlsocket(fd, FIONREAD, &numBytes);
+        int i = ioctlsocket(fd, FIONREAD, (CAST) &numBytes);
         if (i > 0) {
-            return i;
+            return numBytes;
         }
     } else {
+#ifndef WIN32
         // we can check for file length
         size_t numBytes = 0;
         int i = ioctl(fd, FIONREAD, &numBytes);
         if (i > 0) {
             return i;
         }
+#else
+        return 0;
+#endif
     }
     return 0;
 }
