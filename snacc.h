@@ -161,4 +161,8 @@
 #define ESNACC_UNUSED
 #endif
 
+#ifdef WIN32
+#define inline __inline
+#endif
+
 #endif /* _SNACC_H_ */
