@@ -17,13 +17,10 @@
  * $Header: /baseline/SNACC/c-lib/src/asn-bits.c,v 1.15 2004/03/23 18:49:21 gronej Exp $
  */
 
+#include "config.h"
 #include "asn-config.h"
 
-#if STDC_HEADERS || HAVE_STRING_H
 #include <string.h>
-#else
-#include <strings.h>
-#endif
 
 #include "asn-len.h"
 #include "asn-tag.h"

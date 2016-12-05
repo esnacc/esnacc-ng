@@ -38,12 +38,7 @@
 #include "config.h"
 #include "snacc.h"
 
-#if STDC_HEADERS || HAVE_STRING_H
 #include <string.h>
-#else
-#include <strings.h>
-#endif
-
 
 /*
  * last elmt must be NULL.

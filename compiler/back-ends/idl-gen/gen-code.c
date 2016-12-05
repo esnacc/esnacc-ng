@@ -57,14 +57,10 @@
  * first draft
  *
  */
-
+#include "config.h"
 #include "snacc.h"
 
-#if STDC_HEADERS || HAVE_STRING_H
 #include <string.h>
-#else
-#include <strings.h>
-#endif
 #include <time.h>
 
 #include "asn-incl.h"
