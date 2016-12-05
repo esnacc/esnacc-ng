@@ -876,12 +876,36 @@ void AsnBits::Print(std::ostream& os, unsigned short /*indent*/) const
 
 void AsnBits::PrintXML(std::ostream &os, const char *lpszTitle) const
 {
-   os << "<BIT_STRING>";
-   if (lpszTitle)
-      os << lpszTitle;
-   os << "-";
-   Print(os);
-   os << "</BIT_STRING>\n";
+    const char *tagName = "BIT_STRING";
+    if (lpszTitle)
+        tagName = lpszTitle;
+    os << "<" << tagName << ">";
+
+    size_t octetsLessOne = (bitLen-1)/8;
+    size_t usedBits = bitLen % 8;
+
+    if (!bitLen)
+        octetsLessOne = 0;
+
+    for (size_t i = 0; i < octetsLessOne; ++i) {
+        unsigned char c = bits[i];
+        for (size_t j = 0; j < sizeof c; ++j) {
+            os << ((c & (1 << j)) ? "1" : "0");
+        }
+        os << " ";
+    }
+
+    if (usedBits) {
+        unsigned char c = bits[octetsLessOne];
+        for (size_t i = 0; i < usedBits; ++i) {
+            os << ((c & (1 << i)) ? "1" : "0");
+        }
+    }
+
+    if (lpszTitle)
+        os << "</" << lpszTitle << ">\n";
+    else
+        os << "</BIT_STRING>\n";
 }
 
 
