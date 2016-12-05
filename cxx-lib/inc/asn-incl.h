@@ -637,20 +637,19 @@ public:
    virtual AsnType* Clone() const { return new AsnInt(*this); }
    virtual const char* typeName() const { return "AsnInt"; }
 
-   template <typename int_t>
-   int_t toInteger() const
+   template <typename int_type>
+   int_type toInteger() const
    {
        //FUNC("AsnInt::toInteger");
 
        if (!m_bytes || m_len <= 0)
            return 0;
 
-       int_t iResult = 0;
+       int_type iResult = 0;
 
-       if (m_len > sizeof(int_t)) {
-           throw SNACCDLL_API
-               SnaccException("integer is too big for conversion to type",
-                              DECODE_ERROR);
+       if (m_len > sizeof(int_type)) {
+           throw SnaccException("integer is too big for conversion to type",
+                                DECODE_ERROR);
        }
 
        // If big int is negative initialize result to -1
