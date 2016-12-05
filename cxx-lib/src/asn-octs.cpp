@@ -86,18 +86,22 @@ void AsnOcts::Set (const char *str, size_t len)
 void AsnOcts::PrintXML (std::ostream &os, const char *lpszTitle,
                         const char *lpszType) const
 {
-    const char *tagName = "OCTET-STRING";
+    const char *tagName = "OCTET_STRING";
     if (lpszType)
         tagName = lpszType;
     os << "<" << tagName << ">";
 
-   os << "-";
-   Print(os);
-   //PrintXMLSupport(&os, ((AsnOcts *)this)->Access(), octetLen);
-   if (lpszType)
-     os << "</" << lpszType << ">\n";
-   else
-     os << "</OCTET_STRING>\n";
+    std::ios_base::fmtflags old_flags = os.flags();
+    os << std::hex;
+    for (size_t i = 0; i < Len(); ++i) {
+        os << (unsigned int)(c_ustr()[i]);
+    }
+    os.flags(old_flags);
+
+    if (lpszType)
+        os << "</" << lpszType << ">\n";
+    else
+        os << "</OCTET_STRING>\n";
 }
 
 // Prints the AsnOcts to the given ostream in Value Notation.
