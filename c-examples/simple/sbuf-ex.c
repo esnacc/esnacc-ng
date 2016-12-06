@@ -31,13 +31,25 @@
  *
  */
 
+#include "config.h"
+#include "snacc.h"
 #include "asn-incl.h"
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
+#ifndef WIN32
+#include <sys/file.h>
 #include <unistd.h>
+#else
+#include <io.h>
+#include <direct.h>
+#include <time.h>
+#include <windows.h>
+#include <winbase.h>
+#define stat _stat
+#endif
+#include <fcntl.h>
+#include <sys/stat.h>
 #include <stdio.h>
+
 #include "sbuf.h"
 #include "p-rec.h"
 

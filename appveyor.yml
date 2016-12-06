@@ -25,6 +25,16 @@ build_script:
 - C:\MinGW\msys\1.0\bin\bash -lc "cp /c/pthreads-win32/Pre-built.2/dll/x86/*.dll /c/esnacc-ng/."
 - C:\MinGW\msys\1.0\bin\bash -lc "mv /bin/link.exe /bin/link_copy.exe"
 - C:\MinGW\msys\1.0\bin\bash -lc "cd /c/esnacc-ng && ./boot.sh"
-- C:\MinGW\msys\1.0\bin\bash -lc "cd /c/esnacc-ng && ./configure CC=build-aux/cccl CXX=build-aux/cccl LD=\"`which link`\" --with-pthread=C:/pthreads-win32/Pre-built.2"
+- C:\MinGW\msys\1.0\bin\bash -lc "cd /c/esnacc-ng && ./configure CC=build-aux/cccl CXX=build-aux/cccl LD=\"`which link`\" LIBS=\"-lws2_32 -liphlpapi\" --with-pthread=C:/pthreads-win32/Pre-built.2"
 - C:\MinGW\msys\1.0\bin\bash -lc "cd /c/esnacc-ng && make "
-- C:\MinGW\msys\1.0\bin\bash -lc "cd /c/esnacc-ng && ./compiler/.libs/esnacc.exe -c -mo `dirname asn1specs/p-rec.c` asn1specs/p-rec.asn1 && make check"
+
+- C:\MinGW\msys\1.0\bin\bash -lc "cd /c/esnacc-ng && ./compiler/.libs/esnacc.exe -c -mo `dirname asn1specs/p-rec.c` asn1specs/p-rec.asn1"
+- C:\MinGW\msys\1.0\bin\bash -lc "cd /c/esnacc-ng && ./compiler/.libs/esnacc.exe -C -mo `dirname cxx-examples/src/autotags.cpp` cxx-examples/src/autotags.asn1"
+- C:\MinGW\msys\1.0\bin\bash -lc "cd /c/esnacc-ng && ./compiler/.libs/esnacc.exe -C -mo `dirname  cxx-examples/src/rfc1155-smi.cpp` cxx-examples/src/rfc1155-smi.asn1"
+- C:\MinGW\msys\1.0\bin\bash -lc "cd /c/esnacc-ng && ./compiler/.libs/esnacc.exe -C -mo `dirname  cxx-examples/src/rfc1157-snmp.cpp` cxx-examples/src/rfc1157-snmp.asn1 -I cxx-examples/src/"
+
+- C:\MinGW\msys\1.0\bin\bash -lc "cd /c/esnacc-ng && make c-examples/simple/genber.exe c-examples/simple/minbuf.exe c-examples/simple/expbuf.exe c-examples/simple/sbuf.exe c-examples/test-lib/testlib.exe cxx-examples/main.exe"
+
+- C:\MinGW\msys\1.0\bin\bash -lc "cd /c/esnacc-ng && ./c-examples/simple/.libs/genber.exe"
+
+- C:\MinGW\msys\1.0\bin\bash -lc "cd /c/esnacc-ng && ./cxx-examples/.libs/main.exe"

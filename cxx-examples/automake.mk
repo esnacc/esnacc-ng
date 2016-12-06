@@ -33,7 +33,8 @@ cxx_examples_main_LDADD = \
 	$(PTHREAD_LIBS)
 
 cxx_examples_main_LDFLAGS = \
-	$(PTHREAD_CFLAGS)
+	$(PTHREAD_CFLAGS) \
+	$(PTHREAD_LDFLAGS)
 
 $(top_builddir)/cxx-examples/src/rfc1155-smi.cpp: \
  $(top_srcdir)/cxx-examples/src/rfc1155-smi.asn1 \

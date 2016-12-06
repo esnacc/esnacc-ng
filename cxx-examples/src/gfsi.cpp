@@ -1,16 +1,18 @@
+#include "config.h"
+
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#if defined(WIN32) || defined(WIN16)
+#ifndef WIN32
+#include <dirent.h>
+#include <dlfcn.h>
+#include <unistd.h>
+#else
 #include <io.h>
 #include <direct.h>
 #include <time.h>
 #include <windows.h>
 #include <winbase.h>
-#else
-#include <dirent.h>
-#include <dlfcn.h>
-#include <unistd.h>
 #endif
 #include "asnutil.h"
 
