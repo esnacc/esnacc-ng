@@ -32,22 +32,19 @@ typedef struct AsnOcts
   char			*octs;
 } AsnOcts;
 
-#define ASNOCTS_PRESENT( aocts)	((aocts)->octs != NULL)
-
-
+#define ASNOCTS_PRESENT(aocts) ((aocts)->octs != NULL)
 
 AsnLen BEncAsnOcts PROTO ((GenBuf *b, AsnOcts *data));
-
-void BDecAsnOcts PROTO ((GenBuf *b, AsnOcts *result, AsnLen *bytesDecoded, ENV_TYPE env));
-
 AsnLen BEncAsnOctsContent PROTO ((GenBuf *b, AsnOcts *octs));
 
-void BDecAsnOctsContent PROTO ((GenBuf *b, AsnTag tagId, AsnLen len, AsnOcts *result, AsnLen *bytesDecoded, ENV_TYPE env));
+void BDecAsnOcts PROTO ((GenBuf *b, AsnOcts *result, AsnLen *bytesDecoded,
+                         ENV_TYPE env));
+void BDecAsnOctsContent PROTO ((GenBuf *b, AsnTag tagId, AsnLen len,
+                                AsnOcts *result, AsnLen *bytesDecoded,
+                                ENV_TYPE env));
 
 void FreeAsnOcts PROTO ((AsnOcts *o));
-
 void PrintAsnOcts PROTO ((FILE *f, AsnOcts *o, unsigned int indent));
-
 int AsnOctsEquiv PROTO ((AsnOcts *o1, AsnOcts *o2));
 
 #ifdef __cplusplus
