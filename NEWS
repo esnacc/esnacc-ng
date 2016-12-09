@@ -6,6 +6,7 @@ Future
 * c++-lib: IOManipulator based encoding/decoding
 * documentation: Developer's guides
 * esnacc-logo: A mascot (and CC-BY license) was added for esnacc
+* py-lib: Introduce a first cut at a python back-end
 
 
 1.80
