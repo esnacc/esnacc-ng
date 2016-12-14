@@ -351,7 +351,7 @@ AsnBitsEquiv PARAMS ((b1, b2),
     return b1->bitLen == b2->bitLen &&
         !memcmp(b1->bits, b2->bits, octetsLessOne) &&
         ((b1->bits[octetsLessOne] & (0xFF << unusedBits)) ==
-         (b1->bits[octetsLessOne] & (0xFF << unusedBits)));
+         (b2->bits[octetsLessOne] & (0xFF << unusedBits)));
 
 } /* AsnBitsEquiv */
 
