@@ -1644,6 +1644,7 @@ AutomaticTagNamed PARAMS ((l, all),
 
     if (l == NULL) {
         fprintf(errFileG, "AutomaticTagNamed - NULL tag list.\n");
+        return;
     }
 
     /* Two passes */
