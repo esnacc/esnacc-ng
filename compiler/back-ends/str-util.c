@@ -90,6 +90,7 @@
 
 int IsCKeyWord PROTO ((char *str));
 int IsCxxKeyWord PROTO ((char *str));
+int IsPyKeyWord PROTO ((char *str));
 
 
 int	keepbaseG = TRUE;
@@ -127,9 +128,8 @@ Asn1FieldName2CFieldName PARAMS ((aName),
     if (aName == NULL)
         return NULL;
 
-    retVal = Malloc (strlen (aName) + 1);
-    strcpy (retVal, aName);
-    Dash2Underscore (retVal, strlen (retVal));
+    retVal = Strdup(aName);
+    Dash2Underscore(retVal, strlen(retVal));
 
     return retVal;
 }  /* Asn1FieldName2CFieldName */
@@ -262,8 +262,7 @@ Dash2Underscore PARAMS ((str, len),
     int len)
 {
     int i;
-    for (i=0; i < len; i++)
-    {
+    for (i=0; i < len; i++) {
         if (str[i] == '-')
             str[i] = '_';
     }
@@ -374,6 +373,34 @@ MakeCxxStrUnique PARAMS ((nameList, str, maxDigits, startingDigit),
             str[len] = '\0';
             AppendDigit (str, digit++);
         } while (ObjIsDefined (nameList, str, StrObjCmp) &&  (digit < maxDigitVal));
+    }
+}  /* MakeCxxStrUnique */
+
+
+/*
+ * same as MakeCStrUnique except checks against C++ keywords
+ */
+void
+MakePyStrUnique PARAMS ((nameList, str, maxDigits, startingDigit),
+    DefinedObj *nameList _AND_
+    char *str _AND_
+    int maxDigits _AND_
+    int startingDigit)
+{
+    int digit, len, maxDigitVal;
+
+    if (ObjIsDefined(nameList, str, StrObjCmp) || IsPyKeyWord (str)) {
+        for (maxDigitVal = 1; maxDigits > 0; maxDigits--)
+            maxDigitVal *= 10;
+
+        len = strlen(str);
+        digit = startingDigit;
+        do
+        {
+            str[len] = '\0';
+            AppendDigit (str, digit++);
+        } while (ObjIsDefined (nameList, str, StrObjCmp) &&
+                 (digit < maxDigitVal));
     }
 }  /* MakeCxxStrUnique */
 
@@ -594,6 +621,17 @@ MakeCxxSrcFileName PARAMS ((refName),
     const char *refName)
 {
 	return MakeFileName (refName, ".cpp");
+}
+
+char *
+MakePySrcFileName PARAMS ((refName),
+    const char *refName)
+{
+    char *name = Strdup(refName);
+    Dash2Underscore(name, strlen(refName));
+    char *ret = MakeFileName(name, ".py");
+    Free(name);
+    return ret;
 }
 
 #if IDL

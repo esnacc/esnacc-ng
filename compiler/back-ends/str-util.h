@@ -72,6 +72,7 @@ char *MakeCHdrFileName PROTO ((const char *moduleName));
 char *MakeCSrcFileName PROTO ((const char *moduleName));
 char *MakeCxxHdrFileName PROTO ((const char *moduleName));
 char *MakeCxxSrcFileName PROTO ((const char *moduleName));
+char *MakePySrcFileName PROTO ((const char *moduleName));
 #if IDL
 char *MakeIDLFileName PROTO ((const char *moduleName));
 #endif

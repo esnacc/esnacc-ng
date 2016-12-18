@@ -81,6 +81,8 @@ char *bVDAGlobalDLLExport=(char *)0;
 
 #include "c++-gen/rules.h"		/* for c++ file generation */
 
+#include "py-gen/rules.h"
+
 #if IDL
 #include "idl-gen/rules.h"		/* for idl file generation */
 #endif
@@ -126,6 +128,12 @@ void PrintCxxCode (FILE *src, FILE *hdr, if_META (MetaNameStyle genMeta COMMA
 				   int printTypes, int printValues, int printEncoders,
 				   int printDecoders, int printPrinters, int printFree,
 				   if_TCL (int printTcl COMMA) int novolatilefuncs);
+void PrintPyCode (FILE *src, FILE *hdr, if_META (MetaNameStyle genMeta COMMA
+				   const Meta *meta COMMA MetaPDU *metapdus COMMA)
+				   ModuleList *mods, Module *m, CxxRules *r, long longJmpVal,
+				   int printTypes, int printValues, int printEncoders,
+				   int printDecoders, int printPrinters, int printFree,
+				   if_TCL (int printTcl COMMA) int novolatilefuncs);
 void PrintIDLCode PROTO ((FILE *idl, ModuleList *mods, Module *m, IDLRules *r,
 						 long int longJmpVal, int printValues));
 void ProcessMacros PROTO ((Module *m));
@@ -139,6 +147,11 @@ static int GenCCode PROTO ((ModuleList *allMods, long longJmpVal, int genTypes,
 						   int genEncoders, int genDecoders, int genPrinters,
 						   int genValues, int genFree));
 static void GenCxxCode PROTO ((ModuleList *allMods, long longJmpVal,
+							 int genTypes, int genEncoders, int genDecoders,
+							 int genPrinters, int genValues, int genFree,
+							 if_META (MetaNameStyle genMeta COMMA MetaPDU *meta_pdus COMMA)
+							 if_TCL (int genTcl COMMA) int novolatilefuncs));
+static void GenPyCode PROTO ((ModuleList *allMods, long longJmpVal,
 							 int genTypes, int genEncoders, int genDecoders,
 							 int genPrinters, int genValues, int genFree,
 							 if_META (MetaNameStyle genMeta COMMA MetaPDU *meta_pdus COMMA)
@@ -317,6 +330,7 @@ int main PARAMS ((argc, argv),
     int         genCCode = FALSE;        /* defaults to C if neither specified */
     int         genCxxCode = FALSE;
     int         genIDLCode = FALSE;
+    int         genPyCode = FALSE;
     long        longJmpVal = -100;
     int         novolatilefuncs = FALSE;
     char*       dirName;                    /* REN -- 6/2/03 -- added */
@@ -432,7 +446,11 @@ int main PARAMS ((argc, argv),
                 break;
 
             case 'p':
-                genPrintCode = TRUE;
+                if (argv[currArg][2] == 'y') {
+                    genPyCode = TRUE;
+                } else {
+                    genPrintCode = TRUE;
+                }
                 currArg++;
                 break;
 
@@ -693,15 +711,15 @@ error:
         genFreeCode = TRUE;
         genPrintCode = TRUE;
     }
-    else if (genCCode + genCxxCode + genTypeTbls + genIDLCode > 1)
+    else if (genCCode + genPyCode + genCxxCode + genTypeTbls + genIDLCode > 1)
     {
-        fprintf (stderr, "%s: ERROR---Choose only one of the -c -C or -T options\n",
+        fprintf (stderr, "%s: ERROR---Choose only one of the -py, -p py, -c, -C or -T options\n",
             argv[0]);
         Usage (argv[0], stderr);
         return 1;
     }
 
-    if (!genCCode && !genCxxCode && !genTypeTbls && !genIDLCode)
+    if (!genCCode && !genCxxCode && !genPyCode && !genTypeTbls && !genIDLCode)
         genCCode = TRUE;  /* default to C if neither specified */
 
     /* Set the encoding rules to BER if not set */
@@ -714,11 +732,9 @@ error:
     allMods = (ModuleList *)AsnListNew (sizeof (void*));
     
     tmpLst = srcList;
-    while (tmpLst != NULL)
-    {
+    while (tmpLst != NULL) {
         // Only do if not NULL 
-        if (tmpLst->fileName)
-        {
+        if (tmpLst->fileName) {
             currMod = ParseAsn1File (tmpLst->fileName,
                                      tmpLst->ImportFileFlag);
         
@@ -738,8 +754,7 @@ error:
     /*
      * Check that the module names/oids are unique
      */
-    if (!ModNamesUnique (allMods))
-    {
+    if (!ModNamesUnique (allMods)) {
         fprintf (errFileG, "\nConflicting module names, cannot proceed.\n");
         return 1;
     }
@@ -750,8 +765,7 @@ error:
      * Now that all files have been parsed,
      * link local and locatable import type refs
      */
-    if (LinkTypeRefs (allMods) < 0)
-    {
+    if (LinkTypeRefs (allMods) < 0) {
         fprintf (errFileG, "\nType linking errors---cannot proceed\n");
         return 2;
     }
@@ -763,8 +777,7 @@ error:
      * and have been linked.  Need type info to be able to
      * parse values easily (elimitate ambiguity).
      */
-    FOR_EACH_LIST_ELMT (currMod, allMods)
-    {
+    FOR_EACH_LIST_ELMT (currMod, allMods) {
         if (ParseValues (allMods, currMod) != 0)
             fprintf (errFileG, "WARNING: Value parsing error (s), attempting to continue\n");
     }
@@ -775,8 +788,7 @@ error:
      * Value parsing may have defined some new values
      * so can link local and locatable import value refs now.
      */
-    if (LinkValueRefs (allMods) < 0)
-    {
+    if (LinkValueRefs (allMods) < 0) {
         fprintf (errFileG, "\nValue linking errors---cannot proceed\n");
         return 4;
     }
@@ -790,8 +802,8 @@ error:
      *     so they are put in the id to ANY type hash tbl.
      */
     semErr = 0;
-    FOR_EACH_LIST_ELMT (currMod, allMods)
-    {   // For Macors, New TypeDefs are added here, if required
+    FOR_EACH_LIST_ELMT (currMod, allMods) {
+        // For Macros, New TypeDefs are added here, if required
         ProcessMacros (currMod);
         if (currMod->status == MOD_ERROR)
             semErr = 1;
@@ -808,8 +820,8 @@ error:
      * boil down values into simplest rep. (eg OID -> ENC_OID)
      */
     semErr = 0;
-    FOR_EACH_LIST_ELMT (currMod, allMods)
-    {   // New TypeDefs are added here, if required
+    FOR_EACH_LIST_ELMT (currMod, allMods) {
+        // New TypeDefs are added here, if required
         NormalizeModule (currMod);
         if (currMod->status == MOD_ERROR)
             semErr = 1;
@@ -823,8 +835,7 @@ error:
      * Mark recusive types.  Currently the recursive information is
      * not used elsewhere.
      */
-    FOR_EACH_LIST_ELMT (currMod, allMods)
-    {
+    FOR_EACH_LIST_ELMT (currMod, allMods) {
         MarkRecursiveTypes (currMod);
     }
 
@@ -835,8 +846,7 @@ error:
      * Check all modules and exit if errors were found
      */
     semErr = 0;
-    FOR_EACH_LIST_ELMT (currMod, allMods)
-    {
+    FOR_EACH_LIST_ELMT (currMod, allMods) {
         ErrChkModule (currMod);
         if (currMod->status == MOD_ERROR)
             semErr = 1;
@@ -851,23 +861,20 @@ error:
      * production but should not affect the other processing/error
      * checking steps.  This allows full display of errors.
      */
-    if (smallErrG)
-    {
+    if (smallErrG) {
         /*
          * for debugging show "parsed" version of ASN.1 module if
          * the print flag is set.
          * Dumps each module to stdout. Printed from Module data struct
          * print here before exiting otherwise print after sorting
          */
-        if (printModuleFlag)
-        {
-            FOR_EACH_LIST_ELMT (currMod, allMods)
-            {
+        if (printModuleFlag) {
+            FOR_EACH_LIST_ELMT (currMod, allMods) {
                 printf ("\n\n");
                 PrintModule (stdout, currMod);
             }
         }
-        
+
         return 8;
     }
 
@@ -893,6 +900,8 @@ error:
         FillIDLTypeInfo (&idlRulesG, allMods);
 #endif
 
+    else if (genPyCode)
+        FillPyTypeInfo(&pyRulesG, allMods);
 
     /*
      * STEP 10
@@ -911,10 +920,8 @@ error:
      * dumps each module to stdout. Printed from Module data struct
      * Shows the results of normalization and sorting.
      */
-    if (printModuleFlag)
-    {
-        FOR_EACH_LIST_ELMT (currMod, allMods)
-        {
+    if (printModuleFlag) {
+        FOR_EACH_LIST_ELMT (currMod, allMods) {
             printf ("\n\n");
             PrintModule (stdout, currMod);
         }
@@ -943,6 +950,12 @@ error:
         GenIDLCode (allMods, longJmpVal, genTypeCode, genValueCode,
             genPrintCode, genFreeCode);
 #endif
+
+    else if (genPyCode)
+        GenPyCode(allMods, longJmpVal, genTypeCode, genValueCode,
+                  genEncodeCode, genDecodeCode, genPrintCode, genFreeCode,
+                  if_META (genMetaCode COMMA meta_pdus COMMA)
+                  if_TCL (genTclCode COMMA) novolatilefuncs);
 
     tmpLst = srcList;
     while(tmpLst) {
@@ -1159,6 +1172,92 @@ GenCCode PARAMS ((allMods, longJmpVal, genTypes, genValues, genEncoders, genDeco
 }  /* GenCCode */
 
 
+void
+GenPyCode PARAMS ((allMods, longJmpVal, genTypes, genValues, genEncoders, genDecoders, genPrinters, genFree, if_META (genMeta COMMA meta_pdus COMMA) if_TCL (genTcl COMMA) novolatilefuncs),
+    ModuleList *allMods _AND_
+    long longJmpVal _AND_
+    int genTypes _AND_
+    int genValues _AND_
+    int genEncoders _AND_
+    int genDecoders _AND_
+    int genPrinters _AND_
+    int genFree _AND_
+    if_META (MetaNameStyle genMeta _AND_)
+    if_META (MetaPDU *meta_pdus _AND_)
+    if_TCL (int genTcl _AND_)
+    int novolatilefuncs)
+{
+    Module      *currMod;
+	AsnListNode *saveMods;
+    char        *modBaseFileName;
+    FILE        *hdrFilePtr;
+    FILE        *srcFilePtr;
+    DefinedObj  *fNames;
+    int         fNameConflict = FALSE;
+
+    /*
+     * Make names for each module's encoder/decoder src and hdr files
+     * so import references can be made via include files
+     * check for truncation --> name conflicts & exit if nec
+     */
+    fNames = NewObjList();
+
+    FOR_EACH_LIST_ELMT (currMod, allMods) {
+        modBaseFileName = MakeBaseFileName (keepbaseG
+                                            ? currMod->asn1SrcFileName
+                                            : currMod->modId->name);
+        currMod->cxxHdrFileName = "";
+        currMod->cxxSrcFileName = MakePySrcFileName(modBaseFileName);
+        if (ObjIsDefined (fNames, currMod->cxxHdrFileName, StrObjCmp) ||
+            ObjIsDefined (fNames, currMod->cxxSrcFileName, StrObjCmp)) {
+            fprintf(errFileG,
+                    "ERROR: file name conflict for generated source files with names `%s' and `%s'.\n\n",
+                    currMod->cxxHdrFileName, currMod->cxxSrcFileName);
+            fprintf(errFileG,
+                    "This usually means the max file name length is truncating the file names.\n");
+            fprintf(errFileG,
+                    "Try re-naming the modules with shorter names or increasing the argument to -mf option (if you are using it).\n");
+            fprintf(errFileG,
+                    "This error can also be caused by 2 modules have the same names but different OBJECT IDENTIFIERs.");
+            fprintf(errFileG,
+                    "  Try renaming the modules to correct this.\n");
+            fNameConflict = TRUE;
+        } else {
+            DefineObj (&fNames, currMod->cxxHdrFileName);
+            DefineObj (&fNames, currMod->cxxSrcFileName);
+        }
+        Free (modBaseFileName);
+
+        if (fNameConflict)
+            return;
+
+        FreeDefinedObjs (&fNames);
+    }
+
+    FOR_EACH_LIST_ELMT (currMod, allMods) {
+        if (currMod->ImportedFlag == FALSE) {
+            /*
+             * create and fill .h file for module's data structs
+             */
+            srcFilePtr = fopen (currMod->cxxSrcFileName, "wt");
+
+            if (srcFilePtr == NULL) {
+                perror ("fopen");
+            } else {
+                saveMods = allMods->curr;
+                PrintPyCode (srcFilePtr, hdrFilePtr,
+                             if_META (genMeta COMMA &meta COMMA meta_pdus COMMA)
+                             allMods, currMod, &cxxRulesG, longJmpVal,
+                             genTypes, genValues, genEncoders, genDecoders,
+                             genPrinters, genFree,
+                             if_TCL (genTcl COMMA) novolatilefuncs);
+                allMods->curr = saveMods;
+                fclose (srcFilePtr);
+            }
+        }
+    }
+}
+
 /*
  * Given the list of parsed, linked, normalized, error-checked and sorted
  * modules, and some code generation flags, generates C++ code and
@@ -1345,7 +1444,7 @@ GenCxxCode PARAMS ((allMods, longJmpVal, genTypes, genValues, genEncoders, genDe
 	fclose (meta.srcfp);
     
 #endif
-	}
+        }
 	}
 }  /* GenCxxCode */
 

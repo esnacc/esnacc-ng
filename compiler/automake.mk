@@ -70,6 +70,11 @@ compiler_esnacc_SOURCES = \
 	compiler/back-ends/idl-gen/gen-code.c \
 	compiler/back-ends/idl-gen/types.c \
 	compiler/back-ends/idl-gen/gen-vals.c \
+	compiler/back-ends/py-gen/gen-any.c \
+	compiler/back-ends/py-gen/gen-code.c \
+	compiler/back-ends/py-gen/rules.c \
+	compiler/back-ends/py-gen/rules.h \
+	compiler/back-ends/py-gen/types.c \
 	policy.h \
 	version.h
 

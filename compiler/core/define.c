@@ -176,8 +176,7 @@ UndefineObj PARAMS ((objListHndl, obj, cmpRoutine),
 int
 ObjIsDefined (DefinedObj *objListPtr, void *obj, CmpObjsRoutine cmpRoutine)
 {
-    for ( ; objListPtr != NULL; objListPtr = objListPtr->next)
-    {
+    for ( ; objListPtr != NULL; objListPtr = objListPtr->next) {
         if (cmpRoutine (objListPtr->obj, obj))
             return TRUE;
     }
