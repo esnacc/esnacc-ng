@@ -876,6 +876,7 @@ ExpBufPutSegRvs PARAMS ((b, data, len),
                 buf = buf->prev;
 
             *b = buf; /* update head of list */
+            ExpBufResetInWriteRvsMode(*b);
 
             bytesLeft = buf->dataStart - buf->blkStart;
         }
