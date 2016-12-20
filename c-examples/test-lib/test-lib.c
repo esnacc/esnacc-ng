@@ -35,13 +35,24 @@
  *
  */
 
+#ifdef DEBUG
+#undef DEBUG
+#define DEBUG 1
+#endif
+
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
+
 #include <stdio.h>
+#include <assert.h>
 #ifdef WIN32
 #include "windows.h"
 #include "float.h"
 #endif
 #include "asn-incl.h"
 #include "sbuf.h"
+#include "exp-buf.h"
 
 int TestAsnBuffers();
 int TestAsnTag();
@@ -55,6 +66,50 @@ int TestAsnOid();
 int TestAsnList();
 
 int bufSize = 256;
+
+static void
+test_ExpBuf_Issue9() {
+    ExpBuf *eb = ExpBufAllocBufAndData();
+    unsigned long dbs = ExpBufDataBlkSize(eb);
+    unsigned long i;
+
+    ExpBufResetInWriteRvsMode(eb);
+    fprintf(stderr, "PTR: %p\n", eb);
+    for (i = 0; i < dbs; ++i) {
+        ExpBufPutByteRvs(&eb, 'a');
+    }
+    fprintf(stderr, "PTR: %p\n", eb);
+    ExpBufResetInReadMode(&eb);
+    fprintf(stderr, "PTR: %p\n", eb);
+    for (i = 0; i < 4; ++i) {
+        unsigned char c = ExpBufGetByte(&eb);
+        if (c != 'a') {
+            fprintf(stderr, "ERROR: Bad decode %d:0x%x...\n", i, (int)c);
+            fprintf(stderr, "       ReadError: %d\n", eb->readError);
+            fprintf(stderr, "       WriteError: %d\n", eb->writeError);
+            assert(0);
+        }
+    }
+
+    ExpBufResetInWriteRvsMode(eb);
+    for (i = 0; i < dbs+4; ++i) {
+        ExpBufPutByteRvs(&eb, 'b');
+    }
+
+    ExpBufResetInReadMode(&eb);
+    for (i = 0; i < 4; ++i) {
+        unsigned char c = ExpBufGetByte(&eb);
+        if (c != 'b') {
+            fprintf(stderr, "ERROR: BAD decode after encode..\n");
+            assert(0);
+        }
+    }
+
+    ExpBufResetInWriteRvsMode(eb);
+    for (i = 0; i < dbs; ++i) {
+        ExpBufPutByteRvs(&eb, 'c');
+    }
+}
 
 int
 main()
@@ -126,7 +181,8 @@ main()
         isErr = TRUE;
     }
 
-
+    ExpBufInit(1024);
+    test_ExpBuf_Issue9();
 
     if (isErr)
     {
