@@ -943,38 +943,29 @@ ExpBufPutByteRvs PARAMS ((b, byte),
     if ((*b)->writeError)
         return;
 
-    *(--(*b)->dataStart) = byte;
-
     /*
      * check if buffer is full and alloc new one if nec
      * and insert it before this one since writing backwards
      */
-    if (ExpBufFull (*b))
-    {
-        if ((*b)->prev == NULL)
-        {
+    if (ExpBufFull (*b)) {
+        if ((*b)->prev == NULL) {
             /*
              * no prev buf so alloc & insert
              * new buf as head of buffer list
              */
             new = ExpBufAllocBufAndData();
-            if (new == NULL)
-            {
+            if (new == NULL) {
                 (*b)->writeError = 1;
                 return;
             }
-
             new->next = *b;
             (*b)->prev = new;
-            *b = new;
         }
-        else
-        {
-            (*b) = (*b)->prev;
-            ExpBufResetInWriteRvsMode (*b);
-        }
-
+        (*b) = (*b)->prev;
+        ExpBufResetInWriteRvsMode (*b);
     }
+
+    *(--(*b)->dataStart) = byte;
 } /* ExpBufPutByteRvs */
 
 
