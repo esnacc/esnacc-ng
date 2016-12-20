@@ -538,8 +538,7 @@ ExpBufFreeBufAndDataList PARAMS ((b),
 {
     ExpBuf *tmp;
 
-    for (; b != NULL;)
-    {
+    for (; b != NULL;) {
         tmp = b->next;
         ExpBufFreeBufAndData (b);
         b = tmp;
@@ -692,8 +691,7 @@ ExpBufCopy PARAMS ((dst, b, len),
     char *srcPtr;
 
     gotLen = len;
-    while (1)         /* optimize std path - eg only one ExpBufGetSeg needed */
-    {
+    while (1) {
         srcPtr = ExpBufGetSeg (b, &gotLen);
         memcpy (dst + totalGotLen, srcPtr, gotLen);
 
@@ -702,17 +700,15 @@ ExpBufCopy PARAMS ((dst, b, len),
         if (totalGotLen >= (int)len)
             return totalGotLen;
 
-        if (gotLen == 0)  /* eod */
-        {
+        if (gotLen == 0) {
+            /* eod */
             (*b)->readError = 1;
             return totalGotLen;
         }
 
         gotLen = len - totalGotLen;
     }
-
     /* not reached */
-
 }  /* ExpBufCopy */
 
 
@@ -728,12 +724,10 @@ ExpBufSkip PARAMS ((b, len),
     unsigned long lenRemaining;
 
     lenRemaining = len;
-    while ((len > 0) && ExpBufGetSeg (b, &lenRemaining))
-    {
+    while ((len > 0) && ExpBufGetSeg(b, &lenRemaining)) {
         len -= lenRemaining;
 
-        if (lenRemaining == 0)
-        {
+        if (lenRemaining == 0) {
             (*b)->readError = 1;
             return;
         }
@@ -837,16 +831,13 @@ ExpBufPutSegRvs PARAMS ((b, data, len),
 
     /* optimize fast path */
 
-    do
-    {
-        if (bytesLeft > (int)len) /* enough room in this buffer for write */
-        {
+    do {
+        /* enough room in this buffer for write */
+        if (bytesLeft > (int)len) {
             buf->dataStart -= len;
             memcpy (buf->dataStart, data, len);
             break; /* this is the normal exit from this loop */
-        }
-        else
-        {
+        } else {
             /*
              * going to fill this buffer completely,
              * so alloc other one (only if one is not
@@ -858,21 +849,17 @@ ExpBufPutSegRvs PARAMS ((b, data, len),
 
             len -= bytesLeft;
 
-            if (buf->prev == NULL)
-            {
+            if (buf->prev == NULL) {
                 /* alloc & insert new buf at head of buffer list */
                 buf = ExpBufAllocBufAndData();
 
-                if (buf == NULL)
-                {
+                if (buf == NULL) {
                     (*b)->writeError = 1;
                     return;
                 }
-
                 buf->next = *b;
                 (*b)->prev = buf;
-            }
-            else
+            } else
                 buf = buf->prev;
 
             *b = buf; /* update head of list */
@@ -882,8 +869,6 @@ ExpBufPutSegRvs PARAMS ((b, data, len),
         }
     }
     while (1);
-
-    /* not reached */
 
 }  /* ExpBufPutSegRvs */
 
@@ -983,6 +968,3 @@ ExpBufCopyToFile PARAMS ((b, f),
             fprintf (stderr, "ExpBufCopyToFile: error during writing\n");
     }
 }
-
-
-
