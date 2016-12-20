@@ -510,12 +510,11 @@ ExpBufAllocBufAndData()
     if (retVal == NULL)
         return NULL;
 
-    retVal->readError = 0;
+    retVal->readError = 1;
     retVal->writeError = 0;
     retVal->blkStart = ExpBufAllocData();
 
-    if (retVal->blkStart == NULL)
-    {
+    if (retVal->blkStart == NULL) {
         ExpBufFreeBuf (retVal);
         return NULL;
     }
@@ -560,7 +559,7 @@ ExpBufInstallDataInBuf PARAMS ((buf, data, len),
     unsigned long len)
 {
     buf->readError = 0;
-    buf->writeError = 0;
+    buf->writeError = 1;
     buf->blkStart = buf->dataStart = buf->curr = data;
     buf->next = NULL;
     buf->prev = NULL;
