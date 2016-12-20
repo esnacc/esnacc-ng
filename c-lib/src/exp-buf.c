@@ -900,28 +900,25 @@ ExpBufGetByte PARAMS ((b),
 {
     unsigned char retVal;
 
+    while (((*b)->next != NULL) && ExpBufHasNoData (*b)) {
+        *b = (*b)->next;
+    }
 
-    if (ExpBufAtEod (*b))
-    {
+    /* "buffer fault" - if end of this buf, go on to next, if any */
+    if (ExpBufAtEod (*b) && ((*b)->next != NULL)) {
+        *b = (*b)->next;
+
+        /* get next buffer with valid data */
+        /* reset current pointer to beggining of data if nec */
+        (*b)->curr = (*b)->dataStart;
+    }
+
+    if (ExpBufAtEod (*b)) {
         (*b)->readError = 1;
         return (unsigned char)0;
     }
 
     retVal = *(*b)->curr++;
-
-    /* "buffer fault" - if end of this buf, go on to next, if any */
-    if (ExpBufAtEod (*b) && ((*b)->next != NULL))
-    {
-        *b = (*b)->next;
-
-        /* get next buffer with valid data */
-        while (((*b)->next != NULL) && ExpBufHasNoData (*b))
-            *b = (*b)->next;
-
-        /* reset current pointer to beggining of data if nec */
-        (*b)->curr = (*b)->dataStart;
-    }
-
     return retVal;
 
 }  /* ExpBufGetByte */
