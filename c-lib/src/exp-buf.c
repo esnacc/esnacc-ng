@@ -364,37 +364,15 @@ void
 ExpBufResetInReadMode PARAMS ((b),
     ExpBuf **b)
 {
-	ExpBuf *nextPtr = (ExpBuf *)0;
-	ExpBuf *retVal = (ExpBuf *)0;
-    (*b)->curr = (*b)->dataStart;
-    (*b)->readError = 0;
-    (*b)->writeError = 1; /* catch wrong mode errors */
-	/* Get the Previous Pointer */
-	nextPtr = (*b)->next;
-	if (nextPtr == NULL)
-		retVal = (*b);
-	else
-		retVal = nextPtr;
-	if (nextPtr != NULL)
-	{
-
-		while (nextPtr)
-		{
-			nextPtr->curr = nextPtr->dataStart;
-			nextPtr->readError = 0;
-			nextPtr->writeError = 1; /* catch wrong mode errors */
-			nextPtr = nextPtr->next;
-			if (nextPtr)
-				retVal = nextPtr;
-		}
-	}
-	else
-	{
-		retVal->curr = retVal->dataStart;
-		retVal->readError = 0;
-		retVal->writeError = 1;
-	}
-	*b = retVal;
+    ExpBuf **pp = b;
+    ExpBuf *p = *pp;
+    while ((p = *pp) != NULL) {
+        p->curr = p->dataStart;
+        p->readError = 0;
+        p->writeError = 1;
+        *b = p;
+        pp = &(p->next);
+    }
 }
 
 /*
