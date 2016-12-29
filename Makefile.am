@@ -33,6 +33,8 @@ docs = \
 	NEWS \
 	COPYING \
 	COPYING.epl \
+	COPYING.logo \
+	esnacc-logo.svg \
 	FAQ.md
 
 EXTRA_DIST = \

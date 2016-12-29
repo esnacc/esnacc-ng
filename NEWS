@@ -5,6 +5,7 @@ Future
 * c++-lib: streambuf monitor
 * c++-lib: IOManipulator based encoding/decoding
 * documentation: Developer's guides
+* esnacc-logo: A mascot (and CC-BY license) was added for esnacc
 
 
 1.80
