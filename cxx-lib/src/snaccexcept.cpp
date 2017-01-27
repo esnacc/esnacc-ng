@@ -6,7 +6,7 @@
 #include <string.h>
 #include <stdio.h>
 
-namespace SNACC 
+namespace SNACC
 {
 const char * ConstraintErrorStringList[ SEQ_OF_SIZE_VALUE_RANGE + 1 ] = {
     "INTEGER VALUE CONSTRAINT ERROR :: Integer value is not within Upper and Lower constrained Bounds!!\n",
@@ -39,14 +39,14 @@ SnaccException::SnaccException(long errorCode) throw()
    memset(&stack[0], 0, sizeof(CallStack)*STACK_DEPTH);
 }
 
-SnaccException::SnaccException(const char *file, long line_number, 
-                               const char *function, const char *whatStrIn, 
-										 long errorCode) throw()
+SnaccException::SnaccException(const char *file, long line_number,
+                               const char *function, const char *whatStrIn,
+                               long errorCode) throw()
 {
 
    memset(&stack[0], 0, sizeof(CallStack)*STACK_DEPTH);
 
-   try 
+   try
    {
       if (whatStrIn != NULL)
          this->m_whatStr = whatStrIn;
@@ -70,13 +70,13 @@ SnaccException::~SnaccException() throw()
 }
 
 SnaccException & SnaccException::operator=(const SnaccException &o)
-{ 
-   try 
+{
+   try
    {
-      stackPos = o.stackPos; 
-      memcpy(stack, o.stack, sizeof(stack)); 
+      stackPos = o.stackPos;
+      memcpy(stack, o.stack, sizeof(stack));
       m_errorCode = o.m_errorCode;
-  
+
       m_whatStr = o.m_whatStr;
    }
    catch (...)
@@ -88,7 +88,7 @@ SnaccException & SnaccException::operator=(const SnaccException &o)
 }
 
 
-void SnaccException::push(const char *file, long line_number, 
+void SnaccException::push(const char *file, long line_number,
                           const char *function) throw()
 {
    if (stackPos < STACK_DEPTH - 1)
@@ -115,7 +115,7 @@ void SnaccException::getCallStack(std::ostream &os) const
 #ifdef WIN32
       if ((ptr=strrchr(stack[i].file, '\\')) == NULL)
 #else
-	if ((ptr=(char *)strrchr(stack[i].file, '/')) == NULL)
+      if ((ptr=(char *)strrchr(stack[i].file, '/')) == NULL)
 #endif
          ptr = (char *)stack[i].file;
       else
@@ -131,9 +131,9 @@ void SnaccException::getCallStack(std::ostream &os) const
 }
 
 FileException::FileException(const char *filename, enum FileErrType errType,
-							 const char *file, long line_number,
-							 const char *function)  throw() :
-SnaccException(file, line_number, function, NULL, FILE_IO_ERROR) 
+                             const char *file, long line_number,
+                             const char *function)  throw() :
+SnaccException(file, line_number, function, NULL, FILE_IO_ERROR)
 {
    switch (errType)
    {
@@ -156,19 +156,19 @@ SnaccException(file, line_number, function, NULL, FILE_IO_ERROR)
 const char * FileException::what() const throw()
 {
    return &whatStr[0];
-} 
+}
 
 
 MemoryException::MemoryException(long memorySize, const char *variable,
-								 const char *file, long line_number,
-								 const char *function) throw() :
-SnaccException(file, line_number, function, "MemoryException", MEMORY_ERROR) 
+                                 const char *file, long line_number,
+                                 const char *function) throw() :
+SnaccException(file, line_number, function, "MemoryException", MEMORY_ERROR)
 {
    sprintf(memoryInfo, "Error allocating %ld bytes for ", memorySize);
    int memUsed = strlen(memoryInfo);
    int len2copy = strlen(variable);
    if (len2copy > (128 - memUsed - 1))
-	   len2copy = 128 - memUsed - 1;
+       len2copy = 128 - memUsed - 1;
    memcpy(&memoryInfo[memUsed], variable, len2copy);
    memoryInfo[memUsed + len2copy] = '\0';
 }
@@ -180,15 +180,15 @@ const char * MemoryException::what() const throw()
 
 
 InvalidTagException::InvalidTagException(const char *type, long tagId,
-										 const char *file, long line_number,
-										 const char *function) throw() :
+                                         const char *file, long line_number,
+                                         const char *function) throw() :
 SnaccException(file, line_number, function, "InvalidTagException", INVALID_TAG)
 {
    sprintf(wrongTagInfo,"Tag [%ld] is invalid for type ", tagId);
    int memUsed = strlen(wrongTagInfo);
    int len2copy = strlen(type);
    if (len2copy > (128 - memUsed - 1))
-	   len2copy = 128 - memUsed - 1;
+       len2copy = 128 - memUsed - 1;
    memcpy(&wrongTagInfo[memUsed], type, len2copy);
    wrongTagInfo[memUsed + len2copy] = '\0';
 }
