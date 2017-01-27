@@ -29,8 +29,8 @@ char SNACCDLL_API numToHexCharTblG[16] = { '0', '1', '2', '3', '4', '5', '6', '7
 
 AsnBits::AsnBits(const char *stringForm)
 {
-   bits=NULL;
-   nblFlag = false; 
+   bits = NULL;
+   nblFlag = false;
    bitLen = 0;
    if (stringForm)
       operator=(stringForm);
@@ -133,7 +133,7 @@ bool AsnBits::BitsEquiv (const AsnBits &ab) const
 {
   size_t octetsLessOne = (bitLen-1)/8;
   size_t unusedBits;
-  
+
   unusedBits = bitLen % 8;
   if (unusedBits != 0)
      unusedBits = 8 - unusedBits;
@@ -161,7 +161,7 @@ void AsnBits::SetSize(size_t newsize)
         memcpy((char*)bits, (const char*)tmpBits, newLength);
         delete [] tmpBits;
     }
-    
+
     bitLen = newsize;
 }
 
@@ -178,7 +178,7 @@ void AsnBits::SetBit (size_t bit)
   }
   else
   {
-    throw ParameterException("Parameter is larger than BIT STRING size", 
+    throw ParameterException("Parameter is larger than BIT STRING size",
          STACK_ENTRY);
   }
 } /* AsnBits::SetBit */
@@ -196,7 +196,7 @@ void AsnBits::ClrBit (size_t bit)
   }
   else
   {
-    throw ParameterException("Parameter is larger than BIT STRING size", 
+    throw ParameterException("Parameter is larger than BIT STRING size",
          STACK_ENTRY);
   }
 } /* AsnBits::ClrBit */
@@ -207,7 +207,7 @@ bool AsnBits::GetBit (size_t bit) const
 {
   if (bit < bitLen)
   {
-    size_t octet = bit/8;
+    size_t octet = bit / 8;
     size_t octetsBit = 7 - (bit % 8);	// bit zero is first/most sig bit in octet
     return !!(bits[octet] & (1 << octetsBit));
   }
@@ -242,22 +242,22 @@ AsnLen AsnBits::BEncContent (AsnBuf &b) const
 
     unsigned int i;
     //bool bStop;
-    
-    // IF bitstring is a NamedBitList 
+
+    // IF bitstring is a NamedBitList
     if (nblFlag)
     {
 
-       // Calculate last octet.  
-       // 
+       // Calculate last octet.
+       //
        size_t finalOctet;
        if (bitLen <= 8)
           finalOctet = 0;
        else if (bitLen % 8 == 0)
           finalOctet = ((bitLen / 8) - 1);
-       else 
+       else
           finalOctet = bitLen / 8;
 
-       // The final octet is the last octet which has at least 
+       // The final octet is the last octet which has at least
        // one bit set.  Loop backwards starting with the
        // last octet (calculated above) until you find an
        // that has at least one bit set (it's value is not 0).
@@ -281,20 +281,20 @@ AsnLen AsnBits::BEncContent (AsnBuf &b) const
               unusedBits++;
           byteLen = finalOctet + 1;
        }
-    } 
-    else 
+    }
+    else
     {
        // If this is not a NamedBitList Calculate the unusedBits
        // as ( (BitLen() / 8) + 1) * 8 ) - BitLen();
        //
        // In other words it's the number of bits not used by
-       // the BIT STRING specification, not the number of unset 
+       // the BIT STRING specification, not the number of unset
        // bits in the the final subsequent octet.
        unusedBits = bitLen % 8;
        if (unusedBits != 0)
           unusedBits = 8 - unusedBits;
-       
-       byteLen = (bitLen+7)/8;
+
+       byteLen = (bitLen + 7) / 8;
     }
     b.PutSegRvs (bits, byteLen);
 
@@ -316,7 +316,7 @@ void AsnBits::BDecContent (const AsnBuf &b, AsnTag tagId, AsnLen elmtLen, AsnLen
 
 	if (elmtLen == INDEFINITE_LEN || elmtLen > b.length())
 	{
-	   throw MemoryException(elmtLen, "elmtLen requests for too much data", STACK_ENTRY);
+        throw MemoryException(elmtLen, "elmtLen requests for too much data", STACK_ENTRY);
 	}
 
    /*
@@ -324,21 +324,22 @@ void AsnBits::BDecContent (const AsnBuf &b, AsnTag tagId, AsnLen elmtLen, AsnLen
     * if CONS bit is set then constructed bit string
     */
    if (tagId & 0x20000000)
+   {
      BDecConsBits (b, elmtLen, bytesDecoded);
-
+   }
    else /* primitive octet string */
    {
      if (elmtLen == INDEFINITE_LEN)
         throw BoundsException("indefinite length on primitive", STACK_ENTRY);
 
-	 if (elmtLen > b.length() || elmtLen <= 0)
+     if (elmtLen > b.length() || elmtLen <= 0)
         throw BoundsException("length problem on decoding content", STACK_ENTRY);
 
      bytesDecoded += elmtLen;
      elmtLen--;
 
-	 unsigned int iUnusedBitLen= (unsigned int)b.GetByte();
-	 if (iUnusedBitLen > 7)
+     unsigned int iUnusedBitLen= (unsigned int)b.GetByte();
+     if (iUnusedBitLen > 7)
         throw BoundsException("Length problem - Unused bits > 7", STACK_ENTRY);
 
      bitLen = (elmtLen * 8) - iUnusedBitLen;
@@ -355,22 +356,22 @@ size_t AsnBits::encLen() const
 
     unsigned int i;
     //bool bStop;
-    
-    // IF bitstring is a NamedBitList 
+
+    // IF bitstring is a NamedBitList
     if (nblFlag)
     {
 
-       // Calculate last octet.  
-       // 
+       // Calculate last octet. 
+       //
        size_t finalOctet;
        if (bitLen <= 8)
           finalOctet = 0;
        else if (bitLen % 8 == 0)
           finalOctet = ((bitLen / 8) - 1);
-       else 
+       else
           finalOctet = bitLen / 8;
 
-       // The final octet is the last octet which has at least 
+       // The final octet is the last octet which has at least
        // one bit set.  Loop backwards starting with the
        // last octet (calculated above) until you find an
        // that has at least one bit set (it's value is not 0).
@@ -400,7 +401,7 @@ size_t AsnBits::encLen() const
 	{
 		return BitLen();
 	}
-	
+
 	return ( (byteLen * 8) - unusedBits);
 }
 
@@ -416,20 +417,20 @@ AsnLen AsnBits::EncodeGeneral(AsnBufBits &b)const
 	long offset = 0;
 
 	if(tempLen >= l_16k)
-	{	
+	{
 		/*there is more than 16k bits of data*/
 		count = (tempLen / l_64kFrag);
-		
+
 		for(x=0; x < count; x++)
-		{  
+		{
 			len += b.OctetAlignWrite();
-			
+
 			len += PEncLen_16kFragment(b, 4);
-				
+
 			len += b.OctetAlignWrite();
-			
+
 			len += b.PutBits((unsigned char*)&bits[offset / 8], l_64kFrag);
-			
+
 			offset += l_64kFrag;
 		}
 
@@ -438,29 +439,29 @@ AsnLen AsnBits::EncodeGeneral(AsnBufBits &b)const
 		count = tempLen / l_16k;
 
 		if(count != 0)
-		{  
+		{
 			len += b.OctetAlignWrite();
-			
+
 			len += PEncLen_16kFragment(b, count);
-		
+
 			len += b.OctetAlignWrite();
-						
+
 			len += b.PutBits((unsigned char*)&bits[offset / 8], (count * l_16k) );
 
 			offset += (count * l_16k);
 		}
-		
+
 		tempLen -=  (l_16k * count);
 
 		if(tempLen == 0)
 		{
 			ch = 0x00;
 			c = &ch;
-			
+
 			len += b.OctetAlignWrite();
 
 			len += b.PutBits(c, 8);
-			
+
 			return len;
 		}
 	}
@@ -471,7 +472,7 @@ AsnLen AsnBits::EncodeGeneral(AsnBufBits &b)const
 		len += b.OctetAlignWrite();
 
 		len += PEncDefLenTo127(b, tempLen);
-		
+
 		len += b.OctetAlignWrite();
 
 		len += b.PutBits((unsigned char*)&bits[offset / 8], tempLen);
@@ -484,9 +485,9 @@ AsnLen AsnBits::EncodeGeneral(AsnBufBits &b)const
 		/*if there is less than 16k bits of data*/
 		/*and more than 127 bits of data*/
 		len += PEncLen_1to16k(b, tempLen);
-		
+
 		len += b.OctetAlignWrite();
-		
+
 		len += b.PutBits((unsigned char*)&bits[offset / 8], tempLen);
 
 		offset += tempLen;
@@ -500,7 +501,7 @@ void AsnBits::Allocate(long size)
 	char* temp = new char[(((bitLen + size)/ 8) + 1)];
 	memcpy(temp, bits, length());
 	size += bitLen;
-	
+
 	clear();
 
 	bitLen = size;
@@ -514,11 +515,11 @@ void AsnBits::DecodeGeneral(AsnBufBits &b, AsnLen &bitsDecoded)
 	unsigned char* seg;
 	unsigned long templen = 0;
 	long offset = 0;
-	
+
 	clear();
 
 	bitsDecoded += b.OctetAlignRead();
-	
+
 	seg = (unsigned char*)b.GetBits(8);
 	bitsDecoded += 8;
 
@@ -527,9 +528,9 @@ void AsnBits::DecodeGeneral(AsnBufBits &b, AsnLen &bitsDecoded)
 		seg[0] &= 0x3F;
 		templen = (unsigned long)seg[0];
 		templen *= l_16k;
-	
+
 		b.OctetAlignRead();
-		
+
 		Allocate(templen);
 
         delete [] seg;
@@ -544,7 +545,7 @@ void AsnBits::DecodeGeneral(AsnBufBits &b, AsnLen &bitsDecoded)
 		seg = (unsigned char*)b.GetBits(8);
 		bitsDecoded += 8;
 	}
-	
+
 	if((seg[0] & 0xC0) == 0x80)
 	{
 		seg[0] &= 0x3F;
@@ -554,7 +555,7 @@ void AsnBits::DecodeGeneral(AsnBufBits &b, AsnLen &bitsDecoded)
 		seg = (unsigned char*)b.GetBits(8);
         bitsDecoded += 8;
 		templen |= (unsigned long)seg[0];
-		
+
 		bitsDecoded += b.OctetAlignRead();
 
 		Allocate(templen);
@@ -570,11 +571,11 @@ void AsnBits::DecodeGeneral(AsnBufBits &b, AsnLen &bitsDecoded)
 	{
 		seg[0] &= 0x7F;
 		templen = (unsigned long)seg[0];
-		
+
 		bitsDecoded += b.OctetAlignRead();
 
 		Allocate(templen);
-		
+
         delete [] seg;
         seg = b.GetBits(templen);
 		memcpy(&bits[offset / 8], seg, ((templen + 7) / 8));
@@ -593,13 +594,13 @@ long AsnBits::FindSizeConstraintBounds(int &iSCLowerBound, int &iSCUpperBound)co
     const SizeConstraint* sizeConstraints = SizeConstraints(numsizeconstraints);
 
 	while(count < numsizeconstraints)
-	{	
+	{
 		if((unsigned)iSCUpperBound < sizeConstraints[count].lowerBound)
 		{
 			iSCUpperBound = sizeConstraints[count].lowerBound;
 		}
 
-		if( sizeConstraints[count].upperBoundExists == 1 && 
+		if( sizeConstraints[count].upperBoundExists == 1 &&
 			(unsigned)iSCUpperBound < sizeConstraints[count].upperBound)
 		{
 			iSCUpperBound = sizeConstraints[count].upperBound;
@@ -669,12 +670,12 @@ AsnLen AsnBits::EncodeWithSizeConstraint (AsnBufBits &b)const
 		pStr[0] <<= 8 - minBitsNeeded;
 		len += b.PutBits(pStr, minBitsNeeded);
 	}
-	
+
 	if( (iSCUpperBound > 16) && b.IsAligned())
 	{
 		len += b.OctetAlignWrite();
 	}
-	
+
 	if((unsigned)bitLen < (unsigned)iSCLowerBound)
 	{
 		tempLength = iSCLowerBound - bitLen;
@@ -700,7 +701,7 @@ AsnLen AsnBits::EncodeWithSizeConstraint (AsnBufBits &b)const
 void AsnBits::DecodeWithSizeConstraint(AsnBufBits &b, AsnLen &bitsDecoded)
 {
 	FUNC("AsnBits::DecodeWithSizeConstraint");
-    
+
     int numSizeConstraints;
     const SizeConstraint* sizeConstraints = SizeConstraints(numSizeConstraints);
 	int iSCLowerBound = sizeConstraints[0].lowerBound;
@@ -720,8 +721,7 @@ void AsnBits::DecodeWithSizeConstraint(AsnBufBits &b, AsnLen &bitsDecoded)
 		tempRange -= (long)(1 << minBitsNeeded);
 		minBitsNeeded += 1;
 	}
-	
-	
+
 	if(Range > 1)
 	{
 		if( (iSCUpperBound > 16) && b.IsAligned())
@@ -766,7 +766,7 @@ void AsnBits::DecodeWithSizeConstraint(AsnBufBits &b, AsnLen &bitsDecoded)
 	{
 		bitsDecoded += b.OctetAlignRead();
 	}
-	
+
 	bitLen = decodeSize;
 	bits = new unsigned char[((decodeSize + 7) /8)];
     seg = b.GetBits(decodeSize);
@@ -774,7 +774,7 @@ void AsnBits::DecodeWithSizeConstraint(AsnBufBits &b, AsnLen &bitsDecoded)
     bitsDecoded += decodeSize;
     delete [] seg;
     delete [] pStr;
-    
+
 }
 
 AsnLen AsnBits::PEnc (AsnBufBits &b) const
@@ -794,7 +794,7 @@ AsnLen AsnBits::PEnc (AsnBufBits &b) const
 	return len;
 }
 
-void AsnBits::PDec (AsnBufBits &b, AsnLen &bitsDecoded) 
+void AsnBits::PDec (AsnBufBits &b, AsnLen &bitsDecoded)
 {
     int numSizeConstraints;
     const SizeConstraint* sizeConstraints = SizeConstraints(numSizeConstraints);
@@ -849,9 +849,9 @@ void AsnBits::BDecConsBits (const AsnBuf &b, AsnLen elmtLen, AsnLen &bytesDecode
    ConsStringDeck::iterator i;
 
    deck.Fill(b, elmtLen, bytesDecoded);
-   
+
    // Check all but the last card to make sure it's set to zero
-   // 
+   //
    // This enforces the constructed BIT STRING rule which states
    // the unused bits must 0 except for the last component.
    //
@@ -927,14 +927,14 @@ AsnBits & AsnBits::SetEqual(const char *stringForm)
 
    char *pend = NULL;
    char *pbegin = NULL;
-   
+
    pend = (char *)strstr(stringForm, "'B");
 
    pbegin = (char *)strstr(stringForm,"'");
 
    if (pend == NULL || pbegin == NULL)
    {
-      throw ParameterException("Invalid string form for BIT STRING", 
+      throw ParameterException("Invalid string form for BIT STRING",
          STACK_ENTRY);
    }
 
@@ -953,7 +953,7 @@ AsnBits & AsnBits::SetEqual(const char *stringForm)
          SetBit(i);
       else
          // PIERCE THROW
-       throw ParameterException("Invalid string form for BIT STRING", 
+       throw ParameterException("Invalid string form for BIT STRING",
          STACK_ENTRY);
    }
 
