@@ -108,20 +108,22 @@ const char * SnaccException::what() const throw()
 void SnaccException::getCallStack(std::ostream &os) const
 {
    int i = 0;
-   char *ptr=NULL;
+   const char *ptr = NULL;
 
    for(; i <= stackPos; i++)
    {
 #ifdef WIN32
       if ((ptr=strrchr(stack[i].file, '\\')) == NULL)
 #else
-      if ((ptr=(char *)strrchr(stack[i].file, '/')) == NULL)
+      if ((ptr=strrchr(stack[i].file,  '/')) == NULL)
 #endif
-         ptr = (char *)stack[i].file;
+         ptr = stack[i].file;
       else
          ptr++;
+
       os << ptr;
       os << "\t" << stack[i].line_number;
+
       if (stack[i].function)
          os << "\t" << stack[i].function << "\n";
       else
