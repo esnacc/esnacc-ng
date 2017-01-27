@@ -925,12 +925,8 @@ AsnBits & AsnBits::SetEqual(const char *stringForm)
 {
    FUNC("AsnBits::operator=()");
 
-   char *pend = NULL;
-   char *pbegin = NULL;
-
-   pend = (char *)strstr(stringForm, "'B");
-
-   pbegin = (char *)strstr(stringForm,"'");
+   const char *pend   = strstr(stringForm, "'B");
+   const char *pbegin = strstr(stringForm, "'");
 
    if (pend == NULL || pbegin == NULL)
    {
