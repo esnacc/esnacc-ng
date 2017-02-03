@@ -55,3 +55,4 @@ pr.ber
 test-suite.log
 *.info
 *-coverage/
+py-compile
