@@ -260,6 +260,6 @@ GetTypeDef PARAMS ((t),
         default:
             return NULL;
     }
-    return NULL;*/
+    return NULL;
 
 }  /* GetTypeDef */
