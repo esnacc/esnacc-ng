@@ -14,7 +14,7 @@ X.208/ ISO 8824).  See the COPYRIGHT file for copyright information.
 
 eSNACC is an enhanced version of the Sample Neufeld ASN C Compiler. It 
 supports BER, DER, and PER rulesets for C and C++ code generation. There is
-experimental support for TCL.
+experimental support for TCL, and Python.
 
 eSNACC takes ASN.1 code files, parses them, and outputs appropriate header
 and source files for inclusion in a larger project.
@@ -54,9 +54,10 @@ Given an ASN.1 source file(s) esnacc can produce:
 
    1. C routines for BER encoding, decoding, printing and freeing.
    2. C++ routines for BER encoding, decoding, and printing.
-   3. A type table that can be used with C driver routines
+   3. Python routines for BER encoding, decoding, and printing.
+   4. A type table that can be used with C driver routines
       for BER encoding, decoding, printing and freeing.
-   4. if you are really lucky, a core dump! :)
+   5. if you are really lucky, a core dump! :)
 
 esnacc tries to produce reasonably efficient C or C++ routines and data
 structures to support BER encoding and decoding values of the given
@@ -77,6 +78,8 @@ When using the table option, snacc produces a type table file
 (a BER encoding) that can later be loaded at runtime by the
 table driven encoding and decoding routines.
 
+When using the python option, esnacc produces a .py file that can be 
+used for BER encoding and decoding (sometimes).
 
 FUTURE ENCHANCEMENTS
 --------------------
