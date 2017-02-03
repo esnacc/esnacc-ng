@@ -140,6 +140,7 @@
 #include "math.h"
 
 #include <stdlib.h>
+#include <limits>
 
 _BEGIN_SNACC_NAMESPACE
 
@@ -201,7 +202,7 @@ static double AsnMinusInfinity()
 
 static bool iszero(double v)
 {
-    return (std::fpclassify(v) == FP_ZERO);
+    return (fpclassify(v) == FP_ZERO);
 }
 
 // This routine uses the ieee library routines to encode
