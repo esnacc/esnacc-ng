@@ -77,4 +77,8 @@ void ProcessSnmpObjectTypeMacroType PROTO ((Module *m, TypeDef *td, Type *t,
 										   BasicType *bt,
 										   SnmpObjectTypeMacroType *bind,
 										   ValueDef *v));
+
+int GetROSEData(ValueDef *vd, char **argumentTypeName, char **resultTypeName,
+                char **errorTypeName, Type **argumentType, Type **resultType,
+                Type **errorType);
 #endif

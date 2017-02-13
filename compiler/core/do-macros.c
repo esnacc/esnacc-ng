@@ -439,8 +439,6 @@ ProcessRosOperationMacroType PARAMS ((m, td, t, bt, op, v),
 
     if (op->result != NULL)
         DefineType (m, td, op->result->type, v->definedName);
-    bt = bt;     /*AVOIDS compiler warning.*/
-    t = t;
 }  /* ProcessRosOperationMacroType */
 
 
@@ -795,3 +793,157 @@ into the global ref table. */
     nt = nt;
 
 }  /* ProcessSnmpObjectTypeMacro */
+
+static int ROSEMacroHasArgs(ValueDef *vd)
+{
+    if ((vd->value->type != NULL) &&
+        (vd->value->type->basicType->choiceId == BASICTYPE_MACROTYPE) &&
+        (vd->value->type->basicType->a.macroType->choiceId ==
+         MACROTYPE_ROSOPERATION)) {
+        return NULL !=
+            vd->value->type->basicType->a.macroType->a.rosOperation->arguments;
+    }
+    return 0;
+}
+
+static int ROSEMacroHasResult(ValueDef *vd)
+{
+    if ((vd->value->type != NULL) &&
+        (vd->value->type->basicType->choiceId == BASICTYPE_MACROTYPE) &&
+        (vd->value->type->basicType->a.macroType->choiceId ==
+         MACROTYPE_ROSOPERATION)) {
+        return NULL !=
+            vd->value->type->basicType->a.macroType->a.rosOperation->result;
+    }
+    return 0;
+}
+
+static int ROSEMacroHasErrors(ValueDef *vd)
+{
+    if ((vd->value->type != NULL) &&
+        (vd->value->type->basicType->choiceId == BASICTYPE_MACROTYPE) &&
+        (vd->value->type->basicType->a.macroType->choiceId ==
+         MACROTYPE_ROSOPERATION)) {
+        return NULL !=
+            vd->value->type->basicType->a.macroType->a.rosOperation->errors &&
+            vd->value->type->basicType->a.macroType->a.rosOperation->errors->count;
+    }
+    return 0;
+}
+
+static char *GetMacroArgTypeName(RosOperationMacroType *t)
+{
+    if (t->arguments->type->basicType->choiceId == BASICTYPE_LOCALTYPEREF &&
+        t->arguments->type->basicType->a.localTypeRef->typeName) {
+        return t->arguments->type->basicType->a.localTypeRef->typeName;
+    } else if (t->arguments->type->basicType->choiceId == BASICTYPE_IMPORTTYPEREF &&
+               t->arguments->type->basicType->a.importTypeRef->typeName) {
+        return t->arguments->type->basicType->a.importTypeRef->typeName;
+    }
+
+    return NULL;
+}
+
+static char *GetMacroResultTypeName(RosOperationMacroType *t)
+{
+    if (t->result->type->basicType->choiceId == BASICTYPE_LOCALTYPEREF &&
+        t->result->type->basicType->a.localTypeRef->typeName) {
+        return t->result->type->basicType->a.localTypeRef->typeName;
+    } else if (t->result->type->basicType->choiceId == BASICTYPE_IMPORTTYPEREF &&
+               t->result->type->basicType->a.importTypeRef->typeName) {
+        return t->result->type->basicType->a.importTypeRef->typeName;
+    }
+
+    return NULL;
+}
+
+static char *GetMacroErrorsTypeName(RosOperationMacroType *t)
+{
+    TypeOrValue *first = (TypeOrValue*)FIRST_LIST_ELMT(t->errors);
+    if (first->choiceId == TYPEORVALUE_TYPE) {
+        if ((first->a.type->basicType->choiceId == BASICTYPE_LOCALTYPEREF) &&
+            (first->a.type->basicType->a.localTypeRef->typeName)) {
+            return first->a.type->basicType->a.localTypeRef->typeName;
+        } else if ((first->a.type->basicType->choiceId == BASICTYPE_IMPORTTYPEREF) &&
+                   (first->a.type->basicType->a.importTypeRef->typeName)) {
+            return first->a.type->basicType->a.importTypeRef->typeName;
+        }
+    }
+
+    return NULL;
+}
+
+static Type *GetMacroArgTypeVal(RosOperationMacroType *t)
+{
+    if ((t->arguments->type->basicType->choiceId == BASICTYPE_LOCALTYPEREF &&
+         t->arguments->type->basicType->a.localTypeRef->typeName) ||
+        (t->arguments->type->basicType->choiceId == BASICTYPE_IMPORTTYPEREF &&
+         t->arguments->type->basicType->a.importTypeRef->typeName)) {
+        return t->arguments->type;
+    }
+
+    return NULL;
+}
+
+static Type *GetMacroResultTypeVal(RosOperationMacroType *t)
+{
+    if ((t->result->type->basicType->choiceId == BASICTYPE_LOCALTYPEREF &&
+         t->result->type->basicType->a.localTypeRef->typeName) ||
+        (t->result->type->basicType->choiceId == BASICTYPE_IMPORTTYPEREF &&
+         t->result->type->basicType->a.importTypeRef->typeName)) {
+        return t->result->type;
+    }
+
+    return NULL;
+}
+
+static Type *GetMacroErrorsTypeVal(RosOperationMacroType *t)
+{
+    TypeOrValue *first = (TypeOrValue*)FIRST_LIST_ELMT(t->errors);
+    if (first->choiceId == TYPEORVALUE_TYPE) {
+        if ((first->a.type->basicType->choiceId == BASICTYPE_LOCALTYPEREF) &&
+            (first->a.type->basicType->a.localTypeRef->typeName)) {
+            return first->a.type->basicType->a.localTypeRef->link->type;
+        } else if ((first->a.type->basicType->choiceId == BASICTYPE_IMPORTTYPEREF) &&
+                   (first->a.type->basicType->a.importTypeRef->typeName)) {
+            return first->a.type->basicType->a.importTypeRef->link->type;
+        }
+    }
+
+    return NULL;
+}
+
+int GetROSEData(ValueDef *vd, char **argumentTypeName, char **resultTypeName,
+                char **errorTypeName, Type **argumentType, Type **resultType,
+                Type **errorType)
+{
+    int ret = 0;
+
+    if (ROSEMacroHasArgs(vd)) {
+        RosOperationMacroType *t =
+            vd->value->type->basicType->a.macroType->a.rosOperation;
+
+        *argumentTypeName = GetMacroArgTypeName(t);
+        if (argumentType) *argumentType = GetMacroArgTypeName(t);
+        ret += 1;
+    }
+
+    if (ROSEMacroHasResult(vd)) {
+        RosOperationMacroType *t =
+            vd->value->type->basicType->a.macroType->a.rosOperation;
+
+        *resultTypeName = GetMacroResultTypeName(t);
+        if (resultType) *resultType = GetMacroResultTypeVal(t);
+        ret += 1;
+    }
+
+    if (ROSEMacroHasErrors(vd)) {
+        RosOperationMacroType *t =
+            vd->value->type->basicType->a.macroType->a.rosOperation;
+
+        *errorTypeName = GetMacroErrorsTypeName(t);
+        if (errorType) *errorType = GetMacroErrorsTypeVal(t);
+        ret += 1;
+    }
+    return ret;
+}
