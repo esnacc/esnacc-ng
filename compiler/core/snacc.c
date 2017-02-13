@@ -75,7 +75,7 @@ char *bVDAGlobalDLLExport=(char *)0;
 #if META
 #include "meta.h"
 #endif
-
+#include "do-macros.h"
 #include "c-gen/rules.h"		/* for c file generation */
 #include "c-gen/type-info.h"
 
@@ -136,7 +136,6 @@ void PrintPyCode (FILE *src, FILE *hdr, if_META (MetaNameStyle genMeta COMMA
 				   if_TCL (int printTcl COMMA) int novolatilefuncs);
 void PrintIDLCode PROTO ((FILE *idl, ModuleList *mods, Module *m, IDLRules *r,
 						 long int longJmpVal, int printValues));
-void ProcessMacros PROTO ((Module *m));
 void SortAllDependencies PROTO ((ModuleList *m));
 int  yyparse();
 
