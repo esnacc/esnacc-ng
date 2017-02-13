@@ -292,31 +292,23 @@ PrintTypeDecl PARAMS ((f, td),
 
 
 static void
-PrintCxxType PARAMS ((hdr, mods, m, r, td, parent, t),
+PrintCxxType PARAMS ((hdr, mods, t),
     FILE *hdr _AND_
     ModuleList *mods _AND_
-    Module *m _AND_
-    CxxRules *r _AND_
-    TypeDef *td _AND_
-    Type *parent _AND_
     Type *t)
 {
-    char *pszNamespace=NULL;
-    pszNamespace = LookupNamespace(t, mods);
+    char *pszNamespace = LookupNamespace(t, mods);
 
-    if (pszNamespace)
-    {
-        fprintf (hdr, "%s::%s       ", pszNamespace, t->cxxTypeRefInfo->className);
+    if (pszNamespace) {
+        fprintf(hdr, "%s::%s       ", pszNamespace,
+                t->cxxTypeRefInfo->className);
+    } else {
+        fprintf(hdr, "%s       ", t->cxxTypeRefInfo->className);
     }
-    else
-    {
-        fprintf (hdr, "%s       ", t->cxxTypeRefInfo->className);
-    }           // END IF BASICTYPE_IMPORTTYPEREF
 
     if (t->cxxTypeRefInfo->isPtr)
-        fprintf (hdr, "*");
+        fprintf(hdr, "*");
 
-    parent = parent;td = td;r = r;m = m;mods=mods;  /*AVOIDS warning.*/
 } /* PrintCxxType */
 
 
@@ -1069,7 +1061,7 @@ PrintCxxChoiceDefCode (FILE *src, FILE *hdr, ModuleList *mods, Module *m, CxxRul
     FOR_EACH_LIST_ELMT (e, choice->basicType->a.choice)
     {
         fprintf (hdr, "  ");
-        PrintCxxType (hdr, mods, m, r, td, choice, e->type);
+        PrintCxxType(hdr, mods, e->type);
 	    fprintf (hdr, "%s;\n\n", e->type->cxxTypeRefInfo->fieldName);
     }
     fprintf (hdr, "  };\n\n");
@@ -1989,14 +1981,14 @@ PrintCxxSeqDefCode (FILE *src, FILE *hdr, ModuleList *mods, Module *m,
 			        {
 				        if(!PrintCxxMultiConstraintOrHandler(hdr, src, td->cxxTypeDefInfo->className, e, 1))
 				        {
-					        PrintCxxType (hdr, mods, m, r, td, seq, e->type);
+					        PrintCxxType(hdr, mods, e->type);
 					        fprintf (hdr, "%s;\n\n", e->type->cxxTypeRefInfo->fieldName);
     			        }
  				        break;
 			        }
 			        default:
 			        {
-				        PrintCxxType (hdr, mods, m, r, td, seq, e->type);
+				        PrintCxxType(hdr, mods, e->type);
 				        fprintf (hdr, "%s;\n\n", e->type->cxxTypeRefInfo->fieldName);
 				        break;
 			        }
@@ -2004,7 +1996,7 @@ PrintCxxSeqDefCode (FILE *src, FILE *hdr, ModuleList *mods, Module *m,
 	        }
 	        else
 	        {
-		        PrintCxxType (hdr, mods, m, r, td, seq, e->type);
+		        PrintCxxType(hdr, mods, e->type);
 		        fprintf (hdr, "%s;\n\n", e->type->cxxTypeRefInfo->fieldName);
 	        }
         
@@ -3009,14 +3001,14 @@ PrintCxxSetDefCode (FILE *src, FILE *hdr, ModuleList *mods, Module *m,
 			        {
 				        if(!PrintCxxMultiConstraintOrHandler(hdr, src, td->definedName, e, 1))
 				        {
-					        PrintCxxType (hdr, mods, m, r, td, set, e->type);
+					        PrintCxxType(hdr, mods, e->type);
 					        fprintf (hdr, "%s;\n\n", e->type->cxxTypeRefInfo->fieldName);
 				        }
     			        break;
 			        }
 			        default:
 			        {
-				        PrintCxxType (hdr, mods, m, r, td, set, e->type);
+				        PrintCxxType(hdr, mods, e->type);
 				        fprintf (hdr, "%s;\n\n", e->type->cxxTypeRefInfo->fieldName);
 				        break;
 			        }
@@ -3024,7 +3016,7 @@ PrintCxxSetDefCode (FILE *src, FILE *hdr, ModuleList *mods, Module *m,
             }
 		    else
 	        {
-	    	    PrintCxxType (hdr, mods, m, r, td, set, e->type);
+		    PrintCxxType(hdr, mods, e->type);
 		        fprintf (hdr, "%s;\n\n", e->type->cxxTypeRefInfo->fieldName);
     	    }
         
