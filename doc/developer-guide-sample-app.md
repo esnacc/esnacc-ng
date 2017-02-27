@@ -480,7 +480,7 @@ Wrapping each of the C++ code sections above in a single file called
 We can compile this with the following simple command:
 
 `g++ -std=c++0x -o test discovery.cpp NodeDiscovery.cpp
-     -I. -I/usr/include/cxx-lib/inc -lcxxasn1 -pthread -lrt`
+     -I. -lcxxasn1 -pthread -lrt`
 
 That will generate the *test* binary, which can be executed on our host
 machine.  It is important not to run this in production - after all it is meant
