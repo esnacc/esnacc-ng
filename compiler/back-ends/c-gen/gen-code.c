@@ -139,8 +139,7 @@ static void PrintCSrcComment PROTO ((FILE *src, Module *m));
 static void PrintCSrcIncludes PROTO ((FILE *src, Module *m, ModuleList *mods));
 static void PrintCHdrComment PROTO ((FILE *hdr, Module *m));
 static void PrintCHdrObjectDeclaration_and_Init PROTO ((FILE *hdr, Module *m, CRules *r));
-//RWC;static void PrintCHdrObjectField PROTO ((FILE *hdr, Module *m, CRules *r, char *objName, ObjectAssignmentField *oaf));
-//extern short ImportedFilesG;
+
 /*
  * Fills the hdr file with the C type and encode/decode prototypes
  * Fills the src file with the encoded/decode routine definitions
@@ -166,16 +165,11 @@ PrintCCode PARAMS ((src, hdr, mods, m, r, longJmpVal, printTypes, printValues, p
 	/* Deepak: suppose the asn source file is test.asn
 	 * then the C source file name is test.c and C header file is test.h
 	 */
-    PrintCSrcComment (src, m);	// Deepak: Write the comments in the source file.
-    PrintCSrcIncludes (hdr/*RWC;src*/, m, mods);	// Deepak: #include "asn-incl.h" and #include "test.h".
+    PrintCSrcComment(src, m);
+    PrintCSrcIncludes(hdr, m, mods);
 
-    PrintCHdrComment (hdr, m);	// Deepak: Write the comments in the header file.
-    PrintConditionalIncludeOpen (hdr, m->cHdrFileName);	
-
-	/* Deepak: the above fn writes 
-	 * #ifndef _test_h_ 
-	 * #define _test_h_
-     */
+    PrintCHdrComment(hdr, m);
+    PrintConditionalIncludeOpen(hdr, m->cHdrFileName);
 
 	/* PIERCE TBD: Is this necessary still after Deepak's mods?
      *
@@ -535,7 +529,7 @@ PrintCSrcIncludes PARAMS ((inFile, m, mods ),
     /*
      * include snacc runtime library related hdrs
      */
-    fprintf (inFile, "\n#include \"asn-incl.h\"\n");
+    fprintf(inFile, "\n#include \"c-lib/inc/asn-incl.h\"\n");
 
     /*
      * print out include files in same order of the module
@@ -561,26 +555,9 @@ PrintCSrcIncludes PARAMS ((inFile, m, mods ),
 			}
             mods->curr = currModTmp;    // RWC;RESET loop control
         }
-//		if ((ImportedFilesG == FALSE) || (impMod->ImportedFlag == TRUE))
-//		{
-//			// Only include if Module was exported
-//			if (impMod->exportStatus != 0)
-//			{
-//				// Check that the source header is not part of 
-//				// These references.
-//				if ((strcmp(impMod->cHdrFileName, srcref) != 0))
-//					fprintf (src, "#include \"%s\"\n", impMod->cHdrFileName);
-//			}
-//		} // endif
- //       fprintf (src, "#include \"%s\"\n", impMod->cHdrFileName);
     }
 
-	//RWC;if (m->cHdrFileName != NULL)
-	//RWC;	fprintf (inFile, "#include \"%s\"\n", m->cHdrFileName);
-
-
     SET_CURR_LIST_NODE (mods, tmp);
-   m=m; /* AVOIDS warning. */
 }  /* PrintCSrcIncludes */
 
 

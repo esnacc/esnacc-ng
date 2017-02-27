@@ -4082,8 +4082,8 @@ PrintCxxCode PARAMS ((src, hdr, if_META (printMeta COMMA meta COMMA meta_pdus CO
     }
 #endif /* META */
 
-    fprintf(hdr, "#include \"asn-incl.h\"\n");
-    fprintf(hdr, "#include \"asn-listset.h\"\n");
+    fprintf(hdr, "#include \"cxx-lib/inc/asn-incl.h\"\n");
+    fprintf(hdr, "#include \"cxx-lib/inc/asn-listset.h\"\n");
     fprintf(src, "\n");
 
     PrintSrcIncludes(src, mods, m);
