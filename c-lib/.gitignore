@@ -2,3 +2,5 @@
 .libs
 .deps
 libesnacc.pc
+inc/snacc.h
+inc/snacc.h.in

@@ -1,5 +1,7 @@
 lib_LTLIBRARIES += cxx-lib/libcxxasn1.la
 
+BUILT_SOURCES += cxx-lib/inc/snacc.h
+
 nobase_include_HEADERS += cxx-lib/inc/asn-buf.h \
 	cxx-lib/inc/asn-chartraits.h \
 	cxx-lib/inc/asn-config.h \
@@ -10,11 +12,14 @@ nobase_include_HEADERS += cxx-lib/inc/asn-buf.h \
 	cxx-lib/inc/asn-usefultypes.h \
 	cxx-lib/inc/init.h \
 	cxx-lib/inc/meta.h \
+	cxx-lib/inc/snacc.h \
 	cxx-lib/inc/snaccdll.h \
 	cxx-lib/inc/snaccexcept.h \
 	cxx-lib/inc/tcl-if.h
 
 cxx_lib_libcxxasn1_la_SOURCES = \
+	cxx-lib/inc/snacc.h \
+	cxx-lib/inc/snacc.h.in \
 	cxx-lib/src/asn-null.cpp \
 	cxx-lib/src/asn-oid.cpp \
 	cxx-lib/src/asn-RelativeOid.cpp \
@@ -80,7 +85,11 @@ cxx_lib_libcxxasn1_la_LDFLAGS = \
 	$(cxx_lib_libcxxasn1_la_WIN32_LDFLAGS)
 
 EXTRA_DIST += \
-	cxx-lib/libesnaccxx.pc.in
+	cxx-lib/libesnaccxx.pc.in \
+	cxx-lib/inc/snacc.h.in
 
 pkgconfig_DATA += cxx-lib/libesnaccxx.pc
-DISTCLEANFILES += cxx-lib/libesnaccxx.pc
+DISTCLEANFILES += cxx-lib/libesnaccxx.pc cxx-lib/inc/snacc.h
+
+cxx-lib/inc/snacc.h.in: snacc.h.in
+	cp $< $@

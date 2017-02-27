@@ -79,8 +79,6 @@ make DESTDIR=%{buildroot} install
 %files devel
 %_includedir/c-lib/inc
 %_includedir/cxx-lib/inc
-%_includedir/snacc.h
-%_includedir/policy.h
 %_libdir/lib*.a
 %_libdir/lib*.la
 %{_libdir}/pkgconfig/libesnacc.pc

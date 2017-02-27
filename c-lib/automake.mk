@@ -1,6 +1,10 @@
 lib_LTLIBRARIES += c-lib/libcasn1.la
 
+BUILT_SOURCES += c-lib/inc/snacc.h
+
 c_lib_libcasn1_la_SOURCES = \
+	c-lib/inc/snacc.h \
+	c-lib/inc/snacc.h.in \
 	c-lib/src/asn1init.c \
 	c-lib/src/asn-octs.c \
 	c-lib/src/mem.c \
@@ -71,6 +75,7 @@ nobase_include_HEADERS += c-lib/inc/asn-any.h \
 	c-lib/inc/min-buf.h \
 	c-lib/inc/nibble-alloc.h \
 	c-lib/inc/print.h \
+	c-lib/inc/snacc.h \
 	c-lib/inc/sbuf.h \
 	c-lib/inc/snaccCder.h \
 	c-lib/inc/str-stk.h \
@@ -85,7 +90,6 @@ nobase_include_HEADERS += c-lib/inc/asn-any.h \
 	c-lib/inc/tbl-util.h
 
 c_lib_libcasn1_la_CFLAGS = \
-	-I$(top_srcdir) \
 	-I$(top_srcdir)/c-lib \
 	-I$(top_srcdir)/c-lib/src \
 	-I$(top_srcdir)/c-lib/inc
@@ -96,7 +100,11 @@ c_lib_libcasn1_la_LDFLAGS = \
 	$(all_lib_LDFLAGS)
 
 EXTRA_DIST += \
-	c-lib/libesnacc.pc.in
+	c-lib/libesnacc.pc.in \
+	c-lib/inc/snacc.h.in
 
 pkgconfig_DATA += c-lib/libesnacc.pc
-DISTCLEANFILES += c-lib/libesnacc.pc
+DISTCLEANFILES += c-lib/libesnacc.pc c-lib/inc/snacc.h
+
+c-lib/inc/snacc.h.in: snacc.h.in
+	cp $< $@

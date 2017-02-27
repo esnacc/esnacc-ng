@@ -1,7 +1,5 @@
 debian/tmp/usr/include/c-lib/inc
 debian/tmp/usr/include/cxx-lib/inc
-debian/tmp/usr/include/snacc.h
-debian/tmp/usr/include/policy.h
 debian/tmp/usr/lib/libcasn1.a
 debian/tmp/usr/lib/libcasn1.la
 debian/tmp/usr/lib/libcxxasn1.a
