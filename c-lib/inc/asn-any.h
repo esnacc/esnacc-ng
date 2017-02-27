@@ -20,7 +20,7 @@
 #ifndef _asn_any_h_
 #define _asn_any_h_
 
-#include "hash.h"
+#include "c-lib/inc/hash.h"
 
 #ifdef __cplusplus
 extern "C" {

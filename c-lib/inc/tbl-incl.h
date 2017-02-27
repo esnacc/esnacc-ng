@@ -38,8 +38,8 @@
 
 #define TTBL	3
 
-#include "asn-incl.h"
-#include "tbl.h"
+#include "c-lib/inc/asn-incl.h"
+#include "c-lib/inc/tbl.h"
 
 typedef void AVal;
 
@@ -52,11 +52,11 @@ typedef struct AChoiceVal
 } AChoiceVal;
 
 
-#include "tbl-util.h"
-#include "tbl-enc.h"
-#include "tbl-dec.h"
-#include "tbl-print.h"
-#include "tbl-free.h"
+#include "c-lib/inc/tbl-util.h"
+#include "c-lib/inc/tbl-enc.h"
+#include "c-lib/inc/tbl-dec.h"
+#include "c-lib/inc/tbl-print.h"
+#include "c-lib/inc/tbl-free.h"
 
 /*
  * TblError (char *str) - configure error handler

@@ -22,7 +22,7 @@
 #ifndef _asn_relative_oid_h_
 #define _asn_relative_oid_h_
 
-#include "asn-octs.h"
+#include "c-lib/inc/asn-octs.h"
 
 #ifdef __cplusplus
 extern "C" {

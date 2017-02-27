@@ -2,7 +2,7 @@
 #define TBL_GEN_H
 
 #define USE_GEN_BUF 1
-#include "tbl-incl.h"
+#include "c-lib/inc/tbl-incl.h"
 
 typedef enum {TDEINFO, TDEEOC=TDEINFO, TDEPEEKTAG, TDEPUSHTAG,
 	TDEWARNING, TDEUNEXPECTED=TDEWARNING, TDENONOPTIONAL, TDEMANDATORY,

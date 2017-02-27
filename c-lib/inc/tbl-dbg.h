@@ -1,7 +1,7 @@
 #ifndef TBL_DBG_H
 #define TBL_DBG_H
 
-#include "tbl-gen.h"
+#include "c-lib/inc/tbl-gen.h"
 
 extern TdeExceptionCode DBGMinCode; /* Defaults to TDEINFO */
 int DBGSimple PROTO ((AsnTag tag, AsnOcts* v, int begin));

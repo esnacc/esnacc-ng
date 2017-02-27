@@ -44,8 +44,8 @@
  */
 #ifndef _asn_der_h
 #define _asn_der_h
-#include "exp-buf.h"
-#include "gen-buf.h"
+#include "c-lib/inc/exp-buf.h"
+#include "c-lib/inc/gen-buf.h"
 
 #ifdef __cplusplus
 extern "C" {

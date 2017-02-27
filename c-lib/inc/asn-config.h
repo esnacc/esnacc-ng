@@ -102,7 +102,7 @@
 /* for pow() used in asn_real.c - must include to avoid casting err on pow */
 /* #include <math.h> */
 
-#include "snacc.h"
+#include "c-lib/inc/snacc.h"
 
 
 /* used to test if optionals are present */
@@ -151,7 +151,7 @@ Asn1ErrorHandler Asn1InstallErrorHandler PROTO ((Asn1ErrorHandler handler));
 #endif /* __cplusplus */
 
 #ifdef USE_NIBBLE_MEMORY
-#include "nibble-alloc.h"
+#include "c-lib/inc/nibble-alloc.h"
 
 #define Asn1Alloc( size)		NibbleAlloc (size)
 #define Asn1Free( ptr)			/* empty */
@@ -161,7 +161,7 @@ Asn1ErrorHandler Asn1InstallErrorHandler PROTO ((Asn1ErrorHandler handler));
 
 #else /* !USE_NIBBLE_MEMORY */
 
-#include "mem.h"
+#include "c-lib/inc/mem.h"
 
 #define Asn1Alloc( size)		Malloc (size)
 #define Asn1Free( ptr)			Free (ptr)
@@ -184,7 +184,7 @@ Asn1ErrorHandler Asn1InstallErrorHandler PROTO ((Asn1ErrorHandler handler));
  *  the GenBufs aren't such a big performance hit for table stuff.
  *
  */
-#include "gen-buf.h"
+#include "c-lib/inc/gen-buf.h"
 
 //#define BUF_TYPE			GenBuf *
 #define BufGetByte( b)			GenBufGetByte (b)
@@ -205,7 +205,7 @@ Asn1ErrorHandler Asn1InstallErrorHandler PROTO ((Asn1ErrorHandler handler));
 
 
 
-#include "print.h"  /* for printing set up */
+#include "c-lib/inc/print.h"  /* for printing set up */
 
 #ifdef WIN32
 #pragma  warning( disable : 4127 )  /* IGNORE constant conditional expression. */

@@ -26,8 +26,7 @@
 #ifndef _gen_buf_h_
 #define _gen_buf_h_
 
-#include "config.h"
-#include "snacc.h"
+#include "c-lib/inc/snacc.h"
 
 #ifdef __cplusplus
 extern "C" {
