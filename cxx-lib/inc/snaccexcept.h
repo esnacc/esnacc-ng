@@ -16,7 +16,7 @@
 #include <iostream>
 #endif
 
-#include "asn-config.h"
+#include "cxx-lib/inc/asn-config.h"
 
 #define STACK_DEPTH 20
 

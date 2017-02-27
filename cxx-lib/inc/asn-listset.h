@@ -8,7 +8,7 @@
 #ifndef SNACC_ASN_LISTSET_H
 #define SNACC_ASN_LISTSET_H
 
-#include "snacc.h"
+#include "cxx-lib/inc/snacc.h"
 
 #ifdef _MSC_VER
 	#pragma warning(disable: 4786)		// Disable symbols truncated warning

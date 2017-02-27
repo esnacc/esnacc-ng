@@ -1,7 +1,7 @@
 #ifndef __ASN_IOMANIP_H__
 #define __ASN_IOMANIP_H__
 
-#include "asn-config.h"
+#include "cxx-lib/inc/asn-config.h"
 #include <iostream>
 
 _BEGIN_SNACC_NAMESPACE

@@ -8,9 +8,9 @@
 #define SNACC_CXX_ASN_INCL_H
 
 
-#include "asn-config.h"
-#include "asn-buf.h"
-#include "snaccexcept.h"
+#include "cxx-lib/inc/asn-config.h"
+#include "cxx-lib/inc/asn-buf.h"
+#include "cxx-lib/inc/snaccexcept.h"
 
 #ifdef WIN32
 #if defined(_MSC_VER)
@@ -24,7 +24,7 @@
 #else // WIN32
 	#include <iostream>
 	#include <string>
-	#include "asn-chartraits.h" 
+	#include "cxx-lib/inc/asn-chartraits.h"
 
 	#if defined(SunOS) || defined(SCO_SV) || defined(HPUX) || defined(HPUX32)
 	namespace std
@@ -41,7 +41,7 @@
 #endif
 
 #if META
-#include "meta.h"
+#include "cxx-lib/inc/meta.h"
 #endif
 
 void SNACCDLL_API BDEC_2ND_EOC_OCTET(const SNACC::AsnBuf& b,
@@ -1447,8 +1447,8 @@ enum SNACCEncodeDecodeRules {
 
 _END_SNACC_NAMESPACE
 
-#include "asn-iomanip.h"
-#include "snaccexcept.h"
-#include "asn-usefultypes.h"
+#include "cxx-lib/inc/asn-iomanip.h"
+#include "cxx-lib/inc/snaccexcept.h"
+#include "cxx-lib/inc/asn-usefultypes.h"
 
 #endif
