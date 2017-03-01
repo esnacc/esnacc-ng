@@ -17,8 +17,8 @@
 
 m4_define([esnacc_major], [1])
 m4_define([esnacc_minor], [8])
-m4_define([esnacc_micro], [1])
-m4_define([esnacc_interface_age], [1])
+m4_define([esnacc_micro], [2])
+m4_define([esnacc_interface_age], [2])
 m4_define([esnacc_binary_age], [m4_eval(100 * esnacc_minor + esnacc_micro)])
 m4_define([esnacc_binary_compat], [1.7.4])
 
