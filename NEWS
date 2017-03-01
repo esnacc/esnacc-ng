@@ -1,3 +1,6 @@
+1.8.3 (FUTURE)
+-----
+
 1.8.2 (2017-03-01)
 -----
 * Bugfixes for asn-real, windows c99 builds, and exp-bufs
