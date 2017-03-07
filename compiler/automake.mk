@@ -75,7 +75,6 @@ compiler_esnacc_SOURCES = \
 	compiler/back-ends/py-gen/rules.c \
 	compiler/back-ends/py-gen/rules.h \
 	compiler/back-ends/py-gen/types.c \
-	policy.h \
 	version.h
 
 compiler/core/y.tab.c compiler/core/y.tab.h: compiler/core/y.tab.y

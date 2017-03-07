@@ -41,6 +41,7 @@ EXTRA_DIST = \
 	$(docs) \
 	.travis.yml \
 	scan_script.sh \
+	snacc.h.in \
 	doc/PERCompilerRequirementsMatrix.doc \
 	doc/eSNACCManuals.zip
 
