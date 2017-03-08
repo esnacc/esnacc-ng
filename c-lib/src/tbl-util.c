@@ -1,5 +1,3 @@
-#ifdef TTBL
-
 /*
  * tbl_util.c - type table utilities.
  *
@@ -17,10 +15,11 @@
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-
+#include "config.h"
 #include <stdio.h>
-#include "tbl-incl.h"
 #include "sbuf.h"
+#ifdef TTBL
+#include "tbl-incl.h"
 
 /* non -exported routine protos */
 void TblLinkIndexes PROTO ((TBL *tbl));

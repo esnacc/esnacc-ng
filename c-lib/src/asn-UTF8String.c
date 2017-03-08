@@ -1,3 +1,4 @@
+#include "config.h"
 
 /* Include Files */
 #ifndef WIN32

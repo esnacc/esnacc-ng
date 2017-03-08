@@ -48,7 +48,7 @@
  *
  */
 
-
+#include "config.h"
 #include "asn-config.h"
 #include "asn-der.h"
 #include <memory.h>

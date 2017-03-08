@@ -1,4 +1,3 @@
-#ifdef TTBL
 
 /*
  * tbl_enc.c - type table encoder
@@ -19,8 +18,9 @@
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-
+#include "config.h"
 #include <stdio.h>
+#ifdef TTBL
 #include "tbl-incl.h"
 
 /* protos for non exported routines */

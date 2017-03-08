@@ -16,7 +16,7 @@
  * $Header: /baseline/SNACC/c-lib/src/print.c,v 1.8 2004/01/22 20:03:12 nicholar Exp $
  *
  */
-
+#include "config.h"
 #include "asn-config.h"
 #include "print.h"
 

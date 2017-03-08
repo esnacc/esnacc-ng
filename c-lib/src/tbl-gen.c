@@ -1,5 +1,6 @@
-#ifdef TTBL
+#include "config.h"
 #include <stdio.h>
+#ifdef TTBL
 #include "tbl-gen.h"
 
 typedef struct TagNLen

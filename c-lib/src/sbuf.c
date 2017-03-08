@@ -14,7 +14,7 @@
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-
+#include "config.h"
 #include "asn-config.h"
 #include "sbuf.h"
 #include "gen-buf.h"

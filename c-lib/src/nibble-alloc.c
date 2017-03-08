@@ -61,6 +61,8 @@
  *  
  */
 
+#include "config.h"
+
 #ifdef __APPLE__
 #include <malloc/malloc.h>
 #else

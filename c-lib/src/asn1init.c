@@ -1,4 +1,5 @@
 /* Included files */
+#include "config.h"
 #include "asn-incl.h"
 #include "nibble-alloc.h"
 

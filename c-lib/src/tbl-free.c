@@ -1,5 +1,3 @@
-#ifdef TTBL
-
 /*
  * tbl_free.c - frees data structs returned by type table driven decoder.
  *
@@ -19,8 +17,9 @@
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-
+#include "config.h"
 #include <stdio.h>
+#ifdef TTBL
 #include "tbl-incl.h"
 
 

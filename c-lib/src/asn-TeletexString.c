@@ -1,4 +1,6 @@
+#include "config.h"
 #include "asn-incl.h"
+
 AsnLen BEncTeletexStringContent PARAMS ((b, octs),
 GenBuf *b _AND_
 AsnOcts *octs)

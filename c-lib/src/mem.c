@@ -50,6 +50,7 @@
  * first check-in. for a list of changes to the snacc-1.1 distribution please refer to the ChangeLog.
  */
 
+#include "config.h"
 #include "snacc.h"
 
 #if STDC_HEADERS
@@ -57,8 +58,6 @@
 #else
 #if HAVE_STRING_H
 #include <string.h>
-#else
-#include <memory.h>
 #endif
 #if HAVE_MALLOC_H
 #include <malloc.h>

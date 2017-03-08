@@ -1,5 +1,3 @@
-#ifdef TTBL
-
 /*
  * tbl_dec.c - type table decoder.
  *
@@ -21,7 +19,10 @@
  */
 
 
+#include "config.h"
 #include <stdio.h>
+
+#ifdef TTBL
 #include "tbl-incl.h"
 
 int  TagsMatch PROTO ((TBLType *tblT, AsnTag asnTag));
