@@ -23,10 +23,10 @@
  */
 
 
-#ifndef _gen_buf_h_
-#define _gen_buf_h_
-
 #include "c-lib/inc/snacc.h"
+
+#ifndef GEN_BUF_H_
+#define GEN_BUF_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -189,6 +189,6 @@ GenBufResetInReadMode(GenBuf *b)
 #endif
 
 
-#endif /* _gen_buf_h_ conditional include  */
+#endif
 
 

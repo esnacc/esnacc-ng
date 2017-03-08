@@ -66,32 +66,25 @@
  *
  */
 
-#ifndef _SNACC_H_
-#define _SNACC_H_
-
-#define GLASS	1
-#define KHO	1
+#ifndef SNACC_MAIN_H_
+#define SNACC_MAIN_H_
 
 #define memzero(p, len)   memset(p, 0, len)
 
 #ifdef __cplusplus
-
-#ifdef VOLATILE_RETRUN
+# ifdef VOLATILE_RETRUN
 #  define RETURN_THIS_FOR_COMPILERS_WITHOUT_VOLATILE_FUNCTIONS	return *this;
-#else
+# else
 #  define RETURN_THIS_FOR_COMPILERS_WITHOUT_VOLATILE_FUNCTIONS
+# endif
+#else
+# ifndef FALSE
+#  define FALSE	0
+# endif
+# ifndef TRUE
+#  define TRUE	1
+# endif
 #endif
-
-#else /* !__cplusplus */
-
-#ifndef FALSE
-#define FALSE	0
-#endif
-#ifndef TRUE
-#define TRUE	1
-#endif
-
-#endif /* __cplusplus */
 
 /*
  *  Inspired by gdb 4.0, for better or worse...
@@ -101,30 +94,26 @@
  *  that they work for ANSI or non-ANSI C compilers
  */
 #ifndef __USE_NON_ANSI_C__
-
-#define PROTO( X)			X
-#define PARAMS( arglist, args)  	(args)
-#define NOPARAMS()	        	(void)
-#define _AND_				,
-#define DOTS				, ...
-
-#else /* __USE_ANSI_C__ */
-
-#define PROTO( X)			()
-#define PARAMS( arglist, args)	 	arglist args;
-#define NOPARAMS()	        	()
-#define _AND_				;
-#define DOTS
-#define void                            char
-
-#endif /* __USE_ANSI_C__ */
+# define PROTO(X)              X
+# define PARAMS(arglist, args) (args)
+# define NOPARAMS()            (void)
+# define _AND_                 ,
+# define DOTS                  , ...
+#else
+# define PROTO(X)              ()
+# define PARAMS(arglist, args) arglist args;
+# define NOPARAMS()            ()
+# define _AND_                 ;
+# define DOTS
+# define void                  char
+#endif
 
 /*
  * enable the snacc compiler's Tcl interface generating code?
  * set it to 0 or 1.
  */
 #ifndef NO_TCL
-#define NO_TCL		0
+# define NO_TCL 0
 #endif
 
 /*
@@ -132,58 +121,53 @@
  * the Tcl code needs it.
  */
 #ifndef NO_META
-#define NO_META		NO_TCL
+# define NO_META NO_TCL
 #endif
 
 /*
  * enable code for CORBA IDL generation?
  */
 #ifndef IDL
-#define IDL		1
+# define IDL 1
 #endif
 
 #if COMPILER
-	// If we have TCL on this system then add TCL to the compiler
-	#if defined (HAVE_TCLNOT)
-		#define TCL	HAVE_TCL
-		#define META	1
-	#endif
+/* If we have TCL on this system then add TCL to the compiler */
+# if defined(HAVE_TCLNOT)
+#  define TCL  HAVE_TCL
+#  define META 1
+# endif
 #elif defined (ENABLE_TCL) && defined (HAVE_TCL)
-	#define TCL 1;
-	#define META 1;
+# define TCL 1
+# define META 1
 #endif
 
 #ifdef ENABLE_META
-#ifndef META
-	#define META 1
-#endif
+# ifndef META
+#  define META 1
+# endif
 #endif
 
 #define COMMA			,
 
-#define if_IBM_ENC( code)
-
-
 #ifdef  META
-#define if_META( code)		code
+# define if_META(code) code
+# if defined(TCL)
+#  define if_TCL(code) code
+# endif
 #else
-#define if_META( code)
-#endif
-
-#if defined(TCL) && defined (META)
-#define if_TCL( code)		code
-#else
-#define if_TCL( code)
+# define if_META(code)
+# define if_TCL(code)
 #endif
 
 #if __GNUC__
-#define ESNACC_UNUSED __attribute__((__unused__))
+# define ESNACC_UNUSED __attribute__((__unused__))
 #else
-#define ESNACC_UNUSED
+# define ESNACC_UNUSED
 #endif
 
 #ifdef WIN32
 #define inline __inline
 #endif
 
-#endif /* _SNACC_H_ */
+#endif
