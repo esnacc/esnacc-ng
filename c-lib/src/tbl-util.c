@@ -17,6 +17,7 @@
 
 #include "config.h"
 #include <stdio.h>
+#include "asn-incl.h"
 #include "sbuf.h"
 #ifdef TTBL
 #include "tbl-incl.h"
