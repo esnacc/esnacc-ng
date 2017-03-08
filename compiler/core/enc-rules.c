@@ -26,7 +26,7 @@
  *
  *
  */
-
+#include "config.h"
 #if !defined(lint)
 static const char rcsid[] = "@(#)$RCSfile: enc-rules.c,v $ $Revision: 1.2 $";
 #endif

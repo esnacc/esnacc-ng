@@ -74,6 +74,7 @@
  *
  */
 
+#include "config.h"
 #include <ctype.h>
 #include "asn-incl.h"
 #include "asn1module.h"

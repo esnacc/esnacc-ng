@@ -43,6 +43,7 @@
  * first check-in. for a list of changes to the snacc-1.1 distribution please refer to the ChangeLog.
  *
  */
+#include "config.h"
 #define NO_EXTN_LIBTYPE
 #include "asn-incl.h"
 #include "asn1module.h"  /* for BASICTYPE_... choice ids */

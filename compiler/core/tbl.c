@@ -11,7 +11,7 @@
  */
 
 
-
+#include "config.h"
 #include "asn-incl.h"
 #include "tbl.h"
 

@@ -67,7 +67,7 @@
  *
  */
 
-
+#include "config.h"
 #include <string.h>
 #include <ctype.h> /* for isalpha, isdigit etc macros */
 #include "asn-incl.h"

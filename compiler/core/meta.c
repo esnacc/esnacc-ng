@@ -27,6 +27,7 @@
  *
  */
 
+#include "config.h"
 #include <stdio.h>
 
 #include "snacc.h"

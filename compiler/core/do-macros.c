@@ -69,6 +69,7 @@
  *
  */
 
+#include "config.h"
 #include <string.h>
 #include <ctype.h>		/* for islower() */
 #include "asn-incl.h"
