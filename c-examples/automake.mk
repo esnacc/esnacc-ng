@@ -15,6 +15,11 @@ c_examples_simple_CFLAGS = \
 	-I$(builddir)/asn1specs \
 	-I$(top_srcdir)/c-lib/inc
 
+if WIN32
+c_examples_simple_CFLAGS += \
+	-Dinline=__inline
+endif
+
 c_examples_simple_genber_SOURCES = \
 	asn1specs/p-rec.asn1 \
 	c-examples/simple/genber.c 
