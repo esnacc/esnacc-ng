@@ -24,7 +24,7 @@
  *
  * Revision 1.3  1994/10/08  03:47:49  rj
  */
-
+#include "config.h"
 #include "asn-incl.h"
 #include "asn1module.h"
 #include "rules.h"

@@ -31,6 +31,7 @@
  *
  */
 
+#include "config.h"
 #include <string.h>
 #include "mem.h"
 #include "asn-incl.h"

@@ -55,6 +55,7 @@
  *
  */
 
+#include "config.h"
 #include "asn-incl.h"
 #include "asn1module.h"
 #include "str-util.h"

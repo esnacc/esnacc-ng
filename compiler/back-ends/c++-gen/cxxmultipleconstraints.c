@@ -1,3 +1,4 @@
+#include "config.h"
 #include "cxxmultipleconstraints.h"
 #include <string.h>
 #include <math.h>

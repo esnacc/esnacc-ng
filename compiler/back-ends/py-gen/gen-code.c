@@ -13,7 +13,7 @@
  * (at your option) any later version.
  *
  */
-
+#include "config.h"
 #include "snacc.h"
 
 #if TIME_WITH_SYS_TIME

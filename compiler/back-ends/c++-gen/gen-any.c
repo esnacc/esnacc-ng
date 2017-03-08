@@ -88,6 +88,7 @@
  *
  */
 
+#include "config.h"
 #include <string.h>			/* REN -- 5/11/2001 -- added for string functions */
 #include "asn-incl.h"
 #include "asn1module.h"

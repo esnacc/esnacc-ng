@@ -98,7 +98,7 @@
 /*
 	Deepak: Formatting improved as required on 11/Feb/2003
 */
-
+#include "config.h"
 #include "asn-incl.h"
 #include "asn1module.h"
 #include "rules.h"

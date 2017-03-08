@@ -6,7 +6,7 @@
 /*  Their respective prototypes are in:                   */
 /*       'cxxconstraints.h' in the pwd                    */
 
-
+#include "config.h"
 #include "cxxconstraints.h"
 #include <string.h>
 

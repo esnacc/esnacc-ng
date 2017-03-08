@@ -47,6 +47,7 @@
  *
  */
 
+#include "config.h"
 #include <stdio.h>
 
 #include "asn-incl.h"

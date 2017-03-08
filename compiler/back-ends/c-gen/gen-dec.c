@@ -23,7 +23,7 @@
  * $Header: /baseline/SNACC/compiler/back-ends/c-gen/gen-dec.c,v 1.15 2004/03/12 18:51:20 gronej Exp $
  *
  */
-
+#include "config.h"
 #include <string.h>
 #include "asn-incl.h"
 #include "asn1module.h"

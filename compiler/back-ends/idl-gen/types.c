@@ -39,7 +39,7 @@
  * first draft
  *
  */
-
+#include "config.h"
 #include <ctype.h>
 #include <string.h>
 #include "asn-incl.h"

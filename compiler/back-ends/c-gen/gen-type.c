@@ -48,7 +48,7 @@
  * first check-in. for a list of changes to the snacc-1.1 distribution please refer to the ChangeLog.
  *
  */
-
+#include "config.h"
 #include <stdio.h>
 #include <ctype.h>
 

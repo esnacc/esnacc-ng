@@ -59,7 +59,7 @@
  * first check-in. for a list of changes to the snacc-1.1 distribution please refer to the ChangeLog.
  *
  */
-
+#include "config.h"
 #include <string.h>
 #include "asn-incl.h"
 #include "asn1module.h"

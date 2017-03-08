@@ -13,7 +13,7 @@
  *
  * $Header: /baseline/SNACC/compiler/back-ends/c-gen/gen-print.c,v 1.8 2004/01/22 20:03:02 nicholar Exp $
  */
-
+#include "config.h"
 #include "asn-incl.h"
 #include "asn1module.h"
 #include "rules.h"

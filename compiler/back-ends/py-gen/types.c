@@ -9,7 +9,7 @@
  * (at your option) any later version.
  *
  */
-
+#include "config.h"
 #include <ctype.h>
 #include <string.h>
 #include "asn-incl.h"
