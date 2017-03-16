@@ -53,12 +53,10 @@ cxx_lib_libcxxasn1_la_WIN32_FLAGS=
 cxx_lib_libcxxasn1_la_WIN32_LIBADD=
 cxx_lib_libcxxasn1_la_WIN32_LDFLAGS=
 if WIN32
-cxx_lib_libcxxasn1_la_WIN32_FLAGS += -DSNACCDLL_EXPORTS=1 \
-	${PTHREAD_INCLUDES}
+cxx_lib_libcxxasn1_la_WIN32_FLAGS += -DSNACCDLL_EXPORTS=1
 endif
 
 cxx_lib_libcxxasn1_la_CXXFLAGS = \
-	$(PTHREAD_CFLAGS) \
 	$(cxx_lib_libcxxasn1_la_WIN32_FLAGS) \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/cxx-lib \
@@ -66,7 +64,6 @@ cxx_lib_libcxxasn1_la_CXXFLAGS = \
 	-I$(top_srcdir)/cxx-lib/inc
 
 cxx_lib_libcxxasn1_la_CFLAGS = \
-	$(PTHREAD_CFLAGS) \
 	$(cxx_lib_libcxxasn1_la_WIN32_FLAGS) \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/cxx-lib \
@@ -74,12 +71,10 @@ cxx_lib_libcxxasn1_la_CFLAGS = \
 	-I$(top_srcdir)/cxx-lib/inc
 
 cxx_lib_libcxxasn1_la_LIBADD = \
-	$(PTHREAD_LIBS) \
 	$(cxx_lib_libcxxasn1_la_WIN32_LIBADD)
 
 cxx_lib_libcxxasn1_la_LDFLAGS = \
 	$(LDFLAGS) \
-	$(PTHREAD_CFLAGS) \
 	$(all_lib_LDFLAGS) \
 	$(cxx_lib_libcxxasn1_la_WIN32_LDFLAGS)
 

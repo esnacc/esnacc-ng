@@ -96,7 +96,6 @@ c_lib_libcasn1_la_CFLAGS = \
 
 c_lib_libcasn1_la_LDFLAGS = \
 	$(LDFLAGS) \
-	$(PTHREAD_CFLAGS) \
 	$(all_lib_LDFLAGS)
 
 EXTRA_DIST += \
