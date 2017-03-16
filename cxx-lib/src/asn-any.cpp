@@ -589,10 +589,6 @@ AsnAny &AsnAny::operator = (const AsnAny &o)
 extern "C" {
 void SNACCDLL_API SNACC_CleanupMemory()
 {
-#ifndef NO_THREADS
-   threadDestroy();  // ONLY necessary if a thread lock is created (and it is 
-                     //  important to clear all memory leaks before exiting.
-#endif
    AsnAny::AsnAnyDestroyHashTbls();   // FINAL call, to clear static tables, 
                                       //  before exiting.
 }

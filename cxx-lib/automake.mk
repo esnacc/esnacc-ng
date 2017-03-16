@@ -42,7 +42,6 @@ cxx_lib_libcxxasn1_la_SOURCES = \
 	cxx-lib/src/hash.cpp \
 	cxx-lib/src/meta.cpp \
 	cxx-lib/src/asn-octs.cpp \
-	cxx-lib/src/vda_threads2.cpp \
 	cxx-lib/src/print.cpp \
 	cxx-lib/src/tcl-if.cpp \
 	cxx-lib/src/asn-bits.cpp \

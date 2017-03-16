@@ -1428,9 +1428,6 @@ public:
 };
 
 
-void SNACCDLL_API threadLock();
-void SNACCDLL_API threadUnlock();
-void SNACCDLL_API threadDestroy();
 extern "C" {
 void SNACCDLL_API SNACC_CleanupMemory();
 }
