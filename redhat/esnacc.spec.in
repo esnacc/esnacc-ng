@@ -25,8 +25,8 @@ Group: System Environment/Libraries
 URL: http://esnacc.org/
 Version: @VERSION@
 Release: 1
-License: Public Domain
-Source: http://esnacc.org/files/esnacc-%version.tar.gz
+License: GPLv2+
+Source: http://esnacc.org/releases/esnacc-%version.tar.gz
 BuildRequires: flex bison gcc-c++ libtool-ltdl libtool-ltdl-devel
 BuildRequires: autoconf automake libxslt
 Requires: libesnacc = %version-%release
@@ -66,6 +66,9 @@ make %{?_smp_mflags} CFLAGS='-Wall -O2 -DYYTEXT_POINTER -fPIC'
 %install
 make DESTDIR=%{buildroot} install
 
+%post -n libesnacc -p /sbin/ldconfig
+%postun -n libesnacc -p /sbin/ldconfig
+
 %clean
 
 %files
@@ -73,18 +76,23 @@ make DESTDIR=%{buildroot} install
 %_datadir/man/man1/esnacc.1.gz
 
 %files -n libesnacc
-%_libdir/lib*.so
 %_libdir/lib*.so.*
 
 %files devel
 %_includedir/c-lib/inc
 %_includedir/cxx-lib/inc
+%_includedir/snacc.h
+%_includedir/policy.h
+%_libdir/lib*.so
 %_libdir/lib*.a
 %_libdir/lib*.la
-%{_libdir}/pkgconfig/libesnacc.pc
-%{_libdir}/pkgconfig/libesnaccxx.pc
+%_libdir/pkgconfig/libesnacc.pc
+%_libdir/pkgconfig/libesnaccxx.pc
 
 %changelog
+* Fri Mar 17 2017 Aaron Conole <aconole@bytheb.org> - 1.8.0-2
+- Fix up the esnacc package for fedpkg compliance.
+
 * Wed Nov 16 2016 Aaron Conole <aconole@bytheb.org> - 1.80-1
 - Add missing policy.h
 
