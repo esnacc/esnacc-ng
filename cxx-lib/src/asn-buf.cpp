@@ -271,22 +271,25 @@ bool AsnBuf::operator<(const AsnBuf &rhs) const
    rhs.ResetMode();
    std::streambuf::int_type ch1;
    std::streambuf::int_type ch2;
+   unsigned char Ch1;
+   unsigned char Ch2;
+
    while ( lessThan )
    {
-      try
+      if (GetUByteNoEx(Ch1))
       {
-         ch1 = GetUByte();
+         ch1 = Ch1;
       }
-      catch (BufferException &)
+      else
       {
          ch1 = EOF;
       }
 
-      try
+      if (rhs.GetUByteNoEx(Ch2))
       {
-         ch2 = rhs.GetUByte();
+         ch2 = Ch2;
       }
-      catch (BufferException &)
+      else
       {
          ch2 = EOF;
       }
@@ -296,7 +299,7 @@ bool AsnBuf::operator<(const AsnBuf &rhs) const
          if (firstTime)
             lessThan = false;
          break;
-      } 
+      }
       else if (ch2 == EOF)
       {
          lessThan = false;
@@ -406,6 +409,31 @@ char AsnBuf::GetByte() const
    return (char)ch;
 }
 
+bool AsnBuf::GetByteNoEx(char &ret) const
+{
+    std::streambuf::int_type ch = EOF;
+
+    while (ch == EOF && m_card != m_deck.end())
+    {
+	ch = (*m_card)->rdbuf()->sbumpc();
+	if (ch == EOF)
+	{
+	    ++m_card;
+	}
+    }
+
+    ret = static_cast<char>(ch);
+    return ch != EOF && m_card != m_deck.end();
+}
+
+bool AsnBuf::GetUByteNoEx(unsigned char &ret) const
+{
+    char val;
+    bool tmp;
+    tmp = GetByteNoEx(val);
+    ret = static_cast<unsigned char>(val);
+    return tmp;
+}
 
 // FUNCTION: GrabAny()
 // PURPOSE : copy the current sequence of bytes (i.e. Tag Length and associated data)
@@ -647,22 +675,25 @@ bool AsnBuf::operator == (const AsnBuf &b) const
    b.ResetMode();
    std::streambuf::int_type ch1;
    std::streambuf::int_type ch2;
+   unsigned char Ch1;
+   unsigned char Ch2;
+
    while ( equal )
    {
-      try
+      if (GetUByteNoEx(Ch1))
       {
-         ch1 = GetUByte();
+         ch1 = Ch1;
       }
-      catch (BufferException &)
+      else
       {
          ch1 = EOF;
       }
 
-      try
+      if (b.GetUByteNoEx(Ch2))
       {
-         ch2 = b.GetUByte();
+         ch2 = Ch2;
       }
-      catch (BufferException &)
+      else
       {
          ch2 = EOF;
       }

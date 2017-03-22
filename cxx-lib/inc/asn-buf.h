@@ -116,6 +116,8 @@ public:
 	char PeekByte() const;
 	char GetByte() const;
 	unsigned char GetUByte() const		{ return (unsigned char)GetByte();}
+	bool GetByteNoEx(char& ret) const;
+	bool GetUByteNoEx(unsigned char& ret) const;
 //	unsigned long GetSeg(char* seg, long segLen) const;
 	void GetSeg(char* seg, long segLen) const;
 	void GetUSeg(unsigned char* seg, long segLen) const {
