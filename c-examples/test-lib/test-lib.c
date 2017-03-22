@@ -44,12 +44,14 @@
 #undef NDEBUG
 #endif
 
+#include "config.h"
 #include <stdio.h>
 #include <assert.h>
 #ifdef WIN32
 #include "windows.h"
 #include "float.h"
 #endif
+#include "snacc.h"
 #include "asn-incl.h"
 #include "sbuf.h"
 #include "exp-buf.h"
