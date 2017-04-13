@@ -7,6 +7,7 @@ compiler_esnacc_SOURCES = \
 	compiler/core/define.h \
 	compiler/core/dependency.c \
 	compiler/core/do-macros.c \
+	compiler/core/do-macros.h \
 	compiler/core/enc-rules.c \
 	compiler/core/enc-rules.h \
 	compiler/core/err-chk.c \
