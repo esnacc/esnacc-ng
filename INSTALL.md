@@ -30,6 +30,8 @@ you will need:
 
  - bison, or yacc
 
+ - xsltproc (docbook xml and the manpage dependencies)
+
 If you are working from a Git tree or snapshot (instead of from a
 distribution tarball), or if you modify the esnacc build system
 you will also need the following software:
