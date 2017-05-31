@@ -1,0 +1,136 @@
+-- snaccrose: The eSNACC ROSE implementation
+-- Dual Licensed under both the esnacc public license and the Lesser GNU
+-- Public License v3 or greater.
+-- Copyright (C) 2017, Aaron Conole
+-- Portions Copright (C), estos GmbH and estos/stm
+
+SNACC-ROSE { joint-iso-itu-t remote-operations(4)
+             generic-PDUs(6)
+             version1(0) } DEFINITIONS IMPLICIT TAGS ::= BEGIN
+
+-- Default ROSE message sent
+ROSEMessage ::= CHOICE {
+	invoke [1] IMPLICIT ROSEInvoke,
+	result [2] IMPLICIT ROSEResult,
+	error  [3] IMPLICIT ROSEError,
+	reject [4] IMPLICIT ROSEReject
+}
+
+-- Authentication
+
+ROSEAuth ::= SEQUENCE {
+    method   UTF8String,     -- Authentication Type ("Basic" is only supported)
+    authdata OCTET STRING    -- Authentication Data
+}
+
+ROSEAuthList ::= SEQUENCE OF ROSEAuth
+
+ROSEAuthRequest ::= SEQUENCE {
+    auth    ROSEAuth,
+    context UTF8String OPTIONAL
+}
+
+ROSEAuthResult ::= SEQUENCE {
+  authList ROSEAuthList,
+  context  UTF8String OPTIONAL
+}
+
+
+-- ROSE Basic types
+
+InvokeId ::= CHOICE {
+  present INTEGER,
+  absent NULL
+}
+
+-- ROSE messages
+
+ROSEInvoke		::=	SEQUENCE {
+    sessionID      [0]          UTF8String      OPTIONAL,
+    invokeId       InvokeId,
+    linkedId       CHOICE {
+        present    [0]          IMPLICIT INTEGER,
+        absent     [1]          IMPLICIT NULL
+    },
+    authentication [1]          ROSEAuthRequest OPTIONAL,
+    operationID                 CHOICE {
+        local  INTEGER,
+        global OBJECT IDENTIFIER,
+        -- esnacc specific extension
+        name   UTF8String
+    },
+    argument                    ANY             OPTIONAL
+}
+
+ROSEResult ::= SEQUENCE {
+    sessionID [1] UTF8String OPTIONAL,
+    invokeID      INTEGER,
+    result        SEQUENCE {
+        resultValue INTEGER,
+        result      ANY
+    } OPTIONAL
+}
+
+ROSEError ::= SEQUENCE {
+    sessionID   [1] UTF8String OPTIONAL,
+    invokedID       INTEGER,
+    error-value     INTEGER,
+    error           ANY        OPTIONAL
+}
+
+ROSEReject ::= SEQUENCE {
+    sessionID      [1] UTF8String     OPTIONAL,
+    invokedID          CHOICE {
+        invokedID   INTEGER,
+        invokednull NULL
+    },
+    reject             RejectProblem  OPTIONAL,
+
+    -- the following are an etsos extension to reject for transmitting
+    -- additional cause information
+    details            UTF8String     OPTIONAL,
+    authentication [4] ROSEAuthResult OPTIONAL
+}
+
+RejectProblem ::= CHOICE {
+    generalProblem      [0] IMPLICIT GeneralProblem,
+    invokeProblem       [1] IMPLICIT InvokeProblem,
+    returnResultProblem [2] IMPLICIT ReturnResultProblem,
+    returnErrorProblem  [3] IMPLICIT ReturnErrorProblem
+}
+
+GeneralProblem ::= INTEGER { -- ROSE-provider detected
+	unrecognisedAPDU(0),
+	mistypedAPDU(1),
+	badlyStructuredAPDU(2)
+}
+
+InvokeProblem ::= INTEGER { -- ROSE-user detected
+    duplicateInvocation(0),
+    unrecognisedOperation(1),
+    mistypedArgument(2),
+    resourceLimitation(3),
+    initiatorReleasing(4),
+    unrecognisedLinkedID(5),
+    linkedResponseUnexpected(6),
+    unexpectedChildOperation(7),
+    invalidSessionID(8),          -- sessionID in Invoke is not valid
+    authenticationIncomplete(9),  -- Invoke Authentication failed
+    authenticationFailed(10)      -- Invoke Authentication failed
+}
+
+ReturnResultProblem ::= INTEGER { -- ROSE-user detected
+    unrecognisedInvocation(0),
+    resultResponseUnexpected(1),
+    mistypedResult(2)
+}
+
+ReturnErrorProblem ::= INTEGER { -- ROSE-user detected
+    unrecognisedInvocation(0),
+    errorResponseUnexpected(1),
+    unrecognisedError(2),
+    unexpectedError(3),
+    mistypedParameter(4)
+}
+
+END

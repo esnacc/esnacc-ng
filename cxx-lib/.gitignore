@@ -1,6 +1,9 @@
 .dirstamp
 .libs
 .deps
-libesnaccxx.pc
+*.pc
 inc/snacc.h
+inc/snaccrose.h
 inc/snacc.h.in
+src/snaccrose.cpp
+src/snaccrose.h

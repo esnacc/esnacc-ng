@@ -1,0 +1,14 @@
+# Enhanced SNACC pkg-config source file
+
+PREFIX=@prefix@
+EXEC_PREFIX=@exec_prefix@
+LIBDIR=@libdir@
+INCLUDEDIR=@includedir@
+
+Name: libesnaccxxrose
+Description: Enhanced SNACC ROSE support and libs for C++
+Version: @VERSION@
+Requires:
+Conflicts:
+Libs: -L${LIBDIR} -lcxxasn1 -lcxxasn1rose
+Cflags: -I${INCLUDEDIR}/cxx-lib/inc

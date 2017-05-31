@@ -4,5 +4,8 @@ debian/tmp/usr/lib/libcasn1.a
 debian/tmp/usr/lib/libcasn1.la
 debian/tmp/usr/lib/libcxxasn1.a
 debian/tmp/usr/lib/libcxxasn1.la
+debian/tmp/usr/lib/libcxxasn1rose.a
+debian/tmp/usr/lib/libcxxasn1rose.la
 debian/tmp/usr/lib/pkgconfig/libesnacc.pc
 debian/tmp/usr/lib/pkgconfig/libesnaccxx.pc
+debian/tmp/usr/lib/pkgconfig/libesnaccxxrose.pc

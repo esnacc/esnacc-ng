@@ -165,4 +165,11 @@
 #else
 # define ESNACC_UNUSED
 #endif
+
+#if defined(_MSC_VER)
+# define ESNACC_CONST_ULL(x) (x)
+#else
+# define ESNACC_CONST_ULL(x) (x##ULL)
+#endif
+
 #endif

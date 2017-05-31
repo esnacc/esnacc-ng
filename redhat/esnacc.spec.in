@@ -88,8 +88,12 @@ make DESTDIR=%{buildroot} install
 %_libdir/lib*.la
 %_libdir/pkgconfig/libesnacc.pc
 %_libdir/pkgconfig/libesnaccxx.pc
+%_libdir/pkgconfig/libesnaccxxrose.pc
 
 %changelog
+* Wed May 31 2017 Aaron Conole <aconole@bytheb.org> - 1.9.0-1
+- Add the esnacc ROSE support packages.
+
 * Fri Mar 17 2017 Aaron Conole <aconole@bytheb.org> - 1.8.0-2
 - Fix up the esnacc package for fedpkg compliance.
 
