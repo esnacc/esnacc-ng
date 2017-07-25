@@ -1,5 +1,9 @@
-lib_LTLIBRARIES += cxx-lib/libcxxasn1.la \
-	cxx-lib/libcxxasn1rose.la
+lib_LTLIBRARIES += cxx-lib/libcxxasn1.la
+
+if SNACCROSE
+lib_LTLIBRARIES += cxx-lib/libcxxasn1rose.la
+nobase_include_HEADERS += cxx-lib/inc/snaccrose.h
+endif
 
 BUILT_SOURCES += cxx-lib/inc/snacc.h
 
@@ -17,7 +21,6 @@ nobase_include_HEADERS += cxx-lib/inc/asn-buf.h \
 	cxx-lib/inc/snacc.h \
 	cxx-lib/inc/snaccdll.h \
 	cxx-lib/inc/snaccexcept.h \
-	cxx-lib/inc/snaccrose.h \
 	cxx-lib/inc/tcl-if.h
 
 cxx_lib_libcxxasn1_la_SOURCES = \

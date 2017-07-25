@@ -32,6 +32,10 @@ AC_PROG_INSTALL
 AM_INIT_AUTOMAKE([-Wall foreign subdir-objects])
 AC_PROG_CC
 AC_PROG_CXX
+
+AM_CONDITIONAL([SNACCROSE], [test "$cross_compiling" = no])
+test x"$cross_compiling" == xyes && AC_DEFINE([SNACCROSE], [0], [No ROSE support])
+
 AM_PATH_PYTHON(,, [:])
 AM_CONDITIONAL([HAVE_PYTHON], [test "$PYTHON" != :])
 AC_USE_SYSTEM_EXTENSIONS
