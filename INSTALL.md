@@ -30,8 +30,6 @@ you will need:
 
  - bison, or yacc
 
- - xsltproc (docbook xml and the manpage dependencies)
-
 If you are working from a Git tree or snapshot (instead of from a
 distribution tarball), or if you modify the esnacc build system
 you will also need the following software:
@@ -42,6 +40,12 @@ you will also need the following software:
 
   - libtool version 2.4 or later.  (Older versions might work too.)
 
+Optionally, you may want to install the following packages to enable 
+additional functionality, or enhanced documentation:
+
+ - xsltproc (for docbook xml and manpage building)
+
+ - python version 2.7 or later
 
 Building and Installing Enhanced Sample Neufeld ASN.1 C Compiler
 ================================================================
