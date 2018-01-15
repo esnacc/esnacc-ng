@@ -208,7 +208,7 @@ char * AsnBuf::GetSeg(long segLen) const
 
     try {
         GetSeg(seg, segLen);
-    } catch (BufferException) {
+    } catch (BufferException &) {
         delete [] seg;
         seg = NULL;
     }
