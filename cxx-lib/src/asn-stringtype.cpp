@@ -354,44 +354,40 @@ AsnString& AsnString::operator=(const char* str)
 
 void AsnString::Deterpret(AsnBufBits &b, AsnLen &bitsDecoded, long)
 {
-	AsnLen len;
-	int B = numBits();
-	int B2 = findB2(B);
-	int count = 0;
-	bool bNotFound = true;
+    AsnLen len = numBits();
+    int count = 0;
+
+    if (b.IsAligned())
+        len = findB2(len);
+
     int sizePermittedAlpha;
     const char* permittedAlphabet = PermittedAlphabet(sizePermittedAlpha);
-	int ub = (int)permittedAlphabet[sizePermittedAlpha - 1];
-	
-	if(b.IsAligned())
-		len = B2;
-	else
-		len = B;
+    int ub = (int) permittedAlphabet[sizePermittedAlpha - 1];
 
-	if(ub <= ((1 << len) - 1) )
-	{
-		len = (sizeof(char) * 8);
-	}
+    if (ub <= ((1 << len) - 1)) {
+        len = (sizeof(char) * 8);
+    }
 
-	unsigned char* seg = b.GetBits(len);
+    unsigned char* seg = b.GetBits(len);
     bitsDecoded += len;
-	seg[0] >>= ((sizeof(char)*8) - len);
-	
-	
-	if(!(ub <= ((1 << len) - 1)) )
-	{
-		while(bNotFound)
-		{
-			if(count == (int)seg[0])
-			{
-				seg[0] = permittedAlphabet[count];
-				bNotFound = false;
-			}
-			count++;
-		}
-	}
+    if (len <= ((sizeof(char) * 8) - 1))
+        seg[0] >>= ((sizeof(char)*8) - len);
+    else
+        seg[0] = 0;
 
-	putChar((char*)seg);
+    if (!(ub <= ((1 << len) - 1))) {
+        bool bNotFound = true;
+
+        while (bNotFound) {
+            if (count == (int)seg[0]) {
+                seg[0] = permittedAlphabet[count];
+                bNotFound = false;
+            }
+            count++;
+        }
+    }
+
+    putChar((char*)seg);
     delete [] seg;
 }
 
