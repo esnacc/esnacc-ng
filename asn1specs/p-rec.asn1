@@ -53,4 +53,11 @@ EmployeeNumber ::= [APPLICATION 128] IMPLICIT INTEGER
 
 Date ::= [APPLICATION 3] IMPLICIT IA5String -- YYYYMMDD
 
+-- Suggested simple encoding test
+PDU1 ::= --snacc isPdu:"TRUE" -- SEQUENCE
+{
+    height INTEGER(0..255),
+    width INTEGER(0..255)
+}
+
 END

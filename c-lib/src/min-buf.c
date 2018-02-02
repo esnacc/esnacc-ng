@@ -60,6 +60,7 @@ MinBufPutSegRvs__(void *b, char *src, unsigned long len)
 {
     unsigned char *dst = (unsigned char *)(*(unsigned char **)b);
     dst -= len;
+    *(unsigned char **)b = dst;
     memcpy(dst, src, len);
 }
 

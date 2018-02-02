@@ -65,12 +65,18 @@ main PARAMS ((argc, argv),
     AsnLen decodedLen;
     int     val;
     PersonnelRecord pr;
+    PDU1 p;
     int      size;
+    int i;
     char    *origData;
     struct stat sbuf;
     jmp_buf env;
     int  decodeErr;
     char *filename;
+    char expected_pdu_bytes[] = { 0x30, /* SEQUENCE */
+                                    0x06, /* LENGTH (6-bytes, def) */
+                                      0x02, 0x01, 0x12, /*INT - 18*/
+                                      0x02, 0x01, 0x30  /*INT - 48*/};
 
     if (argc != 2) {
         filename = "pr.ber";
@@ -128,15 +134,37 @@ main PARAMS ((argc, argv),
      */
     encBufSize = size + 512;
     encData = (char*) malloc(encBufSize);
+    memset(encData, 0, encBufSize);
 
     /*
      * set 'buffer' up for writing by setting ptr
      * byte after last byte of the block
      */
+    p.height = 18;
+    p.width = 48;
     GenBufFromMinBuf(&encBuf, encData + encBufSize);
-    (void)BEncPersonnelRecord(&encBuf, &pr);
+    decodedLen = BEncPDU1(&encBuf, &p);
+
+    size = 0;
+    for (i = encBufSize - decodedLen; i < encBufSize; i++, size++) {
+        if (encData[i] != expected_pdu_bytes[size]) {
+            printf("enc cmp failed - byte: %d [0x%02x vs 0x%02x]\n",
+                   i, encData[i], expected_pdu_bytes[size]);
+            exit(-1);
+        }
+    }
 
     free(encData);
     free(origData);
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
