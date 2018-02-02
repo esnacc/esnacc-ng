@@ -162,73 +162,58 @@ PrintCCode PARAMS ((src, hdr, mods, m, r, longJmpVal, printTypes, printValues, p
     TypeDef *td;
     ValueDef *vd;
 
-	/* Deepak: suppose the asn source file is test.asn
-	 * then the C source file name is test.c and C header file is test.h
-	 */
+    /* Deepak: suppose the asn source file is test.asn
+     * then the C source file name is test.c and C header file is test.h
+     */
     PrintCSrcComment(src, m);
     PrintCSrcIncludes(hdr, m, mods);
 
     PrintCHdrComment(hdr, m);
     PrintConditionalIncludeOpen(hdr, m->cHdrFileName);
 
-	/* PIERCE TBD: Is this necessary still after Deepak's mods?
-     *
-	 * Add include reference to source file
-	 * 
-     */
-    fprintf (src, "#include \"%s\"\n", m->cHdrFileName);
-    fprintf (hdr,"\n\n");
-    fprintf (hdr,"#ifdef __cplusplus\n");
-    fprintf (hdr,"extern \"C\" {\n");
-    fprintf (hdr,"#endif\n");
-    // RWC; ADDED to remove warning about "unreferenced local variable" for 
-    //   variables that are hardcoded by the eSNACC compiler; depending on 
-    //   the recursed data types (e.g. in a CHOICE), the variables may not be
-    //   used.  We just ignore the warning.
-    fprintf (hdr,"#ifdef _WIN32\n");
-    fprintf (hdr,"#pragma warning( disable : 4101 )\n");
-    fprintf (hdr,"#endif\n");
+	/* Add include reference to source file */
+    fprintf(src, "#include \"%s\"\n", m->cHdrFileName);
+    fprintf(hdr, "\n\n");
+
+    fprintf(hdr, "#ifdef __cplusplus\n");
+    fprintf(hdr, "extern \"C\" {\n");
+    fprintf(hdr, "#endif\n");
+
+    fprintf(hdr, "#ifdef _WIN32\n");
+    fprintf(hdr, "#pragma warning( disable : 4101 )\n");
+    fprintf(hdr, "#endif\n");
 
     fprintf (src,"\n\n");
 
-    if (printValues)
-    {
+    if (printValues) {
         /* put value defs at beginning of .c file */
-        FOR_EACH_LIST_ELMT (vd, m->valueDefs)
-        {
+        FOR_EACH_LIST_ELMT(vd, m->valueDefs) {
             PrintCValueDef (src, r, vd);
         }
     }
 
-    PrintCAnyCode (src, hdr, r, mods, m, printEncoders, printDecoders, 
-		printPrinters, printFree);
+    PrintCAnyCode(src, hdr, r, mods, m, printEncoders, printDecoders, 
+                  printPrinters, printFree);
 
-    FOR_EACH_LIST_ELMT (td, m->typeDefs)
-    {
+    FOR_EACH_LIST_ELMT(td, m->typeDefs) {
         if (printTypes)
             PrintCTypeDef (hdr, r, m, td);
 
         /* for PDU type or types ref'd with ANY/ANY DEF BY */
-        if (printEncoders && ((td->anyRefs != NULL) || td->cTypeDefInfo->isPdu))
+        if (printEncoders &&
+            ((td->anyRefs != NULL) || td->cTypeDefInfo->isPdu))
             PrintCEncoder (src, hdr, r, m, td);
 
         /* for PDU type or types ref'd with ANY/ANY DEF BY */
-        if (printDecoders && ((td->anyRefs != NULL) || td->cTypeDefInfo->isPdu))
+        if (printDecoders &&
+            ((td->anyRefs != NULL) || td->cTypeDefInfo->isPdu))
             PrintCDecoder (src, hdr, r, m, td, &longJmpVal);
 
         if (printEncoders)
-		{
             PrintCContentEncoder (src, hdr, r, m, td);
-			//if (td->bHasTableConstraint)
-			//	PrintCTableConstraintEncoder (src, hdr, m, td);		// Deepak: 25/Mar/2003
-		}
 
         if (printDecoders)
-		{
             PrintCContentDecoder (src, hdr, r, m, td, &longJmpVal);
-			//if (td->bHasTableConstraint)
-			//	PrintCTableConstraintDecoder (src, hdr, m, td);		// Deepak: 25/Mar/2003
-		}
 
         if (printPrinters)
             PrintCPrinter (src, hdr, r, mods, m, td);
@@ -237,67 +222,60 @@ PrintCCode PARAMS ((src, hdr, mods, m, r, longJmpVal, printTypes, printValues, p
             PrintCFree (src, hdr, r, mods, m, td);
 
         /* only print new lines for normal types */
-        switch (td->type->basicType->choiceId)
-        {
-            case BASICTYPE_SEQUENCEOF:  /* list types */
-            case BASICTYPE_SETOF:
-            case BASICTYPE_CHOICE:
-            case BASICTYPE_SET:
-            case BASICTYPE_SEQUENCE:
-			case BASICTYPE_SEQUENCET:	// Deepak: 30/Nov/2002
-			case BASICTYPE_OBJECTCLASS:	// Deepak: 14/Mar/2003
-                fprintf (src, "\n");
-                /* fall through */
+        switch (td->type->basicType->choiceId) {
+        case BASICTYPE_SEQUENCEOF:  /* list types */
+        case BASICTYPE_SETOF:
+        case BASICTYPE_CHOICE:
+        case BASICTYPE_SET:
+        case BASICTYPE_SEQUENCE:
+        case BASICTYPE_SEQUENCET:	// Deepak: 30/Nov/2002
+        case BASICTYPE_OBJECTCLASS:	// Deepak: 14/Mar/2003
+            fprintf(src, "\n");
+            /* fall through */
+        case BASICTYPE_IMPORTTYPEREF:  /* type references */
+        case BASICTYPE_LOCALTYPEREF:
+        case BASICTYPE_BOOLEAN:  /* library type */
+        case BASICTYPE_REAL:  /* library type */
+        case BASICTYPE_OCTETSTRING:  /* library type */
+        case BASICTYPE_NULL:  /* library type */
+        case BASICTYPE_OID:  /* library type */
+        case BASICTYPE_RELATIVE_OID: /* library type */
+        case BASICTYPE_INTEGER:  /* library type */
+        case BASICTYPE_BITSTRING:  /* library type */
+        case BASICTYPE_ENUMERATED:  /* library type */
+        case BASICTYPE_ANYDEFINEDBY:  /* ANY types */
+        case BASICTYPE_ANY:
+        case BASICTYPE_NUMERIC_STR:		/* library type */
+        case BASICTYPE_PRINTABLE_STR:	/* library type */
+        case BASICTYPE_IA5_STR:			/* library type */
+        case BASICTYPE_BMP_STR:			/* library type */
+        case BASICTYPE_UNIVERSAL_STR:	/* library type */
+        case BASICTYPE_UTF8_STR:		/* library type */
+        case BASICTYPE_T61_STR:			/* library type */
+            fprintf(hdr, "\n");
+            break;
 
-            case BASICTYPE_IMPORTTYPEREF:  /* type references */
-            case BASICTYPE_LOCALTYPEREF:
-            case BASICTYPE_BOOLEAN:  /* library type */
-            case BASICTYPE_REAL:  /* library type */
-            case BASICTYPE_OCTETSTRING:  /* library type */
-            case BASICTYPE_NULL:  /* library type */
-            case BASICTYPE_OID:  /* library type */
-            case BASICTYPE_RELATIVE_OID: /* library type */
-            case BASICTYPE_INTEGER:  /* library type */
-            case BASICTYPE_BITSTRING:  /* library type */
-            case BASICTYPE_ENUMERATED:  /* library type */
-            case BASICTYPE_ANYDEFINEDBY:  /* ANY types */
-            case BASICTYPE_ANY:
-			case BASICTYPE_NUMERIC_STR:		/* library type */
-			case BASICTYPE_PRINTABLE_STR:	/* library type */
-			case BASICTYPE_IA5_STR:			/* library type */
-			case BASICTYPE_BMP_STR:			/* library type */
-			case BASICTYPE_UNIVERSAL_STR:	/* library type */
-			case BASICTYPE_UTF8_STR:		/* library type */
-			case BASICTYPE_T61_STR:			/* library type */
-                fprintf (hdr, "\n");
-                break;
-		
-	default:
-	  break;
+        default:
+            break;
         }
     }
 
-	// Declare ObjectAssignment, ObjestSetAssignment, & initialize them.
-	if(isTableConstraintAllowed)
-	{
-		PrintCHdrObjectDeclaration_and_Init (hdr, m, r);	// Deepak: 24/Mar/2003
-	}
+    // Declare ObjectAssignment, ObjestSetAssignment, & initialize them.
+    if(isTableConstraintAllowed)
+        PrintCHdrObjectDeclaration_and_Init(hdr, m, r);
 
-    if (printValues)
-    {
+    if (printValues) {
         /* put value externs at end of .h file */
-        FOR_EACH_LIST_ELMT (vd, m->valueDefs)
-        {
-            PrintCValueExtern (hdr, r, vd);
+        FOR_EACH_LIST_ELMT(vd, m->valueDefs) {
+            PrintCValueExtern(hdr, r, vd);
         }
     }
 
-    fprintf (hdr,"#ifdef __cplusplus\n");
-    fprintf (hdr,"extern \"C\" {\n");
-    fprintf (hdr,"#endif\n");
+    fprintf(hdr, "#ifdef __cplusplus\n");
+    fprintf(hdr, "}\n");
+    fprintf(hdr, "#endif\n");
 
-
-    PrintConditionalIncludeClose (hdr, m->cHdrFileName);
+    PrintConditionalIncludeClose(hdr, m->cHdrFileName);
 
 } /* PrintCCode */
 
