@@ -606,12 +606,10 @@ PrintCEncoderLocals PARAMS ((src, td),
     FILE *src _AND_
     TypeDef *td)
 {
-    fprintf (src, "\tAsnLen %s = 0;\n", encodedLenVarNameG);
-    fprintf (src, "\tAsnLen %s;\n", itemLenNameG);
-    fprintf (src, "\tAsnLen %s;\n", listLenNameG);
-    fprintf (src, "\tvoid *%s;", listComponentNameG);
-
-    td = td;    /* AVOIDS warning. */
+    fprintf(src, "\tAsnLen %s ESNACC_UNUSED = 0;\n", encodedLenVarNameG);
+    fprintf(src, "\tAsnLen %s;\n", itemLenNameG);
+    fprintf(src, "\tAsnLen %s ESNACC_UNUSED;\n", listLenNameG);
+    fprintf(src, "\tvoid *%s ESNACC_UNUSED;", listComponentNameG);
 }  /*  PrintCEncoderLocals */
 
 

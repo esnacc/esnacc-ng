@@ -413,8 +413,8 @@ PrintCDecoderDeclaration PARAMS ((src,td),
     fprintf (src,"%s%sContent PARAMS ((b, tagId%d, elmtLen%d, v, bytesDecoded, env),\n", 
 	     GetEncRulePrefix(), ctdi->decodeRoutineName, FIRST_LEVEL -1,
 	     FIRST_LEVEL -1);
-    fprintf (src,"%s b _AND_\n", bufTypeNameG);
-    fprintf (src,"%s tagId%d _AND_\n", tagTypeNameG, FIRST_LEVEL -1);
+    fprintf(src,"%s b _AND_\n", bufTypeNameG);
+    fprintf(src,"%s tagId%d ESNACC_UNUSED _AND_\n", tagTypeNameG, FIRST_LEVEL -1);
     fprintf (src,"%s elmtLen%d _AND_\n", lenTypeNameG, FIRST_LEVEL -1);
     fprintf (src,"%s *v _AND_\n", ctdi->cTypeName);
     fprintf (src,"%s *bytesDecoded _AND_\n", lenTypeNameG);
@@ -564,15 +564,15 @@ PrintCDecoderLocals PARAMS ((src,td),
 
     levels = CountVariableLevels (td->type);
 
-    fprintf (src, "    int seqDone = FALSE;\n");
+    fprintf (src, "    int seqDone ESNACC_UNUSED = FALSE;\n");
 
     for (i = 0; i < levels; i++)
     {
-        fprintf (src, "    %s totalElmtsLen%d = 0;\n", lenTypeNameG, i + FIRST_LEVEL);
+        fprintf (src, "    %s totalElmtsLen%d ESNACC_UNUSED = 0;\n", lenTypeNameG, i + FIRST_LEVEL);
         fprintf (src, "    %s elmtLen%d;\n", lenTypeNameG, i + FIRST_LEVEL);
         fprintf (src, "    %s tagId%d;\n", tagTypeNameG, i + FIRST_LEVEL);
         if (i == 0)
-            fprintf (src, "    int mandatoryElmtCount%d = 0;\n", i + FIRST_LEVEL);
+            fprintf (src, "    int mandatoryElmtCount%d ESNACC_UNUSED = 0;\n", i + FIRST_LEVEL);
     }
 
 }  /*  PrintCDecoderLocals */
