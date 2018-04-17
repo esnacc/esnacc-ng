@@ -9,6 +9,7 @@
 from asn_base import BERConsts
 from asn_ints import AsnInt
 
+
 def convert_to_bool(value):
     if value is None:
         return False
@@ -24,6 +25,7 @@ def convert_to_bool(value):
         return True
 
     return False
+
 
 class AsnBool(AsnInt):
 

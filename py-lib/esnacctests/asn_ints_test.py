@@ -11,12 +11,13 @@ import unittest
 if __package__ is None:
     import sys
     from os import path
-    sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
+    sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
     from esnacc import asn_ints
     from esnacc import asn_buffer
 else:
     from ..esnacc import asn_ints
     from ..esnacc import asn_buffer
+
 
 class TestAsnInts(unittest.TestCase):
     def test_operations_default(self):
@@ -126,21 +127,22 @@ class TestAsnInts(unittest.TestCase):
         for x in tests:
             self.assertTrue(x.run())
 
-
     def test_constraints(self):
         class testVec(unittest.TestCase):
             def __init__(self, number):
                 self.nm = number
 
             def run(self):
-                cnstraint_good = asn_ints.IntegerConstraint(self.nm-1, self.nm+1)
+                cnstraint_good = asn_ints.IntegerConstraint(self.nm-1,
+                                                            self.nm+1)
                 asninteger = asn_ints.AsnInt(self.nm)
                 asninteger.addConstraint(cnstraint_good)
 
                 buf = asn_buffer.AsnBuf()
                 self.assertTrue(asninteger.BEnc(buf) != 0)
 
-                cnstraint_bad = asn_ints.IntegerConstraint(self.nm+1, self.nm+2)
+                cnstraint_bad = asn_ints.IntegerConstraint(self.nm+1,
+                                                           self.nm+2)
                 asninteger.addConstraint(cnstraint_bad)
                 with self.assertRaises(ValueError):
                     asninteger.BEnc(buf)
@@ -159,6 +161,7 @@ class TestAsnInts(unittest.TestCase):
 
         for x in tests:
             self.assertTrue(x.run())
+
 
 class TestAsnEnums(unittest.TestCase):
     def test_enumeration_encoding(self):

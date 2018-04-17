@@ -53,7 +53,7 @@ class AsnInt(AsnBase):
             return False
         return True
 
-    __nonzero__=__bool__
+    __nonzero__ = __bool__
 
     def __cmp__(self, obj):
         cmpValA = self.intVal
@@ -257,7 +257,7 @@ class AsnReal(AsnBase):
     def __str__(self):
         return str(self.value())
 
-    __nonzero__=__bool__
+    __nonzero__ = __bool__
 
     def __cmp__(self, obj):
         cmpValA = self.floatVal
@@ -329,7 +329,7 @@ class AsnReal(AsnBase):
             encE = intcnv(e & 0xff)
         else:
             while e not in (0, -1):
-                encE = intcnv(e&0xff) + encE
+                encE = intcnv(e & 0xff) + encE
                 e >>= 8
             if e == 0 and encE[0] != 0 and int(encE[0]) & 0x80:
                 encE = intcnv(0) + encE

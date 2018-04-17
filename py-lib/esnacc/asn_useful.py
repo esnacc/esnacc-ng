@@ -28,6 +28,7 @@ class NumericString(AsnOcts):
         if self.octs is not None:
             self.setData(value)
 
+
 class IA5String(AsnOcts):
     BER_TAG = BERConsts.IA5STRING_TAG_CODE
 

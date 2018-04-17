@@ -10,6 +10,7 @@ from asn_buffer import AsnBuf
 from asn_buffer import BDecDefLen
 from asn_buffer import BEncDefLen
 
+
 class Constraint(object):
     def __init__(self):
         pass
@@ -54,9 +55,9 @@ class BERConsts(object):
             tg = intcnv(tag & 0x7f)
             tag >>= 7
             while tag:
-                tg = intcnv(0x80|(tag & 0x7f)) + tg
+                tg = intcnv(0x80 | (tag & 0x7f)) + tg
                 tag >>= 7
-            fnl = intcnv(fnl|0x1f) + tg
+            fnl = intcnv(fnl | 0x1f) + tg
 
         return int(fnl.encode('hex'), 16)
 
