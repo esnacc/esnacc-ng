@@ -3743,7 +3743,7 @@ PrintCxxSetDefCode (FILE *src, FILE *hdr, ModuleList *mods, Module *m,
                 td->cxxTypeDefInfo->className);
         fprintf(src, "{\n");
         fprintf(src, "    const char *tagName = typeName();\n");
-        fprintf(src, "    if (lpszTitle) {\n");
+        fprintf(src, "    if (lpszTitle)\n");
         fprintf(src, "        tagName = lpszTitle;\n");
         fprintf(src, "    os << \"<\" << tagName << \">\";\n");
         FOR_EACH_LIST_ELMT (e, set->basicType->a.set) {
