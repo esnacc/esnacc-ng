@@ -132,6 +132,7 @@
 #ifndef _asn_config_h_
 #define _asn_config_h_
 
+#include <stdint.h>
 #ifndef WIN32
 #include <stdlib.h> /* for wchar_t on UNIX */
 #endif
@@ -166,24 +167,9 @@
 #define USE_EXP_BUF 1
 
 // used not only by AsnInt (asn-int.h), but by AsnNameDesc (meta.h) as well:
-#if SIZEOF_INT == 4
-#  define I		int
-#else
-#  if SIZEOF_LONG == 4
-#    define I		long
-#  elif SIZEOF_SHORT == 4
-#      define I		short
-#  else
-#    define I int
-#  endif
-#endif
-#ifdef I
-  typedef I		AsnIntType;
-  typedef unsigned I	AsnUIntType;
-#  undef I
-#else
-#  error "can't find integer type which is 4 bytes in size"
-#endif
+
+typedef int32_t  AsnIntType;
+typedef uint32_t AsnUIntType;
 
 /* used to test if optionals are present */
 #define NOT_NULL( ptr)		((ptr) != NULL)
