@@ -604,10 +604,11 @@ public:
         {length = l; count = c; }
 };
 
-void ConsStringDeck::Fill(const AsnBuf &b, AsnLen elmtLen, AsnLen &bytesDecoded)
+void ConsStringDeck::Fill(const AsnBuf &b, AsnLen elmtLen,
+                          AsnLen &bytesDecoded)
 {
     FUNC("ConsStringDeck::Fill()");
-    
+
     AsnLen totalElmtsLen1 = 0;
     std::list<RefNode> refList;
     refList.insert (refList.begin(), RefNode(elmtLen, totalElmtsLen1));
@@ -616,115 +617,74 @@ void ConsStringDeck::Fill(const AsnBuf &b, AsnLen elmtLen, AsnLen &bytesDecoded)
     bool done = false;
     unsigned char *strPtr;
     unsigned long tagId1;
-    
-    while ( !done )
-    {
-        for (; (curr != refList.end()) && ((curr->count < curr->length) || (curr->length == INDEFINITE_LEN));)
-        {
+
+    while (!done) {
+        for (; (curr != refList.end()) &&
+               ((curr->count < curr->length) ||
+                (curr->length == INDEFINITE_LEN)); ) {
             tagId1 = BDecTag (b, curr->count);
 
-            if (tagId1 == EOC_TAG_ID && curr->length == INDEFINITE_LEN)
-            {  
+            if (tagId1 == EOC_TAG_ID && curr->length == INDEFINITE_LEN) {  
                // We may have found a EOC TAG
                // if next byte is a 0 then is an EOC tag
-               if (b.GetByte() == 0)
-               {
+               if (b.GetByte() == 0) {
                  ++curr->count;
                  break;
-             
-               }
-               else
-               {
+               } else {
                   throw EXCEPT("Partial EOC tag found", DECODE_ERROR);
                }
-            }
-            else if (tagId1 == MAKE_TAG_ID (UNIV, PRIM, m_baseTag))
-            {
+            } else if (tagId1 == MAKE_TAG_ID (UNIV, PRIM, m_baseTag) ||
+                       m_baseTag == 0) {
                 /*
                  * primitive part of string, put references to piece (s) in
                  * str stack
                  */
-                 totalElmtsLen1 = BDecLen (b, curr->count);
-
-		         if(totalElmtsLen1 == INDEFINITE_LEN) 
-                 {
-                    throw InvalidTagException("Primitive String can not have INDEFINITE_LEN", tagId1, STACK_ENTRY);   
-                 }
-                 strPtr = (unsigned char *)b.GetSeg(totalElmtsLen1);
-                 push_back( StringPair(strPtr, totalElmtsLen1) );
-                 curr->count += totalElmtsLen1;
-            }
-            else if (tagId1 == MAKE_TAG_ID (UNIV, CONS, m_baseTag))
-            {
+                totalElmtsLen1 = BDecLen (b, curr->count);
+                
+                if(totalElmtsLen1 == INDEFINITE_LEN) {
+                    throw InvalidTagException(
+                        "Primitive String can not have INDEFINITE_LEN",
+                        tagId1, STACK_ENTRY);
+                }
+                if (totalElmtsLen1 > b.length()) {
+                    throw InvalidTagException("Primitive String, length",
+                                              tagId1, STACK_ENTRY);
+                }
+                strPtr = (unsigned char *)b.GetSeg(totalElmtsLen1);
+                push_back(StringPair(strPtr, totalElmtsLen1));
+                curr->count += totalElmtsLen1;
+            } else if (tagId1 == MAKE_TAG_ID (UNIV, CONS, m_baseTag) ||
+                       (m_baseTag == 0 && TAG_IS_CONS(tagId1))) {
                 /*
                  * primitive part of string, put references to piece (s) in
                  * str stack
                  */
+                totalElmtsLen1 = BDecLen(b, curr->count);
                 
-                 totalElmtsLen1 = BDecLen(b, curr->count);
-                
-			     if ((totalElmtsLen1 != INDEFINITE_LEN) && (totalElmtsLen1 + curr->count) > curr->length/*elmtLen*/)
-                 {
-                    throw BoundsException("Invalid constructed object", STACK_ENTRY);
-                 }
-          
-                 curr = refList.insert (refList.end(), RefNode(totalElmtsLen1, 0));
-                 //curr = curr->next;
+                if ((totalElmtsLen1 != INDEFINITE_LEN) &&
+                    (totalElmtsLen1 + curr->count) > curr->length) {
+                    throw BoundsException("Invalid constructed object",
+                                          STACK_ENTRY);
+                }
 
-		        //Fill(b, curr->length, curr->count);
-            }
-            else if (m_baseTag == 0 && TAG_IS_CONS(tagId1))
-            {
-               /* Handle set and sequence 
-                */
-               totalElmtsLen1 = BDecLen(b, curr->count);
-
-   		       if ((totalElmtsLen1 != INDEFINITE_LEN) && (totalElmtsLen1 + curr->count) > curr->length/*elmtLen*/)
-               {
-		          throw BoundsException("Invalid constructed object", STACK_ENTRY);
-               }
-
-                curr = refList.insert (refList.end(), RefNode(totalElmtsLen1, 0) );
-               //Fill(b, curr->length, curr->count);
-            }
-             else if (m_baseTag == 0)
-            {
-               totalElmtsLen1 = BDecLen (b, curr->count);
-            
-		       if (totalElmtsLen1 == INDEFINITE_LEN) 
-               {
-                throw InvalidTagException("Primitive String can not have INDEFINITE_LEN", tagId1, STACK_ENTRY);   
-               }
-           
-		       if(totalElmtsLen1 > b.length())
-               {
-                throw InvalidTagException("Primitive String, length", tagId1, STACK_ENTRY);              
-               }
-
-               strPtr = (unsigned char *)b.GetSeg(totalElmtsLen1);
-               push_back( StringPair(strPtr, totalElmtsLen1) );
-               curr->count += totalElmtsLen1;
-            }
-            else
-            {
-                throw InvalidTagException("Constructed String", tagId1, STACK_ENTRY);              
+                curr = refList.insert(refList.end(),
+                                      RefNode(totalElmtsLen1, 0));
+            } else {
+                throw InvalidTagException("Constructed String", tagId1,
+                                          STACK_ENTRY);              
             }
         } /* end of for */
 
-        if( curr != refList.begin() && curr != refList.end() )
-        {
+        if (curr != refList.begin() && curr != refList.end()) {
             int iTmpCount = curr->count;
             curr = refList.erase(curr);
-            if( curr != refList.end() )
+            if (curr != refList.end())
                 curr->count += iTmpCount;
             else
                 done = true;
-        }
-        else
-        {
+        } else {
             done = true;
         }
-
     }
 
     bytesDecoded += refList.begin()->count;
