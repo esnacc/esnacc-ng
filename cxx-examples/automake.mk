@@ -15,11 +15,11 @@ cxx_examples_main_SOURCES = \
 	cxx-examples/src/rfc1155-smi.cpp \
 	cxx-examples/src/rfc1157-snmp.cpp \
 	cxx-examples/src/snmp.cpp \
-	cxx-examples/src/testbuf.cpp
+	cxx-examples/src/testbuf.cpp \
+	cxx-examples/src/vdatest_asn.cpp \
+	cxx-examples/src/vdatest_asn2.cpp \
+	cxx-examples/src/vdatest.cpp
 #	cxx-examples/src/testsetsorting.cpp 
-#	cxx-examples/src/vdatest_asn.asn1 \
-#	cxx-examples/src/vdatest_asn2.asn1 \
-#	cxx-examples/src/vdatest.cpp \
 #	cxx-examples/src/vda_threads.cpp \
 #	cxx-examples/src/vda_threads.h
 
@@ -31,6 +31,16 @@ cxx_examples_main_LDADD = \
 	cxx-lib/libcxxasn1.la
 
 cxx_examples_main_LDFLAGS =
+
+$(top_builddir)/cxx-examples/src/vdatest_asn.cpp: \
+ $(top_srcdir)/cxx-examples/src/vdatest_asn.asn1 \
+ $(top_builddir)/compiler/esnacc
+	$(top_builddir)/compiler/esnacc -C -mo `dirname $@` $<
+
+$(top_builddir)/cxx-examples/src/vdatest_asn2.cpp: \
+ $(top_srcdir)/cxx-examples/src/vdatest_asn2.asn1 \
+ $(top_builddir)/compiler/esnacc
+	$(top_builddir)/compiler/esnacc -C -mo `dirname $@` $<
 
 $(top_builddir)/cxx-examples/src/rfc1155-smi.cpp: \
  $(top_srcdir)/cxx-examples/src/rfc1155-smi.asn1 \
@@ -52,7 +62,9 @@ $(top_builddir)/cxx-examples/src/autotags.cpp: \
 EXTRA_DIST+= \
 	cxx-examples/src/autotags.asn1 \
 	cxx-examples/src/rfc1155-smi.asn1 \
-	cxx-examples/src/rfc1157-snmp.asn1
+	cxx-examples/src/rfc1157-snmp.asn1 \
+	cxx-examples/src/vdatest_asn.asn1 \
+	cxx-examples/src/vdatest_asn2.asn1
 
 CLEANFILES+= \
 	test.txt \
@@ -61,4 +73,8 @@ CLEANFILES+= \
 	cxx-examples/src/rfc1157-snmp.cpp \
 	cxx-examples/src/rfc1157-snmp.h \
 	cxx-examples/src/rfc1155-smi.cpp \
-	cxx-examples/src/rfc1155-smi.h
+	cxx-examples/src/rfc1155-smi.h \
+	cxx-examples/src/vdatest_asn.cpp \
+	cxx-examples/src/vdatest_asn.h \
+	cxx-examples/src/vdatest_asn2.cpp \
+	cxx-examples/src/vdatest_asn2.h

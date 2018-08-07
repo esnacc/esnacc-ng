@@ -32,50 +32,24 @@ using namespace VDATestModule2Namespace;
 
 //
 //
-int vdatest_main(int argc, char *argv[])
+void vdatest_main()
 {
-  
-   /*if (argc > 1) 
-   {
-       traverseDir(argv[1]);
-
-       exit(0);
-   }*/
    test_IndefiniteLengthEncoding();
 
-#ifdef BOUNDS_CHECKER_TEST_WITHOUT_THREADS
-   vdaTestPrintThreadLocks();
-   return(0);
-   vdaTestThreadLocks();
-   vdaTestThreads(55);  // AVOIDS problems with above; must be performed last.
-#endif //ifdef BOUNDS_CHECKER_TEST_WITHOUT_THREADS
+   ANY_DEFINED_BY_test();
+   test_AsnOid();
+   AsnIntTest();
+   ANY_DEFINED_BY_test_2();
+   XML_test();
+   test_timing();
+   test_big_buffer();
 
-   try
-   {
-      ANY_DEFINED_BY_test();
-      test_AsnOid();
-      AsnIntTest();
-      ANY_DEFINED_BY_test_2();
-      XML_test();
-      test_timing();
-      test_big_buffer();
-      // THE FOLLOWING TEST also tests SET OF ordering.
-      // ALSO, it must be last since an error condition is trapped.
-      append_test();
-   }
-   catch ( SnaccException &e )
-   {
-      std::cout << "ERROR: " << e.what() << "\n";
-      std::cout << "Call stack:\n";
-      e.getCallStack(std::cout);
-      std::cout << "\n";
-   }
-
+   // THE FOLLOWING TEST also tests SET OF ordering.
+   // ALSO, it must be last since an error condition is trapped.
+   append_test();
 
    std::cout << "####### END OF vdatest TESTS #########\n";
    std::cout.flush();
-  
-   return 1;
 }
 
 
@@ -102,10 +76,10 @@ void ANY_DEFINED_BY_test()
    A.i2 = 2;
    A.i3 = 3;
    A.i4 = 4;
-   
+
    // Encode TestDefinedByUsage into a buffer
    //
-   if (! A.BEnc(buf))
+   if (!A.BEnc(buf))
       throw SNACC_EXCEPT("Encode of TestDefinedByUsage failed!");
 
    // Decode buffer into a different TestDefinedByUsage to demonstrate the
@@ -116,8 +90,7 @@ void ANY_DEFINED_BY_test()
 
    // Check the OID to determine if this is the ANY you are looking for.
    //
-   if (A2.id == testOID2)
-   {                     
+   if (A2.id == testOID2) {                     
       // You must cast the ANY to the type you expect.  It's up to the
       // application to do the proper casting.
       //
@@ -125,9 +98,7 @@ void ANY_DEFINED_BY_test()
 
       std::cout << "ANY_DEFINED_BY_test: Good id, == testOID2." 
          << pPrtblStr->c_str() << "\n";
-   }
-   else
-   {
+   } else {
       std::cout << "ANY_DEFINED_BY_test: ***** Bad id, EXPECTED testOID2.\n";
    }
 
@@ -135,7 +106,7 @@ void ANY_DEFINED_BY_test()
 
    A.id = testOid3_UNKNOWN;
    //A.anyDefBy.value = new AsnAnyBuffer((char *)data, len);
-   
+
    buf.ResetMode();
    if (! A.BEnc(buf))
       throw SNACC_EXCEPT("Encode of TestDefinedByUsage failed!");
@@ -438,24 +409,23 @@ int append_test()
       testNullBitStringBlob.hexDump(std::cout);
       std::cout << "\n";
       std::cout.flush();
+      throw SNACC_EXCEPT("Null bit string 1");
    }
 
    if (! snaccNullBitString3.BEnc(buf) )
       throw SNACC_EXCEPT("Encoding of NULL BIT STRING failed!");
 
-   if (buf == testNullBitStringBlob)
-   {
-      std::cout << "NULL BIT STRING 2 TEST PASSED!\n";
-      std::cout.flush();
-   }
-   else
-   {
+   if (buf == testNullBitStringBlob) {
       std::cout << "NULL BIT STRING TEST 2 FAILED!\n";
       std::cout << "ENCODED VALUE IS:\n";
       buf.hexDump(std::cout);
       std::cout << "\nIT SHOULD NOT BE:\n";
       testNullBitStringBlob.hexDump(std::cout);
       std::cout << "\n";
+      std::cout.flush();
+      throw SNACC_EXCEPT("Null bit string 2");
+   } else {
+      std::cout << "NULL BIT STRING 2 TEST PASSED!\n";
       std::cout.flush();
    }
 
@@ -654,7 +624,11 @@ int append_test()
    std::cout << "#########     STACK                                        ####\n";
    VDATestSequence aa;
    AsnBuf cBuf("aaa", 3);
-   aa.BDec(cBuf, bytesDecoded); // expected to fail
+   try {
+       aa.BDec(cBuf, bytesDecoded); // expected to fail
+   } catch (SnaccException &e) {
+       std::cout << "Correct" << std::endl;
+   }
 
    return 1;
 } /* append_test */
@@ -1146,6 +1120,7 @@ double test_timingDoTest(long BYTE_COUNT, long iCount, int new_flag, long lTestT
 // This function demonstrates/tests the new AsnInt BigInteger logic.
 void AsnIntTest()
 {
+    FUNC("AsnIntTest");
     AsnInt A,B,H;
     int /*AsnIntType*/ CInt;
     AsnBuf b;
@@ -1156,19 +1131,23 @@ void AsnIntTest()
 
     //######### convert string into Hex ##########################
     H = AsnInt("0x20FF");
-    if (H == 767)
-        std::cout << "\nAsnIntTest:  SUCCESSFUL string to hex conversion, " << H 
+    if (H == 8447)
+        std::cout << "\nAsnIntTest:  SUCCESSFUL string to hex conversion, " << std::hex << H << std::dec
              << ".\n";
-    else
-        std::cout << "AsnIntTest:  UNSUCCESSFUL string to hex conversion, " << H 
+    else {
+        std::cout << "AsnIntTest[0x20ff]:  UNSUCCESSFUL string to hex conversion, " << std::hex << H << std::dec
              << ".\n";
+        throw SNACC_EXCEPT("IntConvTst");
+    }
     H = AsnInt("0xF0");
-    if (H == 15)
-        std::cout << "AsnIntTest:  SUCCESSFUL string to hex conversion, " << H 
+    if (H == 240)
+        std::cout << "AsnIntTest:  SUCCESSFUL string to hex conversion, " << std::hex << H << std::dec
              << ".\n";
-    else
-        std::cout << "AsnIntTest:  UNSUCCESSFUL string to hex conversion, " << H 
+    else {
+        std::cout << "AsnIntTest[0xf0]:  UNSUCCESSFUL string to hex conversion, " << std::hex << H << std::dec
              << ".\n";
+        throw SNACC_EXCEPT("IntConvTst");
+    }
 
     //######### check small integer.##############################
     A = 20;
@@ -1180,9 +1159,11 @@ void AsnIntTest()
         if (B == 20)
             std::cout << "AsnIntTest:  SUCCESSFUL integer encode/decode, " << B 
                 << ".\n";
-        else
-            std::cout << "AsnIntTest:  UNSUCCESSFUL integer encode/decode, " << B 
+        else {
+            std::cout << "AsnIntTest[bytes 20]:  UNSUCCESSFUL integer encode/decode, " << B 
                 << ".\n";
+            throw SNACC_EXCEPT("IntConvTst");
+        }
     }
 
 
@@ -1209,43 +1190,55 @@ void AsnIntTest()
                 pBuf[2], pBuf[3], pBuf[4], pBuf[5], pBuf[6]);
             std::cout << buf;
         }
-        else
+        else {
             std::cout << "AsnIntTest:  UNSUCCESSFUL 7 byte integer encode/decode, "
                 << ".\n";
+            throw SNACC_EXCEPT("IntConvTst");
+        }
     }
-    else
+    else {
        std::cout << "AsnIntTest:  UNSUCCESSFUL length 7 byte integer encode/decode, bytesDecoded="
                 << bytesDecoded << ".\n";
+       throw SNACC_EXCEPT("IntConvTst");
+    }
 
     //######### check assignment of multi-byte integer to a small int variable.
     //
+    bool throwIt = false;
       try
       {
        CInt = B;        // Attempt to assign 7 byte integer to 4 byte variable.
        std::cout << "AsnIntTest:  UNSUCCESSFUL ERROR on large integer assign to too small long."
                 << ".\n";
+       throwIt = true;
       }
       catch (...)
       {
            std::cout << "AsnIntTest:  SUCCESSFUL ERROR (catch) on large integer assign to too small long."
                 << ".\n";
       }
+      if (throwIt)
+          throw SNACC_EXCEPT("7 byte test");
 
     //######### check negative small integer.##############################
     //
     bytesDecoded = 0;
-    A = -20;
+    A = AsnInt(-20);
+    b = AsnBuf();
     A.BEnc(b);
 
     B.BDec(b, bytesDecoded);
-    if (bytesDecoded)
-    {
-        if (B == -20)
-            std::cout << "AsnIntTest:  SUCCESSFUL negative integer encode/decode, " << B 
-                << ".\n";
-        else
-            std::cout << "AsnIntTest:  UNSUCCESSFUL negative integer encode/decode, " << B 
-                << ".\n";
+    if (bytesDecoded) {
+        if (B == -20) {
+            std::cout
+                << "AsnIntTest:  SUCCESSFUL negative integer encode/decode, "
+                << B  << ".\n";
+        } else {
+            std::cout
+                << "AsnIntTest:  UNSUCCESSFUL negative integer encode/decode, "
+                << B << ".\n";
+            throw SNACC_EXCEPT("IntConvTst");
+        }
     }
 
     //######### check sign-extended negative large integer, with known size.##
@@ -1258,49 +1251,51 @@ void AsnIntTest()
     TmpData2[2] = (char)0xff;
     TmpData2[3] = (char)0xff;
     bytesDecoded = 0;
-    A.Set((unsigned char *)TmpData2, 128);
+    A.Set((unsigned char *)TmpData2, 128, false);
+    b = AsnBuf();
     A.BEnc(b);      // EXPECT 4 less bytes encoded due to sign extension.
 
     bytesDecoded = 0;
     B.BDec(b, bytesDecoded);
-    if (B.length() == 124/*for Data*/)
-    {
+    b.hexDump(std::cout);
+    if (B.length() == 124) {
         bFlag = true;          // Start out assuming all data is good.
         const unsigned char *pBuf=B.c_str();
-        for (i=0; i < 124; i++)
-            if (pBuf[i] != (unsigned char)TmpData2[i])
-                bFlag = false;
-        if (bFlag)
-        {
-            std::cout << "AsnIntTest:  SUCCESSFUL 124 byte negative integer encode/decode, "
-                << ".\n";
-            char buf[200];
-            sprintf(buf, "%2.2xx%2.2xx%2.2xx%2.2xx%2.2xx%2.2xx%2.2xx.\n", pBuf[0], pBuf[2], 
-                pBuf[2], pBuf[3], pBuf[4], pBuf[5], pBuf[6]);
-            std::cout << buf;
-            unsigned char *pBuf3 = NULL;        // RESET for next operation.
-            size_t length;
-            B.getPadded(pBuf3, length, size_t(128));
-            bFlag = true;          // Start out assuming all data is good.
-            for (int i=0; i < 4; i++)
-                if (pBuf3[i] != (char)0xff)
-                    bFlag = false;
-            if (!bFlag || length != 128)
-                std::cout << "AsnIntTest:  UNSUCCESSFUL 128 byte negative integer GetSignedBitExtendedData(...).\n";
-            else
-                std::cout << "AsnIntTest:  SUCCESSFUL 128 byte negative integer GetSignedBitExtendedData(...).\n";
-            if (pBuf3)
-               free(pBuf3);
+        for (i=0; i < 124; i++) {
+            if (pBuf[i] != (unsigned char)TmpData2[i+4]) {
+                std::cout
+                    << "AsnIntTest:  UNSUCCESSFUL 124 byte negative integer "
+                    " encode/decode, i = " << i << "== ["
+                    << std::hex << (unsigned int)pBuf[i] << ":"
+                    << (unsigned int)TmpData2[i] << std::dec
+                    << "]"<< ".\n";
+                throw SNACC_EXCEPT("IntConvTst");
+            }
         }
-        else
-            std::cout << "AsnIntTest:  UNSUCCESSFUL 124 byte negative integer encode/decode, "
-                << ".\n";
-    }
-    else
-       std::cout << "AsnIntTest:  UNSUCCESSFUL length 124 byte integer encode/decode, bytesDecoded="
-                << bytesDecoded << ".\n";
 
-   
+        unsigned char *pBuf3 = NULL;        // RESET for next operation.
+        size_t length;
+        B.getPadded(pBuf3, length, size_t(128));
+        for (int i = 0; i < 4; i++) {
+            if (pBuf3[i] != (char)0x0 || length != 128) {
+                std::cout << "AsnIntTest:  UNSUCCESSFUL 128 byte negative integer.\n"
+                          << "GetSignedBitExtendedData(len="
+                          << length << ", pbuff[" << i << "]="
+                          << std::hex << (int)pBuf3[i] << std::dec
+                          << ").\n";
+                throw SNACC_EXCEPT("IntConvTst");
+            }
+        }
+
+        std::cout << "AsnIntTest:  SUCCESSFUL 128 byte negative integer GetSignedBitExtendedData(...).\n";
+        if (pBuf3)
+            free(pBuf3);
+    } else {
+       std::cout << "AsnIntTest:  UNSUCCESSFUL length 124 byte integer encode/decode, bytesDecoded="
+                 << bytesDecoded << "vs. len == " << B.length() << ".\n";
+       throw SNACC_EXCEPT("IntConvTst");
+    }
+
     //######### check sign-extended positive large integer, with known size.##
     //
     for (i=0; i < 128; i++)
@@ -1311,27 +1306,26 @@ void AsnIntTest()
     TmpData2[3] = (char)0x00;
     bytesDecoded = 0;
     A.Set((const unsigned char *)TmpData2, 128);
+    b = AsnBuf();
     A.BEnc(b);      // EXPECT 4 less bytes encoded due to sign extension.
 
     bytesDecoded = 0;
     B.BDec(b, bytesDecoded);
-    if (B.length() == 124/*for Data*/)
-    {
-        bFlag = true;          // Start out assuming all data is good.
-        {
+    if (B.length() == 124/*for Data*/) {
         const unsigned char *pBuf= B.c_str();
+        bFlag = true;          // Start out assuming all data is good.
         for (i=0; i < 124; i++)
-            if (pBuf[i] != (unsigned char)TmpData2[i])
+            if (pBuf[i] != (unsigned char)TmpData2[i+4])
                 bFlag = false;
-        }
-        if (bFlag)
-        {
+
+        if (bFlag) {
             unsigned char *pBuf;
             std::cout << "AsnIntTest:  SUCCESSFUL 124 byte integer encode/decode, "
                 << ".\n";
             char buf[200];
-            sprintf(buf, "%2.2xx%2.2xx%2.2xx%2.2xx%2.2xx%2.2xx%2.2xx.\n", pBuf[0], pBuf[2], 
-                pBuf[2], pBuf[3], pBuf[4], pBuf[5], pBuf[6]);
+            sprintf(buf, "%2.2xx%2.2xx%2.2xx%2.2xx%2.2xx%2.2xx%2.2xx.\n",
+                    pBuf[0], pBuf[2], pBuf[2], pBuf[3], pBuf[4], pBuf[5],
+                    pBuf[6]);
             std::cout << buf;
             pBuf = NULL;        // RESET for next operation.
             size_t length;
@@ -1340,16 +1334,22 @@ void AsnIntTest()
             for (int i=0; i < 4; i++)
                 if (pBuf[i] != (char)0x00)
                     bFlag = false;
-            if (!bFlag || length != 128)
+            if (!bFlag || length != 128) {
                 std::cout << "AsnIntTest:  UNSUCCESSFUL 128 byte positive integer GetSignedBitExtendedData(...).\n";
+                throw SNACC_EXCEPT("IntConvTst");
+            }
         }
-        else
+        else {
             std::cout << "AsnIntTest:  UNSUCCESSFUL 124 byte positive integer encode/decode, "
                 << ".\n";
+            throw SNACC_EXCEPT("IntConvTst");
+        }
     }
-    else
+    else {
        std::cout << "AsnIntTest:  UNSUCCESSFUL length 124 byte positive integer encode/decode, bytesDecoded="
                 << bytesDecoded << ".\n";
+       throw SNACC_EXCEPT("IntConvTst");
+    }
 
    std::cout.flush();
 }
@@ -1468,8 +1468,8 @@ long vdaTestPrintThreadLocks()
    testSequence.testAllPrimatives.boolTestName = true;
    testSequence.testAllPrimatives.oidName = new AsnOid;
    *testSequence.testAllPrimatives.oidName = testOID;
-   char *pData="TES";//(char)0xa5, (char)0xa5, (char)0xa5;
-   testSequence.testAllPrimatives.bitStringName.Set((const unsigned char*)pData, 24);
+   const char *pData="TES";//(char)0xa5, (char)0xa5, (char)0xa5;
+   testSequence.testAllPrimatives.bitStringName.Set((const unsigned char *)pData, 24);
 
    testSequence.testAllPrimatives.integerName = 55;
    testSequence.testAllPrimatives.enumTestName = TestAllAsnPrimativeTypesEnum::aA;
