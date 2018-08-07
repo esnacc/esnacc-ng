@@ -119,11 +119,17 @@ void AsnInt::BDecContent (const AsnBuf &b, AsnTag, AsnLen elmtLen,
     if (elmtLen == INDEFINITE_LEN)
         throw EXCEPT("indefinite length on primitive", DECODE_ERROR);
 
-    delete[] m_bytes;
-    m_bytes = new unsigned char[elmtLen + 1];
-    m_len = elmtLen;
-    b.GetSeg((char *)m_bytes, elmtLen);
+    unsigned char *bytes = new unsigned char[elmtLen];
+
+    bool isNeg = false;
+    b.GetSeg((char *)bytes, elmtLen);
     bytesDecoded += elmtLen;
+
+    if ((bytes[0] & 0x80)) {
+        isNeg = true;
+    }
+
+    storeDERInteger(bytes, elmtLen, !isNeg);
 }
 
 AsnInt::AsnInt (const AsnInt &that)
@@ -183,19 +189,32 @@ AsnInt::AsnInt(const char *str, bool unsignedFlag)
        radix = 16;
    }
 
-   AsnIntType t;
+
    if (unsignedFlag) {
-       t = strtoul(useStr, &errstr, radix);
+       unsigned char s[sizeof(AsnUIntType)];
+       AsnUIntType t = strtoul(useStr, &errstr, radix);
+       size_t l = sizeof(t) - 1;
+       for (length = 0; length < sizeof(t); ++length)
+           s[l-length] = (unsigned char)((t >> (8*length)) & 0xff);
+       storeDERInteger(s, sizeof(s), true);
    } else {
-       t = strtol(useStr, &errstr, radix);
+       unsigned char s[sizeof(AsnIntType)];
+       AsnIntType t = strtol(useStr, &errstr, radix);
+       size_t l = sizeof(t) - 1;
+       for (length = 0; length < sizeof(t); ++length)
+           s[l-length] = (unsigned char)((t >> (8*length)) & 0xff);
+       storeDERInteger(s, sizeof(s), (t >= 0));
    }
 
    if ((errstr && *errstr == '\0') ||
        !errstr ||
-       (*errstr == '\'' && radix == 16))
-       Set(t);
-
-   throw EXCEPT("UNKNOWN INPUT BYTES.", INTEGER_ERROR);
+       (*errstr == '\'' && radix == 16)) {
+       ; /* the set happens in the prior blocks. */
+   } else {
+       char s[512];
+       snprintf(s, 512, "Invalid bytes: %s", errstr);
+       throw EXCEPT(strdup(s), INTEGER_ERROR);
+   }
 }
 
 AsnInt::~AsnInt()
@@ -207,6 +226,7 @@ void AsnInt::storeDERInteger(const unsigned char *pData, long dataLen, bool unsi
 {
     m_len = 0;
     delete [] m_bytes;
+    m_bytes = 0;
 
     /* IF the application generates an r,s,p,q,g or y value in which the
      * first 9 bits are all set to 0, then the encoding software deletes the
@@ -216,12 +236,11 @@ void AsnInt::storeDERInteger(const unsigned char *pData, long dataLen, bool unsi
      */
     if (unsignedFlag) {
         // Check for leading nine bits all zero
-        if (dataLen > 1) {
-		   while (dataLen > 1 && !((pData[0] & 0xFF) || (pData[1] & 0x80))) {
+        while (dataLen > 1 && (pData[0] & 0xFF) == 0x00 &&
+               (pData[1] & 0x80) == 0x0) {
 			   ++pData;
 			   --dataLen; 
 		   }
-        }
 
         m_bytes = new unsigned char[dataLen + 1];
         m_len = dataLen;
@@ -230,13 +249,15 @@ void AsnInt::storeDERInteger(const unsigned char *pData, long dataLen, bool unsi
          * MSB is set to 1, THEN the software prepends a single octet in which
          * all bits are set to 0.
          */
+        unsigned char *cwrite = m_bytes;
         if (*pData & 0x80) {
             // Prepend a leading octet
-            memcpy(m_bytes + 1, pData, dataLen);
-            *m_bytes = '\0';
+            *m_bytes = 0;
             m_len++;
-        } else
-            memcpy(m_bytes, pData, dataLen);
+            cwrite++;
+        }
+        memcpy(cwrite, pData, dataLen);
+
     } else if (dataLen > 1 ) {
 
         /* check for first first 9 bits all ones
@@ -245,16 +266,20 @@ void AsnInt::storeDERInteger(const unsigned char *pData, long dataLen, bool unsi
 		   ++pData;
 		   --dataLen;
 	   }
-	   
+
 	   /* check for first 9 bits all zeros
         */
 	   while ((dataLen > 1) && (pData[0] == 0) && ((pData[1] & 0x80) == 0)) {
-		   ++pData;
-		   --dataLen;
-	   }
+           ++pData;
+           --dataLen;
+       }
        m_bytes = new unsigned char[dataLen + 1];
        m_len = dataLen;
        memcpy(m_bytes, pData, dataLen);
+    } else {
+        m_bytes = new unsigned char [1];
+        m_len = 1;
+        m_bytes[0] = *pData;
     }
 }
 
@@ -278,16 +303,21 @@ void AsnInt::Set (const unsigned char *pData, size_t len, bool unsignedFlag)
     storeDERInteger(pData, len, unsignedFlag);
 }
 
+template <class T>
+void endswap(T *objp)
+{
+  unsigned char *memp = reinterpret_cast<unsigned char*>(objp);
+  std::reverse(memp, memp + sizeof(T));
+}
+
 // Set AsnInt from a AsnIntType
 //
 void AsnInt::Set(AsnIntType iIn)
 { 
-   AsnIntType iTmp;
    unsigned char cTmp[sizeof(iIn)];
 
-   iTmp = iIn;
    for (unsigned long i=0; i < sizeof(iIn); i++)
-     cTmp[3-i] = (unsigned char)((iTmp >> (8*i)) & 0xff);
+       cTmp[(sizeof(iIn)-1)-i] = (unsigned char)((iIn >> (8*i)) & 0xff);
 
    storeDERInteger(cTmp, sizeof(iIn), (iIn >= 0));
 }
@@ -295,7 +325,7 @@ void AsnInt::Set(AsnIntType iIn)
 void AsnInt::getPadded(unsigned char *&bigIntDataOut, size_t &bigIntLen,
                        const size_t padToSize) const
 {
-   FUNC("AsnInt::GetUnSignedBitExtendedData()");   
+   FUNC("AsnInt::GetUnSignedBitExtendedData()");
 
    bigIntLen = m_len;
    const unsigned char *bigIntData = m_bytes;
@@ -303,48 +333,41 @@ void AsnInt::getPadded(unsigned char *&bigIntDataOut, size_t &bigIntLen,
    /* This is fix to determine if the r,s,p,q,g, or y value is of the correct
     * length.
     */
-   if (padToSize > 0)
-   {
+   if (padToSize > 0) {
       /* if bigint length is less than the expected number of octets
        * the decoding software ensures that the MSB is 0 and, if so, it
        * prepends the appropriate number of octets in which every bit is
        * set to 0 to the decoded value to obtain the value supplied to
        * Fortezza Card.
        */
-      if ( bigIntLen < padToSize )
-      {
+      if (bigIntLen < padToSize) {
          long prepend = 0;
          unsigned char *tmpInt;
 
          prepend = padToSize - bigIntLen;
 
          tmpInt = (unsigned char *) calloc(1, bigIntLen + prepend);
-         memset( tmpInt, 0, prepend);
-         memcpy( &tmpInt[prepend], bigIntData , bigIntLen);
+         memset(tmpInt, 0, prepend);
+         memcpy(&tmpInt[prepend], bigIntData , bigIntLen);
 
          bigIntDataOut = tmpInt;
          bigIntLen += prepend;
-      }
+      } else if (bigIntLen > padToSize) {
       /* If the encoded values includes an "extra" octet THEN the
        * decoding software ensures that every bit in the initial octets is
        * set to 0 and, if so, deletes the initial octet from the decoded value
        * to obtain the value to be supplied to the Fortezza Card.  If the
        * extra octet contains a bit set to 1, then an error is reported.
        */
-      else if (bigIntLen > padToSize)
-      {
-         if (bigIntData[0] != 0)
-         {
+          if (bigIntData[0] != 0) {
             throw EXCEPT("Extra octet is not zero.", INTEGER_ERROR);
-         }
-         bigIntLen--;
-         bigIntDataOut = (unsigned char *) calloc(1, bigIntLen);
-         memcpy( &bigIntDataOut[0], &bigIntData[1], bigIntLen);
-      }
-      else      // Exact length.
-      {
-         bigIntDataOut = (unsigned char *) calloc(1, bigIntLen);
-         memcpy( &bigIntDataOut[0], &bigIntData[0], bigIntLen);
+          }
+          bigIntLen--;
+          bigIntDataOut = (unsigned char *) calloc(1, bigIntLen);
+          memcpy( &bigIntDataOut[0], &bigIntData[1], bigIntLen);
+      } else {      // Exact length.
+          bigIntDataOut = (unsigned char *) calloc(1, bigIntLen);
+          memcpy( &bigIntDataOut[0], &bigIntData[0], bigIntLen);
       }
    }
    // bigIntData AND bigIntLen contain the results.
