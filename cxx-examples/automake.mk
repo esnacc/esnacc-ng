@@ -19,7 +19,7 @@ cxx_examples_main_SOURCES = \
 	cxx-examples/src/vdatest_asn.cpp \
 	cxx-examples/src/vdatest_asn2.cpp \
 	cxx-examples/src/vdatest.cpp
-#	cxx-examples/src/testsetsorting.cpp 
+#	cxx-examples/src/testsetsorting.cpp
 #	cxx-examples/src/vda_threads.cpp \
 #	cxx-examples/src/vda_threads.h
 
@@ -68,6 +68,7 @@ EXTRA_DIST+= \
 
 CLEANFILES+= \
 	test.txt \
+	vdatest.xml \
 	cxx-examples/src/autotags.cpp \
 	cxx-examples/src/autotags.h \
 	cxx-examples/src/rfc1157-snmp.cpp \

@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "asn-incl.h"
-#include "vda_threads.h"
 #include <strstream>
 #include <fstream>
 
@@ -24,10 +23,8 @@ void XML_test();
 void AsnIntTest();
 AsnInt AAA(22);     //test constructors
 AsnInt AA2(0);      //test constructors
-long vdaTestThreads(int lThreadCount);
-void vdaTestThreadLocks();
-long vdaTestPrintThreadLocks();
 void test_IndefiniteLengthEncoding();
+void test_NDEF_BER();
 using namespace VDATestModule2Namespace;
 
 //
@@ -1417,25 +1414,6 @@ TestSequence testSequence;   //RWC;GLOBAL in order to share thread start logic.
                              //RWC;  (NOT GOOD DESIGN PRACTICE, but good for test).
 //
 //
-void vdaTestPrintThreads_Perform(void *f_INPUT)
-{
-    struct ThreadNumberDef *f=(struct ThreadNumberDef *)f_INPUT;
-    f->lThreadStatus = VDATHREAD_STATUS_STARTED;
-    int VDATEST_COUNT=20;
-
-    std::cout << "\n########################## vdaTestPrintThreads_Perform" << f->lThreadNumber << "\n";
-    // PERFORM thread test operation(s).
-    for (int i=0; i < VDATEST_COUNT; i++)
-    {
-      testSequence.Print(std::cout);  
-    }
-
-    //printf("ThreadNumber Test = %d DONE!\n", f->lThreadNumber);
-    std::cout << "\n########################## DONE ThreadNumber Test = " <<  f->lThreadNumber << "\n";
-    std::cout.flush();
-    f->lThreadStatus = VDATHREAD_STATUS_DONE;
-}
-
 
 long vdaTestPrintThreadLocks()
 {
@@ -1623,8 +1601,27 @@ void test_IndefiniteLengthEncoding()
            << "  Decoded Length=" << iAsnBufLength;
    delete ptr3;
 
-
+   test_NDEF_BER();
 }
 
+
+void test_NDEF_BER()
+{
+    
+    ContentInfo ci;
+    unsigned char bad_bytes[] =
+        { 0x30, /* UNIV, CONS, SEQ */
+          0x18, /* Length: 17 */
+          0x06, 0x06, 0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, /* OID */
+          0xa0, 0x80,
+          0x30, 0x80, 0x02, 0x01, 0x01, 0x31, 0x03, 0x02, 0x1, 0x2,
+          0x00, 0x00,
+          0x00, 0x00 };
+
+    AsnBuf b((char *)bad_bytes, sizeof(bad_bytes));
+    AsnLen l;
+    ci.BDec(b, l);
+    
+}
 
 // EOF vdatest.cpp
