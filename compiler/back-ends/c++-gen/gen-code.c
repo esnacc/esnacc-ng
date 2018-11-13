@@ -3670,14 +3670,18 @@ PrintCxxSetDefCode (FILE *src, FILE *hdr, ModuleList *mods, Module *m,
         {
             classStr = Class2ClassStr (tag->tclass);
             formStr = Form2FormStr (CONS);  /* set's are constructed */
-            //RWC;tagLen = TagByteLen (tag->code);
 
             fprintf (src, "  l += BEncConsLen (_b, l);\n");
 
-            if (tag->tclass == UNIV)
-                fprintf (src, "  l += BEncTag%d (_b, %s, %s, %s);\n", tagLen, classStr, formStr, DetermineCode(tag, &tagLen, 0));//RWC;Code2UnivCodeStr (tag->code));
-            else
-                fprintf (src, "  l += BEncTag%d (_b, %s, %s, %s);\n", tagLen, classStr, formStr, DetermineCode(tag, &tagLen, 1));//RWC;tag->code);
+            if (tag->tclass == UNIV) {
+                const char *ptr = DetermineCode(tag, &tagLen, 0);
+                fprintf(src, "  l += BEncTag%d (_b, %s, %s, %s);\n",
+                        tagLen, classStr, formStr, ptr);
+            } else {
+                const char *ptr = DetermineCode(tag, &tagLen, 1);
+                fprintf(src, "  l += BEncTag%d (_b, %s, %s, %s);\n",
+                        tagLen, classStr, formStr, ptr);
+            }
         }
         fprintf (src, "  return l;\n");
         fprintf (src, "}\n\n");
