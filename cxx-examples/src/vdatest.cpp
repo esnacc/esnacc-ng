@@ -1316,7 +1316,6 @@ void AsnIntTest()
                 bFlag = false;
 
         if (bFlag) {
-            unsigned char *pBuf;
             std::cout << "AsnIntTest:  SUCCESSFUL 124 byte integer encode/decode, "
                 << ".\n";
             char buf[200];
@@ -1324,16 +1323,19 @@ void AsnIntTest()
                     pBuf[0], pBuf[2], pBuf[2], pBuf[3], pBuf[4], pBuf[5],
                     pBuf[6]);
             std::cout << buf;
-            pBuf = NULL;        // RESET for next operation.
-            size_t length;
-            B.getPadded(pBuf, length, size_t(128));
-            bFlag = true;          // Start out assuming all data is good.
-            for (int i=0; i < 4; i++)
-                if (pBuf[i] != (char)0x00)
-                    bFlag = false;
-            if (!bFlag || length != 128) {
-                std::cout << "AsnIntTest:  UNSUCCESSFUL 128 byte positive integer GetSignedBitExtendedData(...).\n";
-                throw SNACC_EXCEPT("IntConvTst");
+
+            {
+                unsigned char *pBuf = NULL;
+                size_t length;
+                B.getPadded(pBuf, length, size_t(128));
+                bFlag = true;          // Start out assuming all data is good.
+                for (int i=0; i < 4; i++)
+                    if (pBuf[i] != (char)0x00)
+                        bFlag = false;
+                if (!bFlag || length != 128) {
+                    std::cout << "AsnIntTest:  UNSUCCESSFUL 128 byte positive integer GetSignedBitExtendedData(...).\n";
+                    throw SNACC_EXCEPT("IntConvTst");
+                }
             }
         }
         else {
