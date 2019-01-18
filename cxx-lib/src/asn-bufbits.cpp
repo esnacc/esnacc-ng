@@ -627,7 +627,7 @@ unsigned char  AsnBufBits::MaskBits(unsigned char cCharToMask, int iBitsToMask)
 
 
 //RWC;TBD; FIX THIS TO WORK PROPERLY.....
-bool AsnBufBits::operator<(AsnBufBits &rhs)
+bool AsnBufBits::operator<(const AsnBufBits &rhs) const
 {
 	FUNC("AsnBufBits::operator<()");
 

@@ -216,7 +216,7 @@ public:
 	}
 */
 
-    bool operator<(AsnBufBits &rhs);
+    bool operator<(const AsnBufBits &rhs) const;
 
 	unsigned char MaskBits(unsigned char cCharToMask, int iBitsToMask);
 	unsigned long PutBits(const unsigned char* seg, unsigned long numBits);
