@@ -3,11 +3,6 @@
 //
 
 #include <windows.h>
-
-#if defined(_MSC_VER)
-#include "stdafx.h"
-#endif
-
 #include "snaccdll.h"
 
 extern "C" SNACCDLL_API BOOL WINAPI DllMain( HANDLE , 
