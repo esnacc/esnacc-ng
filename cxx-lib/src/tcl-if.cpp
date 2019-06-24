@@ -157,7 +157,7 @@ int ASN1File::read (Tcl_Interp *interp, const char *rfn)
   if (::read (rfd, buf, filesize) != filesize)
   {
     Tcl_AppendResult (interp, "can't read \"", rfn, "\": ", Tcl_PosixError (interp), NULL);
-    delete buf;
+    delete[] buf;
     return TCL_ERROR;
   }
 
@@ -173,7 +173,7 @@ int ASN1File::read (Tcl_Interp *interp, const char *rfn)
     sprintf (eno, "%d", eval);
     Tcl_AppendResult (interp, "can't decode (error ", eno, ")", NULL);
     Tcl_SetErrorCode (interp, "SNACC", "DECODE", eno, NULL);
-    delete buf;
+    delete[] buf;
     return TCL_ERROR;
   }
   pdu->BDec (inputBuf, decodedLen, env);
@@ -181,7 +181,7 @@ int ASN1File::read (Tcl_Interp *interp, const char *rfn)
   {
     Tcl_AppendResult (interp, "can't decode, out of data", NULL);
     Tcl_SetErrorCode (interp, "SNACC", "DECODE", "EOBUF", NULL);
-    delete buf;
+    delete[] buf;
     return TCL_ERROR;
   }
 
@@ -192,7 +192,7 @@ cout << "DECODED:" << endl << *pdu << endl;
   if (decodedLen != filesize)
     sprintf (interp->result, "decoded %d of %d bytes", decodedLen, filesize);
 
-  delete buf;
+  delete[] buf;
   return TCL_OK;
 }
 
@@ -250,7 +250,7 @@ int ASN1File::write (Tcl_Interp *interp, const char *wfn)
     encodedLen = pdu->BEnc (outputBuf);
     if (!outputBuf.WriteError())
       break;
-    delete buf;
+    delete[] buf;
   }
 
   outputBuf.ResetInReadMode();
@@ -264,14 +264,14 @@ int ASN1File::write (Tcl_Interp *interp, const char *wfn)
     if (::write (wfd, hunk, hunklen) != hunklen)
     {
       Tcl_AppendResult (interp, "write error on \"", wfn, "\": ", Tcl_PosixError (interp), NULL);
-      delete hunk; // may affect errno
-      delete buf; // may affect errno
+      delete[] hunk; // may affect errno
+      delete[] buf; // may affect errno
       return TCL_ERROR;
     }
   }
 
-  delete hunk;
-  delete buf;
+  delete[] hunk;
+  delete[] buf;
 
   filesize = encodedLen;
   if (!wfn)
@@ -311,12 +311,12 @@ int import (Tcl_Interp *interp, int argc, char **argv)
   if (::read (fd, ibuf, filesize) != filesize)
   {
     Tcl_AppendResult (interp, "read error on \"", fn, "\": ", Tcl_PosixError (interp), NULL);
-    delete ibuf;
+    delete[] ibuf;
     return TCL_ERROR;
   }
 
   int result = debinify (interp, ibuf, filesize);
-  delete ibuf;
+  delete[] ibuf;
   return result;
 }
 
