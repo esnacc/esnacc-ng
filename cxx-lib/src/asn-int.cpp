@@ -130,6 +130,7 @@ void AsnInt::BDecContent (const AsnBuf &b, AsnTag, AsnLen elmtLen,
     }
 
     storeDERInteger(bytes, elmtLen, !isNeg);
+    delete [] bytes;
 }
 
 AsnInt::AsnInt (const AsnInt &that)
