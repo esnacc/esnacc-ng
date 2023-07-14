@@ -48,7 +48,7 @@ PrintConditionalIncludeOpen PARAMS ((f, fileName),
     
     for (i = 0; i < (int)strlen (hdrFileDefSym); i++)
         if (hdrFileDefSym[i] == '-' || hdrFileDefSym[i] == '.' ||
-           hdrFileDefSym[i] == '\\' || hdrFileDefSym[i] == '/')
+           hdrFileDefSym[i] == '\\' || hdrFileDefSym[i] == '/' || hdrFileDefSym[i] == ':')
             hdrFileDefSym[i] = '_';
 
     fprintf (f, "#ifndef %s_h\n", hdrFileDefSym);
