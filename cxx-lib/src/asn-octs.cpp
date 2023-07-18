@@ -2,6 +2,7 @@
 #include "asn-incl.h"
 
 #include <stdlib.h>
+#include <iomanip>
 
 _BEGIN_SNACC_NAMESPACE
 
@@ -92,16 +93,12 @@ void AsnOcts::PrintXML (std::ostream &os, const char *lpszTitle,
     os << "<" << tagName << ">";
 
     std::ios_base::fmtflags old_flags = os.flags();
-    os << std::hex;
+    os << std::hex << std::setw(2) << std::setfill('0');
     for (size_t i = 0; i < Len(); ++i) {
         os << (unsigned int)(c_ustr()[i]);
     }
+    os << "</" << tagName << ">\n";
     os.flags(old_flags);
-
-    if (lpszType)
-        os << "</" << lpszType << ">\n";
-    else
-        os << "</OCTET_STRING>\n";
 }
 
 // Prints the AsnOcts to the given ostream in Value Notation.
