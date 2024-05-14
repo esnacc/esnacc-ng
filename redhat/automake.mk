@@ -10,6 +10,8 @@ RPMBUILD_TOP ?= $(abs_top_builddir)/rpm/rpmbuild
 EXTRA_DIST += redhat/esnacc.spec.in \
 	redhat/esnacc.spec
 
+CLEANFILES += redhat/esnacc.spec
+
 $(srcdir)/redhat/esnacc.spec: redhat/esnacc.spec.in
 
 rpm: dist redhat/esnacc.spec
