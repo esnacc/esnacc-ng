@@ -426,8 +426,8 @@ void
 ProcessRosOperationMacroType PARAMS ((m, td, t, bt, op, v),
     Module *m _AND_
     TypeDef *td _AND_
-    Type *t _AND_
-    BasicType *bt _AND_
+    Type *t ESNACC_UNUSED _AND_
+    BasicType *bt ESNACC_UNUSED _AND_
     RosOperationMacroType *op _AND_
     ValueDef *v)
 {
@@ -447,8 +447,8 @@ void
 ProcessRosErrorMacroType PARAMS ((m, td, t, bt, err, v),
     Module *m _AND_
     TypeDef *td _AND_
-    Type *t _AND_
-    BasicType *bt _AND_
+    Type *t ESNACC_UNUSED _AND_
+    BasicType *bt ESNACC_UNUSED _AND_
     RosErrorMacroType *err _AND_
     ValueDef *v)
 {
@@ -458,8 +458,6 @@ ProcessRosErrorMacroType PARAMS ((m, td, t, bt, err, v),
     if ((err != NULL) && (err->parameter != NULL))
         DefineType (m, td, err->parameter->type, v->definedName);
 
-    bt = bt;     /*AVOIDS compiler warning.*/
-    t = t;
 }   /* ProcessRosErrorMacroType */
 
 
@@ -467,8 +465,8 @@ void
 ProcessRosBindMacroType PARAMS ((m, td, t, bt, bind, v),
     Module *m _AND_
     TypeDef *td _AND_
-    Type *t _AND_
-    BasicType *bt _AND_
+    Type *t ESNACC_UNUSED _AND_
+    BasicType *bt ESNACC_UNUSED _AND_
     RosBindMacroType *bind _AND_
     ValueDef *v)
 {
@@ -481,220 +479,153 @@ ProcessRosBindMacroType PARAMS ((m, td, t, bt, bind, v),
         DefineType (m, td, bind->result->type, v->definedName);
         DefineType (m, td, bind->error->type, v->definedName);
     }
-    bt = bt;     /*AVOIDS compiler warning.*/
-    t = t;
 }   /* ProcessRosBindMacroType */
 
 
 void
 ProcessRosAseMacroType PARAMS ((m, td, t, bt, ase, v),
-    Module *m _AND_
-    TypeDef *td _AND_
-    Type *t _AND_
-    BasicType *bt _AND_
-    RosAseMacroType *ase _AND_
-    ValueDef *v)
+    Module *m ESNACC_UNUSED _AND_
+    TypeDef *td ESNACC_UNUSED _AND_
+    Type *t ESNACC_UNUSED _AND_
+    BasicType *bt ESNACC_UNUSED _AND_
+    RosAseMacroType *ase ESNACC_UNUSED _AND_
+    ValueDef *v ESNACC_UNUSED)
 {
-    bt = bt;     /*AVOIDS compiler warning.*/
-    t = t;
-    td = td;
-    m = m;
-    ase = ase;
-    v = v;     /*AVOIDS compiler warning.*/
+
 }  /* ProcessRosAseMacroType */
 
 
 
 void
 ProcessRosAcMacroType PARAMS ((m, td, t, bt, ac, v),
-    Module *m _AND_
-    TypeDef *td _AND_
-    Type *t _AND_
-    BasicType *bt _AND_
-    RosAcMacroType *ac  _AND_
-    ValueDef *v)
+    Module *m ESNACC_UNUSED _AND_
+    TypeDef *td ESNACC_UNUSED _AND_
+    Type *t ESNACC_UNUSED _AND_
+    BasicType *bt ESNACC_UNUSED _AND_
+    RosAcMacroType *ac ESNACC_UNUSED _AND_
+    ValueDef *v ESNACC_UNUSED)
 {
 
-    bt = bt;     /*AVOIDS compiler warning.*/
-    t = t;
-    v = v;
-    ac = ac;
-    td = td;
-    m = m;
 }  /* ProcessRosAcMacroType */
 
 
 
 void
 ProcessMtsasExtensionsMacroType PARAMS ((m, td, t, bt, exts, v),
-    Module *m _AND_
-    TypeDef *td _AND_
-    Type *t _AND_
-    BasicType *bt _AND_
-    MtsasExtensionsMacroType *exts _AND_
-    ValueDef *v)
+    Module *m ESNACC_UNUSED _AND_
+    TypeDef *td ESNACC_UNUSED _AND_
+    Type *t ESNACC_UNUSED _AND_
+    BasicType *bt ESNACC_UNUSED _AND_
+    MtsasExtensionsMacroType *exts ESNACC_UNUSED _AND_
+    ValueDef *v ESNACC_UNUSED)
 {
-    bt = bt;     /*AVOIDS compiler warning.*/
-    t = t;
-    td = td;
-    m = m;
-    exts = exts;
-    v = v;     /*AVOIDS compiler warning.*/
+
 }  /* ProcessMtsasExtensionsMacroType */
 
 
 void
 ProcessMtsasExtensionMacroType PARAMS ((m, td, t, bt, ext, v),
-    Module *m _AND_
-    TypeDef *td _AND_
-    Type *t _AND_
-    BasicType *bt _AND_
-    MtsasExtensionMacroType *ext _AND_
-    ValueDef *v)
+    Module *m ESNACC_UNUSED _AND_
+    TypeDef *td ESNACC_UNUSED _AND_
+    Type *t ESNACC_UNUSED  _AND_
+    BasicType *bt ESNACC_UNUSED _AND_
+    MtsasExtensionMacroType *ext ESNACC_UNUSED _AND_
+    ValueDef *v ESNACC_UNUSED)
 {
 
-    bt = bt;     /*AVOIDS compiler warning.*/
-    t = t;
-    td = td;
-    m = m;
-    v = v;
-    ext = ext;
 }  /* ProcessMtsasExtensionMacroType */
 
 
 void
 ProcessMtsasExtensionAttributeMacroType PARAMS ((m, td, t, bt, ext, v),
-    Module *m _AND_
-    TypeDef *td _AND_
-    Type *t _AND_
-    BasicType *bt _AND_
-    MtsasExtensionAttributeMacroType *ext _AND_
-    ValueDef *v)
+    Module *m ESNACC_UNUSED _AND_
+    TypeDef *td ESNACC_UNUSED _AND_
+    Type *t ESNACC_UNUSED _AND_
+    BasicType *bt ESNACC_UNUSED _AND_
+    MtsasExtensionAttributeMacroType *ext ESNACC_UNUSED _AND_
+    ValueDef *v ESNACC_UNUSED)
 {
 
-    bt = bt;     /*AVOIDS compiler warning.*/
-    t = t;
-    td = td;
-    m = m;
-    v = v;
-    ext = ext;
 }  /* ProcessMtsasExtensionAttributeMacroType */
 
 
 void
 ProcessMtsasTokenMacroType PARAMS ((m, td, t, bt, tok, v),
-    Module *m _AND_
-    TypeDef *td _AND_
-    Type *t _AND_
-    BasicType *bt _AND_
-    MtsasTokenMacroType *tok _AND_
-    ValueDef *v)
+    Module *m ESNACC_UNUSED _AND_
+    TypeDef *td ESNACC_UNUSED _AND_
+    Type *t ESNACC_UNUSED _AND_
+    BasicType *bt ESNACC_UNUSED _AND_
+    MtsasTokenMacroType *tok ESNACC_UNUSED _AND_
+    ValueDef *v ESNACC_UNUSED)
 {
 
-    bt = bt;     /*AVOIDS compiler warning.*/
-    t = t;
-    td = td;
-    m = m;
-    v = v;
-    tok = tok;
 }  /* ProcessMtsasTokenMacroType */
 
 
 void
 ProcessMtsasTokenDataMacroType PARAMS ((m, td, t, bt, tok, v),
-    Module *m _AND_
-    TypeDef *td _AND_
-    Type *t _AND_
-    BasicType *bt _AND_
-    MtsasTokenDataMacroType *tok _AND_
-    ValueDef *v)
+    Module *m ESNACC_UNUSED _AND_
+    TypeDef *td ESNACC_UNUSED _AND_
+    Type *t ESNACC_UNUSED _AND_
+    BasicType *bt ESNACC_UNUSED _AND_
+    MtsasTokenDataMacroType *tok ESNACC_UNUSED _AND_
+    ValueDef *v ESNACC_UNUSED)
 {
 
-
-    bt = bt;     /*AVOIDS compiler warning.*/
-    t = t;
-    td = td;
-    m = m;
-    v = v;
-    tok = tok;
 }  /* ProcessMtsasTokenDataMacroType */
 
 
 void
 ProcessMtsasSecurityCategoryMacroType PARAMS ((m, td, t, bt, sec, v),
-    Module *m _AND_
-    TypeDef *td _AND_
-    Type *t _AND_
-    BasicType *bt _AND_
-    MtsasSecurityCategoryMacroType *sec _AND_
-    ValueDef *v)
+    Module *m ESNACC_UNUSED _AND_
+    TypeDef *td ESNACC_UNUSED _AND_
+    Type *t ESNACC_UNUSED _AND_
+    BasicType *bt ESNACC_UNUSED _AND_
+    MtsasSecurityCategoryMacroType *sec ESNACC_UNUSED _AND_
+    ValueDef *v ESNACC_UNUSED)
 {
 
-    bt = bt;     /*AVOIDS compiler warning.*/
-    t = t;
-    td = td;
-    m = m;
-    v = v;
-    sec = sec;
 }  /* ProcessMtsasSecurityCategoryMacroType */
 
 
 
 void
 ProcessAsnObjectMacroType PARAMS ((m, td, t, bt, obj, v),
-    Module *m _AND_
-    TypeDef *td _AND_
-    Type *t _AND_
-    BasicType *bt _AND_
-    AsnObjectMacroType *obj _AND_
-    ValueDef *v)
+    Module *m ESNACC_UNUSED _AND_
+    TypeDef *td ESNACC_UNUSED _AND_
+    Type *t ESNACC_UNUSED _AND_
+    BasicType *bt ESNACC_UNUSED _AND_
+    AsnObjectMacroType *obj ESNACC_UNUSED _AND_
+    ValueDef *v ESNACC_UNUSED)
 {
 
-    bt = bt;     /*AVOIDS compiler warning.*/
-    t = t;
-    td = td;
-    m = m;
-    v = v ;
-    obj = obj;
 }  /* ProcessAsnObjectMacroType */
 
 
 void
 ProcessAsnPortMacroType PARAMS ((m, td, t, bt, p, v),
-    Module *m _AND_
-    TypeDef *td _AND_
-    Type *t _AND_
-    BasicType *bt _AND_
-    AsnPortMacroType *p _AND_
-    ValueDef *v)
+    Module *m ESNACC_UNUSED _AND_
+    TypeDef *td ESNACC_UNUSED _AND_
+    Type *t ESNACC_UNUSED _AND_
+    BasicType *bt ESNACC_UNUSED _AND_
+    AsnPortMacroType *p ESNACC_UNUSED _AND_
+    ValueDef *v ESNACC_UNUSED)
 {
 
-    bt = bt;     /*AVOIDS compiler warning.*/
-    t = t;
-    td = td;
-    m  = m;
-    v = v;
-    p = p;
 }  /* ProcessAsnPortMacroType */
 
 
 
 void
 ProcessAsnAbstractBindMacroType PARAMS ((m, td, t, bt, bind, v),
-    Module *m _AND_
-    TypeDef *td _AND_
-    Type *t _AND_
-    BasicType *bt _AND_
-    AsnAbstractBindMacroType *bind _AND_
-    ValueDef *v)
+    Module *m ESNACC_UNUSED _AND_
+    TypeDef *td ESNACC_UNUSED _AND_
+    Type *t ESNACC_UNUSED _AND_
+    BasicType *bt ESNACC_UNUSED _AND_
+    AsnAbstractBindMacroType *bind ESNACC_UNUSED _AND_
+    ValueDef *v ESNACC_UNUSED)
 {
 
-    bt = bt;     /*AVOIDS compiler warning.*/
-    t = t;
-    td = td;
-    m = m;
-    v = v;
-    bind = bind;
 }  /* ProcessAsnBindMacroType */
 
 
