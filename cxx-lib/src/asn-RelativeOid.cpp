@@ -511,51 +511,46 @@ void AsnRelativeOid::createDottedOidStr() const
     if (oid == NULL)
         throw OidException("NULL pointer in AsnRelativeOid", STACK_ENTRY);
 
-	if (m_lpszOidString != NULL)
-	{
-		delete[] m_lpszOidString;
-		m_lpszOidString = NULL;
-	}
-    
-	bool isFirst = true;
-	std::string tempBuf;
-	char tempArcStr[40];
-	for (unsigned long i = 0; i < octetLen;)
-	{
-		// Get the next arc number
-		unsigned long arcNum = 0;
-		do
-		{
-			arcNum <<= 7;
-			arcNum += oid[i] & 0x7F;
-			i++;
-		} while ((i < octetLen) && (oid[i - 1] & 0x80));
+    if (m_lpszOidString != NULL) {
+        delete[] m_lpszOidString;
+        m_lpszOidString = NULL;
+    }
 
-		if (isFirst)
-		{
-			if (!m_isRelative)
-			{
-				// Unmunge the first arc number
-				unsigned long firstNum = arcNum / 40;
-				if (firstNum > 2)
-					firstNum = 2;
-				arcNum -= firstNum * 40;
+    bool isFirst = true;
+    std::string tempBuf;
+    char tempArcStr[40];
+    for (unsigned long i = 0; i < octetLen;) {
+        // Get the next arc number
+        unsigned long arcNum = 0;
+        do {
+            arcNum <<= 7;
+            arcNum += oid[i] & 0x7F;
+            i++;
+        } while ((i < octetLen) && (oid[i - 1] & 0x80));
 
-				sprintf(tempArcStr, "%ld.%ld", firstNum, arcNum);
-			}
-			else
+        if (isFirst) {
+            if (!m_isRelative) {
+                // Unmunge the first arc number
+                unsigned long firstNum = arcNum / 40;
+                if (firstNum > 2)
+                    firstNum = 2;
+                arcNum -= firstNum * 40;
+
+                sprintf(tempArcStr, "%ld.%ld", firstNum, arcNum);
+            } else {
 				sprintf(tempArcStr, "%ld", arcNum);
-			isFirst = false;
-		}
-		else
+            }
+            isFirst = false;
+        } else {
 			sprintf(tempArcStr, ".%ld", arcNum);
+        }
 
-		// Append the temporary arc string to the temporary std::string
-		tempBuf.append(tempArcStr);
-	}
+        // Append the temporary arc string to the temporary std::string
+        tempBuf.append(tempArcStr);
+    }
 
-	m_lpszOidString = new char[tempBuf.length() + 1];
-	strcpy(m_lpszOidString, tempBuf.c_str());
+    m_lpszOidString = new char[tempBuf.length() + 1];
+    strcpy(m_lpszOidString, tempBuf.c_str());
 }
 
 

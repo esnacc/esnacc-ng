@@ -343,15 +343,14 @@ SBufPeekCopy PARAMS ((dst, b, copyLen),
     SBuf **b _AND_
     unsigned long  copyLen)
 {
-    if ((*b)->readLoc + copyLen > (*b)->dataEnd)
-    {
+    if ((*b)->readLoc + copyLen > (*b)->dataEnd) {
         memcpy (dst,(*b)->readLoc, (*b)->dataEnd - (*b)->readLoc);
         (*b)->readError = 1;
-		copyLen = (*b)->dataEnd - (*b)->readLoc;
-    }
-    else
+        copyLen = (*b)->dataEnd - (*b)->readLoc;
+    } else {
         memcpy (dst, (*b)->readLoc, copyLen);
-	return copyLen;
+    }
+    return copyLen;
 
 } /* SBufPeekCopy */
 

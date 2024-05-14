@@ -413,17 +413,14 @@ AsnLen AsnString::PEnc(AsnBufBits &b) const
     int numSizeConstraints;
     const SizeConstraint* sizeConstraints = SizeConstraints(numSizeConstraints);
 
-    if(checkConstraints(NULL))
+    if (checkConstraints(NULL))
         throw ConstraintException("String not within constraints", STACK_ENTRY);
 
-	if(sizeConstraints == NULL &&	numSizeConstraints == 0)
-	{
-		return EncodeGeneral(b);
-	}
-	else
-	{
-		return EncodeWithSizeConstraint(b);
-	}
+    if (sizeConstraints == NULL && numSizeConstraints == 0) {
+        return EncodeGeneral(b);
+    } else {
+        return EncodeWithSizeConstraint(b);
+    }
 }
 
 AsnLen AsnString::BEnc(AsnBuf &b) const
@@ -557,10 +554,11 @@ AsnLen WideAsnString::PEnc(AsnBufBits &b) const
 {
     FUNC("WideAsnString::PEnc");
 
-    if(checkConstraints(NULL))
-        throw ConstraintException("Wide string not within constraints", STACK_ENTRY);
+    if (checkConstraints(NULL))
+        throw ConstraintException("Wide string not within constraints",
+                                  STACK_ENTRY);
 
-	return EncodeGeneral(b);
+    return EncodeGeneral(b);
 }
 
 

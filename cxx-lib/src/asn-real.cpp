@@ -214,8 +214,7 @@ AsnLen AsnReal::BEncContent (AsnBuf &b) const
     double tmpMantissa;
     unsigned int truncatedMantissa;
     int exponent;
-    size_t  i, mantissaLen, expLen;
-    int sign;
+    size_t  i, mantissaLen = 1, expLen;
     unsigned char buf[sizeof (double)];
     unsigned char firstOctet;
 
@@ -231,11 +230,6 @@ AsnLen AsnReal::BEncContent (AsnBuf &b) const
             b.PutByteRvs (ENC_PLUS_INFINITY);
         encLen = 1;
     } else {
-        if (signbit (value))
-            sign = -1;
-        else
-            sign = 1;
-
         exponent = ilogb(value);
 
         /* get the absolute value of the mantissa (subtract 1 to make < 1) */

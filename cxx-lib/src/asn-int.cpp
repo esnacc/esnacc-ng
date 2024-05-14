@@ -828,70 +828,54 @@ AsnLen AsnInt::PEnc(AsnBufBits &b)const
 	int lowerBound = 0;
 	int upperBound = 0;
 
-    if( checkConstraints(NULL) != 0 )
+    if (checkConstraints(NULL) != 0)
         throw ConstraintException("Integer not within constraints", STACK_ENTRY);
 
- 	if(numValueRanges <= 0)
-	{
-		len = EncodeGeneral(b);
-	}
-	else
-	{
-		lowerBound = valueRanges[x].lowerBound;
-		upperBound = lowerBound;
-		upperBoundFound = valueRanges[x].upperBoundExists;
+    if(numValueRanges <= 0) {
+        len = EncodeGeneral(b);
+    } else {
+        lowerBound = valueRanges[x].lowerBound;
+        upperBound = lowerBound;
+        upperBoundFound = valueRanges[x].upperBoundExists;
 
-		for(x = 0; x < numValueRanges; x++)
-		{
-			if(lowerBound > valueRanges[x].lowerBound)
-			{
-				lowerBound = valueRanges[x].lowerBound;
-			}
-		
-            if(upperBound < valueRanges[x].lowerBound)
-            {
+        for(x = 0; x < numValueRanges; x++) {
+            if(lowerBound > valueRanges[x].lowerBound) {
+                lowerBound = valueRanges[x].lowerBound;
+            }
+
+            if(upperBound < valueRanges[x].lowerBound) {
                 upperBound = valueRanges[x].lowerBound;
             }
 
-			if(valueRanges[x].upperBoundExists == 1)
-			{
-				upperBoundFound = 1;
+            if(valueRanges[x].upperBoundExists == 1) {
+                upperBoundFound = 1;
 
-				if(upperBound < valueRanges[x].upperBound)
-				{
-					upperBound = valueRanges[x].upperBound;
-				}
-			}
-		}
-	
+                if(upperBound < valueRanges[x].upperBound) {
+                    upperBound = valueRanges[x].upperBound;
+                }
+            }
+        }
+
         if(upperBound > lowerBound)
             upperBoundFound = 1;
 
-		if(upperBoundFound == 1)
-		{
+        if(upperBoundFound == 1) {
             if(lowerBound != upperBound)
-    			len = PEncFullyConstrained(b, lowerBound, upperBound);
-		}
-		else
-        { 
-            if(numValueRanges == 1 && valueRanges[0].upperBoundExists == 2 )
-            {
-                if((long)*this != lowerBound)
-                {
+                len = PEncFullyConstrained(b, lowerBound, upperBound);
+        } else {
+            if(numValueRanges == 1 && valueRanges[0].upperBoundExists == 2 ) {
+                if((long)*this != lowerBound) {
                     throw EXCEPT("integer does not match singlevalue size constraint",
-				        INTEGER_ERROR);
+                                 INTEGER_ERROR);
                 }
-            }
-            else
-            {
+            } else {
                 len = PEncSemiConstrained(b, lowerBound);
             }
-       
-		}
+        }
 
-	}
+    }
 
-	return len;
+    return len;
 }
 
 /*PER encoding of an semi-constrained integer*/
