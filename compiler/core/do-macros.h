@@ -14,6 +14,7 @@
 #define SNACC_DO_MACROS_H__
 
 /* Function Prototypes */
+void ProcessMacros PROTO ((Module *m));
 void AddAnyRefByOid PROTO ((AnyRefList **arl, char *enumIdName, AsnOid *oid));
 void AddAnyRefByInt PROTO ((AnyRefList **arl, char *enumIdName, AsnInt intId));
 void NormalizeValue PROTO ((Module *m, ValueDef *vd, Value *v, int quiet));
