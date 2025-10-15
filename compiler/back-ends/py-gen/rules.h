@@ -33,4 +33,6 @@ typedef struct PyRules
 
 extern PyRules pyRulesG;
 
+void FillPyTypeInfo PROTO ((PyRules *r, ModuleList *m));
+
 #endif
