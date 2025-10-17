@@ -63,6 +63,8 @@ void  MakeCStrUnique PROTO ((DefinedObj *nameList, char *str, int maxDigits, int
 
 void  MakeCxxStrUnique PROTO ((DefinedObj *nameList, char *str, int maxDigits, int startingDigit));
 
+void  MakePyStrUnique PROTO ((DefinedObj *nameList, char *str, int maxDigits, int startingDigit));
+
 extern int	keepbaseG;
 
 void StoreOutputDirectory PROTO ((const char *directory));
