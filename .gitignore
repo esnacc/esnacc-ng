@@ -56,3 +56,7 @@ test-suite.log
 *.info
 *-coverage/
 py-compile
+test.txt
+vdatest.xml
+cxx-examples/src/vdatest_asn.cpp
+cxx-examples/src/vdatest_asn2.cpp
