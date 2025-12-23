@@ -53,6 +53,7 @@
 #include <stdio.h>
 
 #include "asn-incl.h"
+#include "nibble-alloc.h"
 #include "any.h"
 extern unsigned short stdIndentG = 4;
 

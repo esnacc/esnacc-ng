@@ -51,6 +51,7 @@
  */
 
 #include "asn-incl.h"
+#include "nibble-alloc.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
