@@ -55,6 +55,7 @@
 #include "asn-incl.h"
 #include "sbuf.h"
 #include "exp-buf.h"
+#include "nibble-alloc.h"
 
 int TestAsnBuffers();
 int TestAsnTag();
