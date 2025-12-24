@@ -169,35 +169,48 @@ typedef enum BER_UNIV_CODE
  * source, these can be optimized by the compiler (eg
  * do the shifts and bitwise ors etc)
  */
-#define BEncTag1( b, class, form, code)\
-	1;\
-	b.PutByteRvs((unsigned char)((class) | (form) | (code)))
 
-#define BEncTag2( b, class, form, code)\
-	2;\
-	b.PutByteRvs(code);\
-	b.PutByteRvs((char)((class) | (form) | 31))
+#define BEncTag1(b, class_, form_, code_)                                   \
+    1;                                                                      \
+    b.PutByteRvs(static_cast<unsigned char>(                                \
+        static_cast<char>(class_) | static_cast<char>(form_) |              \
+        static_cast<char>(code_)))
 
-#define BEncTag3( b, class, form, code)\
-	3;\
-	b.PutByteRvs((code) & 0x7F);\
-	b.PutByteRvs((char)(0x80 | (char)((code) >> 7)));\
-	b.PutByteRvs((class) | (form) | 31)
+#define BEncTag2(b, class_, form_, code_)                                   \
+    2;                                                                      \
+    b.PutByteRvs(static_cast<unsigned char>(code_));                        \
+    b.PutByteRvs(static_cast<unsigned char>(                                \
+        static_cast<char>(class_) | static_cast<char>(form_) | 31))
 
-#define BEncTag4( b, class, form, code)\
-	4;\
-	b.PutByteRvs((code) & 0x7F);\
-	b.PutByteRvs((char)(0x80 | (char)((code) >> 7)));\
-	b.PutByteRvs((char)(0x80 | (char)((code) >> 14)));\
-	b.PutByteRvs((class) | (form) | 31)
+#define BEncTag3(b, class_, form_, code_)                                   \
+    3;                                                                      \
+    b.PutByteRvs(static_cast<unsigned char>((code_) & 0x7F));               \
+    b.PutByteRvs(static_cast<unsigned char>(0x80 |                          \
+        static_cast<unsigned char>((code_) >> 7)));                         \
+    b.PutByteRvs(static_cast<unsigned char>(                                \
+        static_cast<char>(class_) | static_cast<char>(form_) | 31))
 
-#define BEncTag5( b, class, form, code)\
-	5;\
-	b.PutByteRvs((code) & 0x7F);\
-	b.PutByteRvs((char)(0x80 | (char)((code) >> 7)));\
-	b.PutByteRvs((char)(0x80 | (char)((code) >> 14)));\
-	b.PutByteRvs((char)(0x80 | (char)((code) >> 21)));\
-	b.PutByteRvs((class) | (form) | 31)
+#define BEncTag4(b, class_, form_, code_)                                   \
+    4;                                                                      \
+    b.PutByteRvs(static_cast<unsigned char>((code_) & 0x7F));               \
+    b.PutByteRvs(static_cast<unsigned char>(0x80 |                          \
+        static_cast<unsigned char>((code_) >> 7)));                         \
+    b.PutByteRvs(static_cast<unsigned char>(0x80 |                          \
+        static_cast<unsigned char>((code_) >> 14)));                        \
+    b.PutByteRvs(static_cast<unsigned char>(                                \
+        static_cast<char>(class_) | static_cast<char>(form_) | 31))
+
+#define BEncTag5(b, class_, form_, code_)                                   \
+    5;                                                                      \
+    b.PutByteRvs(static_cast<unsigned char>((code_) & 0x7F));               \
+    b.PutByteRvs(static_cast<unsigned char>(0x80 |                          \
+        static_cast<unsigned char>((code_) >> 7)));                         \
+    b.PutByteRvs(static_cast<unsigned char>(0x80 |                          \
+        static_cast<unsigned char>((code_) >> 14)));                        \
+    b.PutByteRvs(static_cast<unsigned char>(0x80 |                          \
+        static_cast<unsigned char>((code_) >> 21)));                        \
+    b.PutByteRvs(static_cast<unsigned char>(                                \
+        static_cast<char>(class_) | static_cast<char>(form_) | 31))
 
 AsnLen SNACCDLL_API PEncTag(AsnBufBits& b, unsigned char ucClass,
 							unsigned char form, long code, long lByteCount);
