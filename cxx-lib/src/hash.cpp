@@ -122,7 +122,7 @@ _BEGIN_SNACC_NAMESPACE
 Hash
 MakeHash (const char *str, size_t len)
 {
-    register Hash n = 0;
+    Hash n = 0;
 
 #define HASHC   n = *str++ + 65587 * n
 
