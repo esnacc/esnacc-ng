@@ -95,6 +95,8 @@ pkgconfigdir = $(libdir)/pkgconfig
 # http://article.gmane.org/gmane.comp.sysutils.automake.general/10891
 noinst_HEADERS += $(EXTRA_DIST)
 
+SUFFIXES += .asn1 .c .cpp .h
+
 .asn1.c:
 	compiler/esnacc$(EXEEXT) -c -mo `dirname $@` $<
 
