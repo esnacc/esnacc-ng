@@ -11,7 +11,9 @@ src/rfc1157-snmp.h
 src/rfc1155-smi.cpp
 src/rfc1155-smi.h
 src/vdatest_asn.c
+src/vdatest_asn.cpp
 src/vdatest_asn.h
 src/vdatest_asn2.c
+src/vdatest_asn2.cpp
 src/vdatest_asn2.h
 test.txt

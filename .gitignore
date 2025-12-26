@@ -56,3 +56,5 @@ test-suite.log
 *.info
 *-coverage/
 py-compile
+/test.txt
+/vdatest.xml
