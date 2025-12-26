@@ -69,4 +69,11 @@ c_examples_test_lib_testlib_CFLAGS = \
 c_examples_test_lib_testlib_LDADD = \
 	c-lib/libcasn1.la
 
+# Generate pr.ber before running tests that depend on it
+# Using check_DATA ensures it's built before check target runs
+check_DATA += pr.ber
+
+pr.ber: c-examples/simple/genber$(EXEEXT)
+	$(AM_V_GEN)./c-examples/simple/genber$(EXEEXT)
+
 CLEANFILES += asn1specs/p-rec.h asn1specs/p-rec.c pr.ber
