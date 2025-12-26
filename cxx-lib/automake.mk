@@ -132,8 +132,10 @@ DISTCLEANFILES += cxx-lib/libesnaccxx.pc \
 cxx-lib/inc/snacc.h.in: snacc.h.in
 	$(AM_V_GEN)cp $< $@
 
-cxx-lib/src/snaccrose.h cxx-lib/src/snaccrose.cpp: asn1specs/snaccrose.asn compiler/esnacc$(EXEEXT)
+cxx-lib/src/snaccrose.cpp: asn1specs/snaccrose.asn compiler/esnacc$(EXEEXT)
 	$(AM_V_GEN)compiler/esnacc$(EXEEXT) -C -mo cxx-lib/src $<
+
+cxx-lib/src/snaccrose.h: cxx-lib/src/snaccrose.cpp
 
 cxx-lib/inc/snaccrose.h: cxx-lib/src/snaccrose.h
 	$(AM_V_GEN)cp $< $@
