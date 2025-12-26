@@ -135,8 +135,9 @@ cxx-lib/inc/snacc.h.in: snacc.h.in
 cxx-lib/src/snaccrose.cpp: asn1specs/snaccrose.asn compiler/esnacc$(EXEEXT)
 	$(AM_V_GEN)compiler/esnacc$(EXEEXT) -C -mo cxx-lib/src $<
 
-# Dependency rule - snaccrose.h is generated alongside snaccrose.cpp by the rule above
+# Dependency-only rule: snaccrose.h is generated together with snaccrose.cpp by the rule above
 cxx-lib/src/snaccrose.h: cxx-lib/src/snaccrose.cpp
+	@: # header generated together with snaccrose.cpp
 
 cxx-lib/inc/snaccrose.h: cxx-lib/src/snaccrose.h
 	$(AM_V_GEN)cp $< $@
